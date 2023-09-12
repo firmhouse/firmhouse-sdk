@@ -1,0 +1,22 @@
+schema:
+  - https://portal.firmhouse.com/graphql:
+      headers:
+        X-Project-Access-Token: ${PROJECT_ACCESS_TOKEN}
+documents: './src/lib/resources/**/*.graphql'
+generates:
+  src/lib/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations:
+      - typed-document-node
+    config:
+      skipTypenameForRoot: true
+      skipTypename: true
+      onlyOperationTypes: true
+      flattenGeneratedTypes: true
+      strictScalars: true
+      scalars:
+        ISO8601Date: string
+        ISO8601DateTime: string
+        JSON: unknown
+      avoidOptionals: false  

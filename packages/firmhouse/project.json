@@ -1,0 +1,42 @@
+{
+  "name": "firmhouse",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/firmhouse/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/firmhouse/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/firmhouse",
+        "tsConfig": "packages/firmhouse/tsconfig.lib.json",
+        "project": "packages/firmhouse/package.json",
+        "entryFile": "packages/firmhouse/src/index.ts",
+        "external": ["react", "react-dom", "react/jsx-runtime"],
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "compiler": "swc",
+        "assets": [
+          {
+            "glob": "packages/firmhouse/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "graphql-codegen": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "generate"
+      }
+    }
+  }
+}
