@@ -3,12 +3,12 @@ import { formatCentsToEuros } from '../utils/price';
 export interface ProductProps {
   title: string;
   imageUrl?: string | null;
-  onAddToCart?: () => void;
   price?: number | null;
   isRecurring?: boolean;
+  children?: React.ReactNode;
 }
 
-export function Product({ title, imageUrl, price, onAddToCart, isRecurring }: ProductProps) {
+export function Product({ title, imageUrl, price, children, isRecurring }: ProductProps) {
   return (
     <div className="p-4 m-2 rounded-2xl bg-white">
       <Image
@@ -28,14 +28,7 @@ export function Product({ title, imageUrl, price, onAddToCart, isRecurring }: Pr
             </span>
           )}
         </div>
-        {
-          <button
-            onClick={onAddToCart}
-            className="px-2 py-1 bg-black text-white rounded-2xl"
-          >
-            Add to Cart
-          </button>
-        }
+        { children }
       </div>
     </div>
   );

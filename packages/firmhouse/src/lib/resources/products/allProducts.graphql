@@ -10,18 +10,7 @@ query allProducts(
 ) {
   products(id: $id, sku: $sku, shopifyVariantId: $shopifyVariantId, updatedSince: $updatedSince, after: $after, before: $before, last: $last, first: $first) {
     nodes {
-      id
-      title
-      sku
-      imageUrl
-      priceCents
-      available
-      interval
-      intervalUnitOfMeasure
-      priceIncludingTaxCents
-      taxPercentage
-      taxAmountCents
-      productType
+      ...ProductFragment
     }
   }
 }

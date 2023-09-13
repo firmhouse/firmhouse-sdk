@@ -1,0 +1,36 @@
+mutation createCart($input: CreateCartInput!) {
+  createCart(input: $input) {
+    subscription {
+      token
+      ...SubscriptionFragment
+    }
+  }
+}
+
+query getSubscription($token: ID!) {
+  getSubscription(token: $token) {
+    ...SubscriptionFragment
+  }
+}
+
+mutation addToCart($input: CreateOrderedProductInput!) {
+  createOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation removeFromCart($input: DestroyOrderedProductInput!) {
+  destroyOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}

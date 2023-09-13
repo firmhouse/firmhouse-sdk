@@ -1,34 +1,22 @@
-'use client';
-import {
-  FirmhouseClient,
-  type Product as ProductT,
-} from '@firmhouse/firmhouse';
-import { Product } from '@firmhouse/ui-components';
-import { useEffect, useState } from 'react';
-const client = new FirmhouseClient({
-    apiToken: process.env.NEXT_PUBLIC_PROJECT_ACCESS_TOKEN ?? '',
-  });
-export default function ProductList() {
-  const [products, setProducts] = useState([] as ProductT);
-  useEffect(() => {
-    client.products
-      .fetchAll()
-      .then((response) => {
-        return setProducts(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+import { type ProductsType } from '@firmhouse/firmhouse';
+import { Button, Product } from '@firmhouse/ui-components';
 
+export interface ProductListProps {
+  products: ProductsType;
+  addToCart: (productId: string, quantity: number) => void;
+}
+
+export default function ProductList({ addToCart, products }: ProductListProps) {
   return (
-    <div className="flex h-full w-full justify-center align-middle flex-col">
-      {products.map((product) => (
+    <div className="flex justify-center align-middle flex-wrap">
+      {products?.map((product) => (
         <Product
           key={product.id}
           title={product.title ?? ''}
           imageUrl={product.imageUrl}
-        />
+        >
+          <Button text="Add to Cart" onClick={() => addToCart(product.id, 1)} />
+        </Product>
       ))}
     </div>
   );

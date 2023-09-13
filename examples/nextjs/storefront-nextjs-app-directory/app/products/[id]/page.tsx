@@ -10,11 +10,6 @@ export default async function ProductPage({
     apiToken: process.env.PROJECT_ACCESS_TOKEN ?? '',
   });
   const product = await client.products.fetchById(params.id);
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.css file.
-   */
   return (
     <div className="flex h-full w-full justify-center align-middle flex-col">
       {product !== null && (
