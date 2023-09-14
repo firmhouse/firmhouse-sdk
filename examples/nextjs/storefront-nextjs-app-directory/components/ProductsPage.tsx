@@ -8,7 +8,7 @@ import ProductList from './ProductList';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([] as ProductsType);
-  const { subscription, addToCart, removeFromCart } = useSubscription();
+  const { subscription, addToCart, removeFromCart, updateOrderedProductQuantity } = useSubscription();
   useEffect(() => {
     firmhouseClient.products
       .fetchAll()
@@ -27,7 +27,7 @@ export default function ProductsPage() {
       </div>
       <div className="h-full bg-white fixed right-0 w-[300px]">
         {subscription !== null && (
-          <Cart subscription={subscription} onRemove={removeFromCart} />
+          <Cart subscription={subscription} onRemove={removeFromCart} onUpdateQuantity={updateOrderedProductQuantity} />
         )}
       </div>
     </div>

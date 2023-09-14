@@ -4,9 +4,10 @@ import { CartProduct, formatCentsToEuros } from '@firmhouse/ui-components';
 export interface CartProps {
   subscription: SubscriptionType;
   onRemove: (orderedProductId: string) => void;
+  onUpdateQuantity: (orderedProductId: string, quantity: number) => void;
 }
 
-export default function Cart({ subscription, onRemove }: CartProps) {
+export default function Cart({ subscription, onRemove, onUpdateQuantity }: CartProps) {
   const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
@@ -24,6 +25,7 @@ export default function Cart({ subscription, onRemove }: CartProps) {
             imageUrl={orderedProduct.product.imageUrl}
             price={orderedProduct.totalAmountIncludingTaxCents}
             onRemove={() => onRemove(orderedProduct.id)}
+            onUpdateQuantity={(quantity) => onUpdateQuantity(orderedProduct.id, quantity)}
           />
         ))}
       </div>

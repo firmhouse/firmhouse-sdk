@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { formatCentsToEuros } from '../utils/price';
+import { NumberInput } from './NumberInput';
 export interface CartProductProps {
   title: string;
   imageUrl?: string | null;
@@ -7,6 +8,7 @@ export interface CartProductProps {
   isRecurring?: boolean;
   quantity?: number | null;
   onRemove?: () => void;
+  onUpdateQuantity?: (quantity: number) => void;
 }
 
 export function CartProduct({
@@ -15,7 +17,9 @@ export function CartProduct({
   price,
   isRecurring,
   onRemove,
+  onUpdateQuantity,
   quantity = 1,
+
 }: CartProductProps) {
   return (
     <div className="flex flex-row items-center my-2">
@@ -36,7 +40,10 @@ export function CartProduct({
               {isRecurring && ' / month'}
             </p>
           )}
-          <button className="text-sm font-light underline" onClick={onRemove}>Remove</button>
+          <div className='flex items-center'>
+             {onUpdateQuantity && <NumberInput value={quantity ?? 1} onChange={onUpdateQuantity} />}
+             <button className="text-sm font-light underline mx-2" onClick={onRemove}>Remove</button>
+          </div>
       </div>
     </div>
   );

@@ -34,3 +34,14 @@ mutation removeFromCart($input: DestroyOrderedProductInput!) {
     }
   }
 }
+
+mutation updateOrderedProductQuantity($input: OrderedProductInput!) {
+  updateOrderedProductQuantity(input: { orderedProduct: $input }) {
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+    subscription {
+      ...SubscriptionFragment
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { BaseResource } from '../BaseResource';
-import { AddToCartDocument, AddToCartMutationVariables, CreateCartDocument, CreateCartMutationVariables, CreateOrderedProductInput, DestroyOrderedProductInput, GetSubscriptionDocument, RemoveFromCartDocument, SubscriptionStatus } from '../../graphql/generated';
+import { AddToCartDocument, AddToCartMutationVariables, CreateCartDocument, CreateCartMutationVariables, CreateOrderedProductInput, DestroyOrderedProductInput, GetSubscriptionDocument, RemoveFromCartDocument, SubscriptionStatus, UpdateOrderedProductDocument, UpdateOrderedProductInput, UpdateOrderedProductQuantityDocument } from '../../graphql/generated';
 
 export type SubscriptionType = Awaited<ReturnType<InstanceType<typeof SubscriptionsResource>['get']>>
 export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & { token: string }
@@ -85,10 +85,23 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionToken Subscription token
    * @returns subscription after removing the product and the removed product
    */
-  public async removeFromCart(orderedProductId:string, subscriptionToken: string) {
-    const response = await this.client.request(RemoveFromCartDocument, { input: {id: orderedProductId} }, this.getSubscriptionTokenHeader(subscriptionToken));
+  public async removeFromCart(orderedProductId: string, subscriptionToken: string) {
+    const response = await this.client.request(RemoveFromCartDocument, { input: { id: orderedProductId } }, this.getSubscriptionTokenHeader(subscriptionToken));
     return response.destroyOrderedProduct
   }
+
+  /**
+   * Update a product in the cart
+   * @param orderedProductId Ordered product id to update quantity
+   * @param quantity New quantity
+   * @param subscriptionToken Subscription token
+   * @returns 
+   */
+  public async updateOrderedProductQuantity(orderedProductId: string, quantity: number, subscriptionToken: string) {
+    const response = await this.client.request(UpdateOrderedProductQuantityDocument, { input: { id: orderedProductId, quantity }}, this.getSubscriptionTokenHeader(subscriptionToken));
+    return response.updateOrderedProductQuantity
+  }
+
 
   private checkSubscriptionToken(subscription: SubscriptionType): subscription is SubscriptionWithTokenType {
     return subscription.token !== undefined && subscription.token !== null

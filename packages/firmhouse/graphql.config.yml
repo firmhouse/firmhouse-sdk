@@ -1,7 +1,7 @@
 schema:
   - https://portal.firmhouse.com/graphql:
       headers:
-        X-Project-Access-Token: ${PROJECT_ACCESS_TOKEN}
+        X-Project-Access-Token: ${NX_PROJECT_ACCESS_TOKEN}
 documents: 
   - './src/lib/resources/**/*.graphql'
   - './src/lib/graphql/fragments/*.graphql'

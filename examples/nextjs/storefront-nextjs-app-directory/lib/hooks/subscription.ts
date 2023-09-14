@@ -11,6 +11,10 @@ async function removeFromCart(subscriptionToken: string, orderedProductId: strin
     return firmhouseClient.subscriptions.removeFromCart(orderedProductId, subscriptionToken)
 }
 
+async function updateOrderedProductQuantity(subscriptionToken: string, orderedProductId: string, quantity: number) {
+    return firmhouseClient.subscriptions.updateOrderedProductQuantity(orderedProductId, quantity , subscriptionToken)
+}
+
 export function useSubscription() {
     const [subscription, setSubscription] = useState(null as SubscriptionWithTokenType | null);
     useEffect(() => {
@@ -46,6 +50,17 @@ export function useSubscription() {
                 return
             }
             removeFromCart(subscription.token, orderedProductId).then((response) => {
+                if (response?.subscription === null || response?.subscription === undefined) return
+                setSubscription({ ...response.subscription, token: subscription.token })
+            }).catch((error) => {
+                console.error(error)
+            })
+        },
+        updateOrderedProductQuantity: (orderedProductId: string, quantity: number) => {
+            if (subscription === null) {
+                return
+            }
+            updateOrderedProductQuantity(subscription.token, orderedProductId, quantity).then((response) => {
                 if (response?.subscription === null || response?.subscription === undefined) return
                 setSubscription({ ...response.subscription, token: subscription.token })
             }).catch((error) => {
