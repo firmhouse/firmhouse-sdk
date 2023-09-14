@@ -1,0 +1,35 @@
+import {
+  getSubscriptionToken,
+  addToCart,
+  removeFromCart,
+  isInitialized,
+  updateQuantity,
+} from '../lib/actions/subscription';
+import { firmhouseClient } from '../lib/firmhouse';
+import CartServer from '../components/Cart';
+import ProductList from '../components/ProductList';
+
+export default async function Index() {
+  const products = await firmhouseClient.products.fetchAll();
+  let subscription = null;
+  if (await isInitialized()) {
+    subscription = await firmhouseClient.subscriptions.get(
+      await getSubscriptionToken()
+    );
+  }
+
+  return (
+      <div className="flex h-full w-full justify-start flex-row mt-12 pr-[300px]">
+        <div className="p-8 w-full">
+          <ProductList products={products} addToCart={addToCart} />
+        </div>
+        <div className="h-full bg-white w-[300px] fixed right-0">
+          <CartServer
+            subscription={subscription}
+            onRemove={removeFromCart}
+            onUpdateQuantity={updateQuantity}
+          />
+        </div>
+      </div>
+  );
+}

@@ -1,0 +1,21 @@
+fragment SubscriptionFragment on Subscription {
+  token
+  status
+  currency
+  amountForStartingSubscriptionCents
+  monthlyAmountCents
+  checkoutUrl
+  subscribedPlan {
+    name
+    showInPriceBreakDown
+    billingCycleIntervalUnit
+    billingCycleInterval
+  }
+  activePlan {
+    id
+    monthlyAmountCents
+  }
+  orderedProducts {
+    ...OrderedProductFragment
+  }
+}

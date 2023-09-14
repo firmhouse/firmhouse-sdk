@@ -1,0 +1,72 @@
+{
+  "name": "nextjs-storefront-app-router",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "examples/nextjs/storefront-app-router",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/examples/nextjs/storefront-app-router",
+        "postcssConfig": "examples/nextjs/storefront-app-router/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "examples/nextjs/storefront-app-router"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nextjs-storefront-app-router:build",
+        "dev": true,
+        "postcssConfig": "examples/nextjs/storefront-app-router/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nextjs-storefront-app-router:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "nextjs-storefront-app-router:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "nextjs-storefront-app-router:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "examples/nextjs/storefront-app-router/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "examples/nextjs/storefront-app-router/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

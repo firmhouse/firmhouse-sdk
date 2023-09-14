@@ -1,7 +1,0 @@
-{
-  "name": "@firmhouse/firmhouse",
-  "version": "0.0.1",
-  "scripts": {
-    "generate": "graphql-codegen --config ./graphql.config.yml"
-  }
-}

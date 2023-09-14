@@ -1,0 +1,12 @@
+fragment OrderedProductFragment on OrderedProduct {
+  id
+  quantity
+  totalAmountIncludingTaxCents
+  recurring
+  plan {
+    id
+  }
+  product {
+    ...ProductFragment
+  }
+}

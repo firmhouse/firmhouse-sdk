@@ -7,7 +7,7 @@ export interface CartProductProps {
   imageUrl?: string | null;
   price?: number | null;
   isRecurring?: boolean;
-  quantity?: number ;
+  quantity?: number;
   onRemove: (data: FormData) => void;
   onUpdateQuantity: (data: FormData) => void;
 }
@@ -48,7 +48,7 @@ export async function CartProduct({
             quantity={quantity}
           />
           <form action={onRemove}>
-            <input type="hidden" name="orderedProductId" value={id} />
+            <input type="hidden" name="orderedProductId" value={id} readOnly />
             <button className="text-sm font-light underline mx-2">
               Remove
             </button>

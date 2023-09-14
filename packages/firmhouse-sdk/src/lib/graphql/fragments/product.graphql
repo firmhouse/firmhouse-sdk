@@ -1,0 +1,14 @@
+fragment ProductFragment on Product {
+  id
+  title
+  sku
+  imageUrl
+  priceCents
+  available
+  interval
+  intervalUnitOfMeasure
+  priceIncludingTaxCents
+  taxPercentage
+  taxAmountCents
+  productType
+}
