@@ -7,9 +7,10 @@ mutation createCart($input: CreateCartInput!) {
   }
 }
 
-query getSubscription($token: ID!) {
+query getSubscription($token: ID!, $includeCheckoutDetails: Boolean = false) {
   getSubscription(token: $token) {
     ...SubscriptionFragment
+    ...CheckoutDetailsFragment @include(if: $includeCheckoutDetails)
   }
 }
 

@@ -1,6 +1,6 @@
 import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
 import { formatCentsToEuros } from '@firmhouse/ui-components';
-import { CartProductServer } from '@firmhouse/ui-components';
+import { CartProduct } from '@firmhouse/ui-components/server';
 export interface CartProps {
   subscription?: SubscriptionType | null;
   onRemove: (data: FormData) => void;
@@ -22,7 +22,7 @@ export default function Cart({
           <p className="text-gray-500 p-4">No products in cart</p>
         )}
         {orderedProducts?.map((orderedProduct) => (
-          <CartProductServer
+          <CartProduct
             id={orderedProduct.id}
             key={orderedProduct.id}
             title={orderedProduct.product.title}

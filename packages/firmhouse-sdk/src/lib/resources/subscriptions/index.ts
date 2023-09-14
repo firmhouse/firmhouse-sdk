@@ -43,12 +43,13 @@ export class SubscriptionsResource extends BaseResource {
   /**
    * Get a subscription by subscription token
    * @param token Subscription token
+   * @param includeCheckoutDetails Include checkout details
    * @returns Subscription
    */
-  public async get(token: string) {
+  public async get(token: string, includeCheckoutDetails = false) {
     const response = await this.client.request(
       GetSubscriptionDocument,
-      { token },
+      { token, includeCheckoutDetails },
       this.getSubscriptionTokenHeader(token)
     );
     if (
