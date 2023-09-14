@@ -1,5 +1,5 @@
 import { BaseResource } from '../BaseResource';
-import { AddToCartDocument, AddToCartMutationVariables, CreateCartDocument, CreateCartMutationVariables, CreateOrderedProductInput, DestroyOrderedProductInput, GetSubscriptionDocument, RemoveFromCartDocument, SubscriptionStatus, UpdateOrderedProductDocument, UpdateOrderedProductInput, UpdateOrderedProductQuantityDocument } from '../../graphql/generated';
+import { AddToCartDocument, CreateCartDocument, CreateOrderedProductInput, GetSubscriptionDocument, RemoveFromCartDocument, SubscriptionStatus, UpdateOrderedProductQuantityDocument } from '../../graphql/generated';
 
 export type SubscriptionType = Awaited<ReturnType<InstanceType<typeof SubscriptionsResource>['get']>>
 export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & { token: string }
@@ -98,7 +98,7 @@ export class SubscriptionsResource extends BaseResource {
    * @returns 
    */
   public async updateOrderedProductQuantity(orderedProductId: string, quantity: number, subscriptionToken: string) {
-    const response = await this.client.request(UpdateOrderedProductQuantityDocument, { input: { id: orderedProductId, quantity }}, this.getSubscriptionTokenHeader(subscriptionToken));
+    const response = await this.client.request(UpdateOrderedProductQuantityDocument, { input: { id: orderedProductId, quantity } }, this.getSubscriptionTokenHeader(subscriptionToken));
     return response.updateOrderedProductQuantity
   }
 

@@ -36,7 +36,7 @@ mutation removeFromCart($input: DestroyOrderedProductInput!) {
 }
 
 mutation updateOrderedProductQuantity($input: OrderedProductInput!) {
-  updateOrderedProductQuantity(input: { orderedProduct: $input }) {
+  updateOrderedProductQuantity(input: $input) {
     orderedProduct {
       ...OrderedProductFragment
     }

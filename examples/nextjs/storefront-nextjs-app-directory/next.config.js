@@ -14,6 +14,9 @@ const nextConfig = {
   },
   images: {
     domains: ['s3-eu-west-1.amazonaws.com'],
+  },
+  experimental: {
+    serverActions: true,
   }
 };
 

@@ -19,7 +19,6 @@ export function useSubscription() {
     const [subscription, setSubscription] = useState(null as SubscriptionWithTokenType | null);
     useEffect(() => {
         const token = subscription?.token ?? localStorage.getItem(SUBSCRIPTION_TOKEN_KEY) ?? undefined
-        console.log(token)
         const initialize = async (subscriptionToken?: string) => {
             const response = await firmhouseClient.subscriptions.getOrCreateDraftSubscription(subscriptionToken)
             setSubscription(response)
