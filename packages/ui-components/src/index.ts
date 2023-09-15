@@ -5,4 +5,6 @@ export * from './lib/components/Button';
 export * from './lib/components/CartProduct';
 export * from './lib/components/NumberInput';
 export * from './lib/components/Input';
+export * from './lib/components/Select';
 export * from './lib/utils/price';
+export * from './lib/utils/date';

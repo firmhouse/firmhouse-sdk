@@ -36,7 +36,9 @@ mutation removeFromCart($input: DestroyOrderedProductInput!) {
   }
 }
 
-mutation updateOrderedProductQuantity($input: UpdateOrderedProductQuantityInput!) {
+mutation updateOrderedProductQuantity(
+  $input: UpdateOrderedProductQuantityInput!
+) {
   updateOrderedProductQuantity(input: $input) {
     orderedProduct {
       ...OrderedProductFragment
@@ -44,5 +46,31 @@ mutation updateOrderedProductQuantity($input: UpdateOrderedProductQuantityInput!
     subscription {
       ...SubscriptionFragment
     }
+  }
+}
+
+mutation updateAddressDetails($input: UpdateAddressDetailsInput!) {
+  updateAddressDetails(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
+  createSubscriptionFromCart(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+    paymentUrl
+    returnUrl
   }
 }

@@ -3,11 +3,15 @@ import {
   AddToCartDocument,
   CreateCartDocument,
   CreateOrderedProductInput,
+  CreateSubscriptionFromCartDocument,
   GetSubscriptionDocument,
   RemoveFromCartDocument,
   SubscriptionStatus,
+  UpdateAddressDetailsDocument,
+  UpdateAddressDetailsInput,
   UpdateOrderedProductQuantityDocument,
 } from '../../graphql/generated';
+import { formatValidationErrors } from '../../helpers/errors';
 
 export type SubscriptionType = Awaited<
   ReturnType<InstanceType<typeof SubscriptionsResource>['get']>
@@ -130,7 +134,7 @@ export class SubscriptionsResource extends BaseResource {
    * @param orderedProductId Ordered product id to update quantity
    * @param quantity New quantity
    * @param subscriptionToken Subscription token
-   * @returns
+   * @returns Updated subscription
    */
   public async updateOrderedProductQuantity(
     orderedProductId: string,
@@ -143,6 +147,40 @@ export class SubscriptionsResource extends BaseResource {
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     return response.updateOrderedProductQuantity;
+  }
+
+  /**
+   * Update the address details of a subscription. 
+   * Will save changes to certain fields even when other fields given are invalid. 
+   * Will return validation error messages for invalid fields.
+   * @param input Address details, address, name, email, etc
+   * @param subscriptionToken Subscription token
+   * @returns Updated subscription and validation errors
+   */
+  public async updateAddressDetails(input: UpdateAddressDetailsInput, subscriptionToken: string) {
+    const response = await this.client.request(
+      UpdateAddressDetailsDocument,
+      { input },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    return { ...response.updateAddressDetails, errors: formatValidationErrors(response.updateAddressDetails?.errors ?? []) };
+  }
+
+  /**
+   * Finalises a subscription and returns payment details based on a cart/draft subscription
+   * Will return validation error messages if required fields for payment is missing.
+   * @param paymentPageUrl The URL the user gets redirected to after completing payment
+   * @param returnUrl The URL where the user can sign up for a new subscription
+   * @param subscriptionToken Subscription token
+   * @returns Payment details and validation errors if any
+   */
+  public async finaliseSubscription(paymentPageUrl: string, returnUrl: string, subscriptionToken: string) {
+    const response = await this.client.request(
+      CreateSubscriptionFromCartDocument,
+      { input: { paymentPageUrl, returnUrl } },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    return { ...response.createSubscriptionFromCart,  errors: formatValidationErrors(response.createSubscriptionFromCart?.errors ?? []) };
   }
 
   private checkSubscriptionToken(
