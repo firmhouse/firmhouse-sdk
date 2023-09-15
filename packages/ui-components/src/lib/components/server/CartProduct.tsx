@@ -8,8 +8,8 @@ export interface CartProductProps {
   price?: number | null;
   isRecurring?: boolean;
   quantity?: number;
-  onRemove: (data: FormData) => void;
-  onUpdateQuantity: (data: FormData) => void;
+  onRemove?: (data: FormData) => void;
+  onUpdateQuantity?: (data: FormData) => void;
 }
 
 export async function CartProduct({
@@ -42,17 +42,26 @@ export async function CartProduct({
           </p>
         )}
         <div className="flex items-center">
-          <QuantityInput
-            id={id}
-            onUpdateQuantity={onUpdateQuantity}
-            quantity={quantity}
-          />
-          <form action={onRemove}>
-            <input type="hidden" name="orderedProductId" value={id} readOnly />
-            <button className="text-sm font-light underline mx-2">
-              Remove
-            </button>
-          </form>
+          {onUpdateQuantity && (
+            <QuantityInput
+              id={id}
+              onUpdateQuantity={onUpdateQuantity}
+              quantity={quantity}
+            />
+          )}
+          {onRemove && (
+            <form action={onRemove}>
+              <input
+                type="hidden"
+                name="orderedProductId"
+                value={id}
+                readOnly
+              />
+              <button className="text-sm font-light underline mx-2">
+                Remove
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>

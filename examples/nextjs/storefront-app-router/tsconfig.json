@@ -19,22 +19,21 @@
     "types": [
       "jest",
       "node"
-    ]
+    ],
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "../../../examples/nextjs/storefront-nextjs-app-directory/.next/types/**/*.ts",
-    "../../../dist/examples/nextjs/storefront-nextjs-app-directory/.next/types/**/*.ts",
+    "../../../dist/examples/nextjs/storefront-app-router/.next/types/**/*.ts",
     "next-env.d.ts",
     "../../../examples/nextjs/storefront-app-router/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
-    "src/**/*.spec.ts",
+    "**/*.spec.ts",
     "src/**/*.test.ts"
   ]
 }

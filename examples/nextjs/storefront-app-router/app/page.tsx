@@ -6,7 +6,7 @@ import {
   updateQuantity,
 } from '../lib/actions/subscription';
 import { firmhouseClient } from '../lib/firmhouse';
-import CartServer from '../components/Cart';
+import Cart from '../components/Cart';
 import ProductList from '../components/ProductList';
 
 export default async function Index() {
@@ -23,8 +23,8 @@ export default async function Index() {
         <div className="p-8 w-full">
           <ProductList products={products} addToCart={addToCart} />
         </div>
-        <div className="h-full bg-white w-[300px] fixed right-0">
-          <CartServer
+        <div className="h-full bg-white w-[300px] fixed top-0 right-0 pt-8">
+          <Cart
             subscription={subscription}
             onRemove={removeFromCart}
             onUpdateQuantity={updateQuantity}

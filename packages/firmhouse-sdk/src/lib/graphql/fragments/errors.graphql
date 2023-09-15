@@ -1,0 +1,7 @@
+fragment ModelValidationErrorFragment on ModelValidationError {
+  attribute
+  message
+  path
+}
+
+

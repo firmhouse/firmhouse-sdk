@@ -1,7 +1,10 @@
-'use server';
+'use server'
+import 'server-only'
 import { cookies } from 'next/headers';
 import { firmhouseClient } from '../firmhouse';
 import { revalidatePath } from 'next/cache';
+import { getISO8601Date } from '@firmhouse/ui-components';
+import { redirect } from 'next/navigation';
 
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
 
@@ -55,4 +58,32 @@ export async function updateQuantity(data: FormData) {
     await getSubscriptionToken()
   );
   revalidatePath('/');
+}
+
+export async function updateCheckoutDetails(data: FormData) {
+  const body = Object.fromEntries(Object.entries({
+    name: data.get('name') as string,
+    lastName: data.get('lastName') as string,
+    email: data.get('email') as string,
+    phoneNumber: data.get('phoneNumber') as string,
+    dateOfBirth: getISO8601Date(data.get('dateOfBirth') as string),
+    address: data.get('address') as string,
+    zipcode: data.get('zipcode') as string,
+    city: data.get('city') as string,
+    country: data.get('country') as string,
+    termsAccepted: data.get('termsAccepted ') === 'on',
+  }).filter(([, value]) => value !== undefined && value !== null && value !== ''))
+
+  const response = await firmhouseClient.subscriptions.updateAddressDetails(body, await getSubscriptionToken());
+  if (response.errors !== null) {
+    revalidatePath('/checkout')
+    return response.errors
+  }
+  const paymentResponse = await firmhouseClient.subscriptions.finaliseSubscription('/', '/', await getSubscriptionToken());
+  if (paymentResponse.errors !== null) {
+    revalidatePath('/checkout')
+    return paymentResponse.errors
+  }
+  console.log('success')
+  redirect(paymentResponse.paymentUrl ?? '/checkout');
 }

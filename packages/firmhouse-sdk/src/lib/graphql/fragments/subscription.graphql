@@ -19,3 +19,18 @@ fragment SubscriptionFragment on Subscription {
     ...OrderedProductFragment
   }
 }
+
+fragment CheckoutDetailsFragment on Subscription {
+  email
+  name
+  lastName
+  phoneNumber
+  dateOfBirth
+  address
+  houseNumber
+  zipcode
+  city
+  country
+  district
+  termsAccepted
+}

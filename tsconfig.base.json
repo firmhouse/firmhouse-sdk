@@ -15,9 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@firmhouse/firmhouse-old": ["packages/firmhouse-old/src/index.ts"],
       "@firmhouse/firmhouse-sdk": ["packages/firmhouse-sdk/src/index.ts"],
-      "@firmhouse/firmhouse/server": ["packages/firmhouse/src/server.ts"],
       "@firmhouse/ui-components": ["packages/ui-components/src/index.ts"],
       "@firmhouse/ui-components/server": [
         "packages/ui-components/src/server.ts"
