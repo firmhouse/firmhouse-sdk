@@ -37,6 +37,22 @@
       "options": {
         "script": "generate"
       }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/firmhouse-sdk/jest.config.ts",
+        "passWithNoTests": true,
+        "codeCoverage": true,
+        "coverageReporters": ["text", "lcov"]
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     }
   }
 }

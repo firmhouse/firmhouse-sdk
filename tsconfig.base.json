@@ -19,7 +19,8 @@
       "@firmhouse/ui-components": ["packages/ui-components/src/index.ts"],
       "@firmhouse/ui-components/server": [
         "packages/ui-components/src/server.ts"
-      ]
+      ],
+      "@firmhouse/firmhouse-sdk/*": ["packages/firmhouse-sdk/src/*"],
     }
   },
   "exclude": ["node_modules", "tmp"]

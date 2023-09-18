@@ -180,7 +180,7 @@ export class SubscriptionsResource extends BaseResource {
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return { ...response.createSubscriptionFromCart,  errors: formatValidationErrors(response.createSubscriptionFromCart?.errors ?? []) };
+    return { ...response.createSubscriptionFromCart, errors: formatValidationErrors(response.createSubscriptionFromCart?.errors ?? []) };
   }
 
   private checkSubscriptionToken(
