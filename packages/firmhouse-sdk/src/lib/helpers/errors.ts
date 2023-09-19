@@ -31,8 +31,8 @@ export enum ErrorType {
 
 export class NotFoundError extends Error {
 
-    constructor(error: ClientError) {
-        const message = `${error.response.errors?.[0]?.message ?? 'Not found'}`
+    constructor(error: ClientError | string) {
+        const message = typeof error === 'string' ? error : `${error.response.errors?.[0]?.message ?? 'Not found'}`
         super(message)
         Object.setPrototypeOf(this, NotFoundError.prototype)
         this.name = ErrorType.NotFound
@@ -46,8 +46,8 @@ export class NotFoundError extends Error {
 
 export class ServerError extends Error {
 
-    constructor(error: ClientError) {
-        const message = `${error.response.errors?.[0]?.message ?? 'Server error'}`
+    constructor(error: ClientError | string) {
+        const message = typeof error === 'string' ? error : `${error.response.errors?.[0]?.message ?? 'Server error'}`
         super(message)
         Object.setPrototypeOf(this, ServerError.prototype)
         this.name = ErrorType.Server

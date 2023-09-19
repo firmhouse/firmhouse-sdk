@@ -11,7 +11,7 @@ import {
   UpdateAddressDetailsInput,
   UpdateOrderedProductQuantityDocument,
 } from '../../graphql/generated';
-import { ValidationError } from '../../helpers/errors';
+import { NotFoundError, ServerError, ValidationError } from '../../helpers/errors';
 
 export type SubscriptionType = Awaited<
   ReturnType<InstanceType<typeof SubscriptionsResource>['get']>
@@ -25,7 +25,7 @@ export class SubscriptionsResource extends BaseResource {
       input: { clientMutationId },
     });
     if (response.createCart === null || response.createCart === undefined) {
-      throw new Error('Could not create subscription');
+      throw new ServerError('Could not create subscription');
     }
     return response.createCart;
   }
@@ -39,7 +39,7 @@ export class SubscriptionsResource extends BaseResource {
     const response = await this.createCart(clientMutationId);
     const token = response.subscription.token;
     if (token === null || token === undefined) {
-      throw new Error('No token returned from API');
+      throw new ServerError('No token returned from API');
     }
     return token;
   }
@@ -60,7 +60,7 @@ export class SubscriptionsResource extends BaseResource {
       response.getSubscription === null ||
       response.getSubscription === undefined
     ) {
-      throw new Error('Subscription not found');
+      throw new NotFoundError('Subscription not found');
     }
     return response.getSubscription;
   }
@@ -90,7 +90,7 @@ export class SubscriptionsResource extends BaseResource {
     if (this.checkSubscriptionToken(subscription)) {
       return subscription;
     }
-    throw new Error('No token returned from API');
+    throw new ServerError('No token returned from API');
   }
 
   /**
