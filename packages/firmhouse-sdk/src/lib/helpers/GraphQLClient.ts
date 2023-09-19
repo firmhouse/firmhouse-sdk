@@ -1,5 +1,6 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import { GraphQLClient as GraphQLClientBase } from 'graphql-request';
+import { GraphQLClient as GraphQLClientBase, ClientError } from 'graphql-request';
+import { mapToLibraryErrorTypes } from './errors';
 // Wraps the graphql-request client to provide a typed interface
 export default class GraphQLClient {
   private readonly API_TOKEN: string;
@@ -18,7 +19,13 @@ export default class GraphQLClient {
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },
+      responseMiddleware: async (res) => {
+        if (res instanceof ClientError) {
+          return mapToLibraryErrorTypes(res as ClientError)
+        }
+      }
     });
     this.request = this.client.request.bind(this.client);
   }
 }
+

@@ -5,6 +5,7 @@ import { firmhouseClient } from '../firmhouse';
 import { revalidatePath } from 'next/cache';
 import { getISO8601Date } from '@firmhouse/ui-components';
 import { redirect } from 'next/navigation';
+import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
 
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
 
@@ -74,16 +75,16 @@ export async function updateCheckoutDetails(data: FormData) {
     termsAccepted: data.get('termsAccepted ') === 'on',
   }).filter(([, value]) => value !== undefined && value !== null && value !== ''))
 
-  const response = await firmhouseClient.subscriptions.updateAddressDetails(body, await getSubscriptionToken());
-  if (response.errors !== null) {
-    revalidatePath('/checkout')
-    return response.errors
+  try {
+    await firmhouseClient.subscriptions.updateAddressDetails(body, await getSubscriptionToken());
+    const paymentResponse = await firmhouseClient.subscriptions.finaliseSubscription('/', '/', await getSubscriptionToken());
+    redirect(paymentResponse.paymentUrl ?? '/checkout');
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return error.details;
+    }
+    if (error instanceof ServerError) {
+      return { 'error': error.message }
+    }
   }
-  const paymentResponse = await firmhouseClient.subscriptions.finaliseSubscription('/', '/', await getSubscriptionToken());
-  if (paymentResponse.errors !== null) {
-    revalidatePath('/checkout')
-    return paymentResponse.errors
-  }
-  console.log('success')
-  redirect(paymentResponse.paymentUrl ?? '/checkout');
 }

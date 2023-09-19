@@ -1,10 +1,9 @@
 'use client';
 
-import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
+import { SubscriptionType, ValidationError } from '@firmhouse/firmhouse-sdk';
 import { Input, Select } from '@firmhouse/ui-components';
 import { useState } from 'react';
 import { updateCheckoutDetails } from '../lib/actions/subscription';
-import { revalidatePath } from 'next/cache';
 
 export interface CheckoutFormProps {
   subscription: SubscriptionType;
@@ -15,21 +14,17 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
 
   async function onSubmit(formData: FormData) {
     setErrors({});
-    try {
-      const res = await updateCheckoutDetails(formData);
-      setErrors(res ?? {});
-    } catch (e) {
-      if (e instanceof Error) {
-        setErrors((errors) => ({ ...errors, form: 'Server error' }));
-        console.error(e);
-      }
+
+    const err = await updateCheckoutDetails(formData);
+    if (err !== undefined) {
+      setErrors((prev) => ({ ...prev, ...err }));
     }
   }
 
   return (
     <form action={onSubmit} className="w-4/6 py-4 px-8 checkout">
       <p className="px-4 text-red-500 text-ellipsis w-full h-6 overflow-hidden">
-        {errors.form ?? ''}
+        {errors.error ?? ''}
       </p>
       <Input
         name="email"

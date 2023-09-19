@@ -11,7 +11,7 @@ import {
   UpdateAddressDetailsInput,
   UpdateOrderedProductQuantityDocument,
 } from '../../graphql/generated';
-import { formatValidationErrors } from '../../helpers/errors';
+import { ValidationError } from '../../helpers/errors';
 
 export type SubscriptionType = Awaited<
   ReturnType<InstanceType<typeof SubscriptionsResource>['get']>
@@ -163,7 +163,11 @@ export class SubscriptionsResource extends BaseResource {
       { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return { ...response.updateAddressDetails, errors: formatValidationErrors(response.updateAddressDetails?.errors ?? []) };
+    const { errors, ...updateAddressDetails } = response.updateAddressDetails ?? {};
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors)
+    }
+    return { ...updateAddressDetails };
   }
 
   /**
@@ -180,7 +184,11 @@ export class SubscriptionsResource extends BaseResource {
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return { ...response.createSubscriptionFromCart, errors: formatValidationErrors(response.createSubscriptionFromCart?.errors ?? []) };
+    const { errors, ...createSubscriptionFromCart } = response.createSubscriptionFromCart ?? {};
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors)
+    }
+    return { ...createSubscriptionFromCart };
   }
 
   private checkSubscriptionToken(

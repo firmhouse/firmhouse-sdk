@@ -1,11 +1,7 @@
-/* eslint-disable @nx/enforce-module-boundaries */
-import { SubscriptionStatus } from './graphql/generated';
 import GraphQLClient from './helpers/GraphQLClient';
-import { ProductsResource, type ProductsType } from './resources/products';
+import { ProductsResource } from './resources/products';
 import {
   SubscriptionsResource,
-  type SubscriptionType,
-  type SubscriptionWithTokenType,
 } from './resources/subscriptions';
 
 export type FirmhouseConfig = {
@@ -28,7 +24,3 @@ export class FirmhouseClient {
     this.subscriptions = new SubscriptionsResource(this.client);
   }
 }
-
-export type { ProductsType, SubscriptionType, SubscriptionWithTokenType };
-
-export { SubscriptionStatus };
