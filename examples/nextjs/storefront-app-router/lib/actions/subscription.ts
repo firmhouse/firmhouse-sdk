@@ -1,5 +1,5 @@
-'use server'
-import 'server-only'
+'use server';
+import 'server-only';
 import { cookies } from 'next/headers';
 import { firmhouseClient } from '../firmhouse';
 import { revalidatePath } from 'next/cache';
@@ -31,11 +31,13 @@ export async function addToCart(data: FormData) {
   if (!(await isInitialized())) {
     await initializeCart();
   }
+
   const productId = data.get('productId') as string;
   const quantity = parseInt(data.get('quantity') as string);
+  const subscriptionToken = await getSubscriptionToken();
   await firmhouseClient.subscriptions.addToCart(
     { productId, quantity },
-    await getSubscriptionToken()
+    subscriptionToken
   );
   revalidatePath('/');
 }
@@ -62,29 +64,55 @@ export async function updateQuantity(data: FormData) {
 }
 
 export async function updateCheckoutDetails(data: FormData) {
-  const body = Object.fromEntries(Object.entries({
-    name: data.get('name') as string,
-    lastName: data.get('lastName') as string,
-    email: data.get('email') as string,
-    phoneNumber: data.get('phoneNumber') as string,
-    dateOfBirth: getISO8601Date(data.get('dateOfBirth') as string),
-    address: data.get('address') as string,
-    zipcode: data.get('zipcode') as string,
-    city: data.get('city') as string,
-    country: data.get('country') as string,
-    termsAccepted: data.get('termsAccepted ') === 'on',
-  }).filter(([, value]) => value !== undefined && value !== null && value !== ''))
-
+  const body = Object.fromEntries(
+    Object.entries({
+      name: data.get('name') as string,
+      lastName: data.get('lastName') as string,
+      email: data.get('email') as string,
+      phoneNumber: data.get('phoneNumber') as string,
+      dateOfBirth: getISO8601Date(data.get('dateOfBirth') as string),
+      address: data.get('address') as string,
+      zipcode: data.get('zipcode') as string,
+      city: data.get('city') as string,
+      country: data.get('country') as string,
+      termsAccepted: data.get('termsAccepted ') === 'on'
+    }).filter(
+      ([, value]) => value !== undefined && value !== null && value !== ''
+    )
+  );
+  let success = false;
+  let paymentUrl;
   try {
-    await firmhouseClient.subscriptions.updateAddressDetails(body, await getSubscriptionToken());
-    const paymentResponse = await firmhouseClient.subscriptions.finaliseSubscription('/', '/', await getSubscriptionToken());
-    redirect(paymentResponse.paymentUrl ?? '/checkout');
+    await firmhouseClient.subscriptions.updateAddressDetails(
+      body,
+      await getSubscriptionToken()
+    );
+    const paymentResponse =
+      await firmhouseClient.subscriptions.finaliseSubscription(
+        '',
+        '',
+        await getSubscriptionToken()
+      );
+    paymentUrl = paymentResponse.paymentUrl;
+    if (paymentUrl === null || paymentUrl === undefined) {
+      throw new ServerError(
+        'Cannot proceed with the payment now. Please try again later.'
+      );
+    }
+    success = true;
+    // We do not redirect here because nextjs handles redirects by throwing special error
+    // So if we call redirect here it will be caught by the catch block
   } catch (error) {
     if (error instanceof ValidationError) {
       return error.details;
     }
     if (error instanceof ServerError) {
-      return { 'error': error.message }
+      return { error: error.message };
     }
+    return { error: 'Cannot proceed with the payment now. Please try again later.' };
+  }
+  
+  if (success) {
+    redirect(paymentUrl);
   }
 }
