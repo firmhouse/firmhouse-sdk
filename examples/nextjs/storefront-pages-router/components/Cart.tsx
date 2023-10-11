@@ -12,10 +12,14 @@ export default function Cart({
   onRemove,
   onUpdateQuantity,
 }: CartProps) {
-  const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
+  const {
+    orderedProducts,
+    amountForStartingSubscriptionCents,
+    monthlyAmountCents,
+  } = subscription;
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
-      <div className="h-full">
+      <div>
         <h2 className="font-bold text-xl">Cart</h2>
         {orderedProducts?.length === 0 && (
           <p className="text-gray-500 p-4">No products in cart</p>
@@ -35,12 +39,27 @@ export default function Cart({
           />
         ))}
       </div>
-
-      <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 py-8">
-        <p className="font-semibold">Total</p>
-        <p className="font-semibold">
-          {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
-        </p>
+      <div className='mt-auto py-4'>
+        <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
+          <p className="font-semibold">Subtotal (pay now)</p>
+          <p className="font-light">
+            {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
+          </p>
+        </div>
+        <div className="flex flex-row justify-between">
+          <p className="font-light">Total per month</p>
+          <p className="font-light">
+            {formatCentsToEuros(monthlyAmountCents ?? 0)}
+          </p>
+        </div>
+        {subscription.checkoutUrl && (
+          <a
+            className="block text-center w-full bg-gray-900 text-gray-50 rounded-md p-2 my-4 font-semibold"
+            href={subscription.checkoutUrl}
+          >
+            Checkout
+          </a>
+        )}
       </div>
     </div>
   );
