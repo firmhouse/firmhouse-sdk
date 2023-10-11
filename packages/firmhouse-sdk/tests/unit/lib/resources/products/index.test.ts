@@ -53,8 +53,8 @@ describe('lib/resources/products/index.ts', () => {
         .mockResolvedValue({ products: { nodes: [{ id: 'test' }, null] } });
       const testResource = new ProductsResource(graphQLClient);
       const res = await testResource.fetchAll();
-      expect(res).toHaveLength(1);
-      expect(res).not.toContain(null);
+      expect(res.results).toHaveLength(1);
+      expect(res.results).not.toContain(null);
     });
 
     it('should return empty array if API returns null', async () => {
@@ -62,7 +62,7 @@ describe('lib/resources/products/index.ts', () => {
       graphQLClient.request = jest.fn().mockResolvedValue({ products: null });
       const testResource = new ProductsResource(graphQLClient);
       const res = await testResource.fetchAll();
-      expect(res).toStrictEqual([]);
+      expect(res.results).toStrictEqual([]);
     });
   });
 
