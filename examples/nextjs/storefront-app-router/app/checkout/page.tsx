@@ -24,7 +24,7 @@ export default async function Index() {
       <div className="flex flex-row w-11/12 max-w-5xl bg-white shadow-sm border rounded-md border-gray-100 flex-nowrap m-16">
         <CheckoutForm subscription={subscription} />
         <div className="flex-auto p-6 shadow-[-3px_0_12px_0_rgb(0,0,0,0.1)] ">
-          <div className="">
+          <div>
             <h2 className="font-bold text-xl px-2">Cart</h2>
             {orderedProducts?.map((orderedProduct) => (
               <CartProduct
