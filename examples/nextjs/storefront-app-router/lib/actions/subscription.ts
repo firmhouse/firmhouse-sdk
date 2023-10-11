@@ -17,6 +17,10 @@ export async function getSubscriptionToken(): Promise<string> {
   return cookies().get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
 }
 
+export async function clearSubscriptionToken(): Promise<void> {
+  cookies().delete(SUBSCRIPTION_TOKEN_COOKIE);
+}
+
 export async function initializeCart() {
   const subscriptionToken =
     cookies().get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? undefined;
