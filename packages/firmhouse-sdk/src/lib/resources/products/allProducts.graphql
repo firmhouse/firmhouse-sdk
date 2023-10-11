@@ -18,6 +18,13 @@ query allProducts(
     last: $last
     first: $first
   ) {
+    totalCount
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
     nodes {
       ...ProductFragment
     }
