@@ -18,6 +18,8 @@
     nx run nextjs-storefront-app-router:serve
     ```
 
+- You can check the example at https://firmhouse-sdk-nextjs-app-router.vercel.app/
+
 #### Pages Router
 
 - Example using the App Router can be found [here](./examples/nextjs/storefront-pages-router).
@@ -27,3 +29,5 @@
     ```bash
     nx run nextjs-storefront-pages-router:serve
     ```
+
+- You can check the example at https://firmhouse-sdk-nextjs-pages-router.vercel.app/
