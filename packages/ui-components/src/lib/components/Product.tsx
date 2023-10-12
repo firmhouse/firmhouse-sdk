@@ -20,7 +20,7 @@ export function Product({ title, imageUrl, price, children, isRecurring }: Produ
       />
       <div className="flex justify-between my-2 px-2">
         <div>
-          <span className="font-semibold text-lg">{title}</span>
+          <span className="font-medium">{title}</span>
           {price && (
             <span className="px-2 text-sm font-light">
               {formatCentsToEuros(price, 2)}
