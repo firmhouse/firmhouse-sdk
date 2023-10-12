@@ -1,8 +1,24 @@
 fragment OrderedProductFragment on OrderedProduct {
+  createdAt
+  graceCancellationEndsAt
   id
+  interval
+  intervalUnitOfMeasure
+  maximumCommitmentEndsAt
+  metadata
+  minimumCommitmentEndsAt
+  priceExcludingTaxCents
+  priceIncludingTaxCents
+  productId
   quantity
-  totalAmountIncludingTaxCents
   recurring
+  shipmentDate
+  status
+  title
+  totalAmountExcludingTaxCents
+  totalAmountIncludingTaxCents
+  totalOrdered
+  updatedAt
   plan {
     id
   }

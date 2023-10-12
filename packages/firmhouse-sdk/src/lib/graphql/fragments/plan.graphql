@@ -1,0 +1,34 @@
+fragment PlanFragment on Plan {
+  available
+  currency
+  graceCancellationEnabled
+  graceCancellationPeriod
+  graceCancellationUnit
+  id
+  imageUrl
+  initialAmountExcludingTaxCents
+  initialAmountIncludingTaxCents
+  instalmentIntervalPeriod
+  instalmentIntervalUnit
+  instalments
+  maximumCommitmentEnabled
+  maximumCommitmentPeriod
+  maximumCommitmentUnit
+  metadata
+  minimumCommitmentEnabled
+  minimumCommitmentPeriod
+  minimumCommitmentUnit
+  monthlyAmountCents
+  monthlyAmountExcludingTaxCents
+  monthlyAmountIncludingTaxCents
+  name
+  slug
+  taxAmountCents
+  taxPercentage
+  planProducts  {
+    product {
+      ...ProductFragment
+    }
+    quantity
+  }
+}

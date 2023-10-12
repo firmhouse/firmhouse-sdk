@@ -10,8 +10,13 @@ import {
   UpdateAddressDetailsDocument,
   UpdateAddressDetailsInput,
   UpdateOrderedProductQuantityDocument,
+  UpdatePlanDocument,
 } from '../../graphql/generated';
-import { NotFoundError, ServerError, ValidationError } from '../../helpers/errors';
+import {
+  NotFoundError,
+  ServerError,
+  ValidationError,
+} from '../../helpers/errors';
 
 export type SubscriptionType = Awaited<
   ReturnType<InstanceType<typeof SubscriptionsResource>['get']>
@@ -19,6 +24,9 @@ export type SubscriptionType = Awaited<
 export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & {
   token: string;
 };
+
+export type OrderedProductType = NonNullable<SubscriptionType['orderedProducts']>[0];
+
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
     const response = await this.client.request(CreateCartDocument, {
@@ -150,22 +158,26 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Update the address details of a subscription. 
-   * Will save changes to certain fields even when other fields given are invalid. 
+   * Update the address details of a subscription.
+   * Will save changes to certain fields even when other fields given are invalid.
    * Will return validation error messages for invalid fields.
    * @param input Address details, address, name, email, etc
    * @param subscriptionToken Subscription token
    * @returns Updated subscription and validation errors
    */
-  public async updateAddressDetails(input: UpdateAddressDetailsInput, subscriptionToken: string) {
+  public async updateAddressDetails(
+    input: UpdateAddressDetailsInput,
+    subscriptionToken: string
+  ) {
     const response = await this.client.request(
       UpdateAddressDetailsDocument,
       { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { errors, ...updateAddressDetails } = response.updateAddressDetails ?? {};
+    const { errors, ...updateAddressDetails } =
+      response.updateAddressDetails ?? {};
     if (errors && errors.length > 0) {
-      throw new ValidationError(errors)
+      throw new ValidationError(errors);
     }
     return { ...updateAddressDetails };
   }
@@ -178,17 +190,37 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionToken Subscription token
    * @returns Payment details and validation errors if any
    */
-  public async finaliseSubscription(paymentPageUrl: string, returnUrl: string, subscriptionToken: string) {
+  public async finaliseSubscription(
+    paymentPageUrl: string,
+    returnUrl: string,
+    subscriptionToken: string
+  ) {
     const response = await this.client.request(
       CreateSubscriptionFromCartDocument,
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { errors, ...createSubscriptionFromCart } = response.createSubscriptionFromCart ?? {};
+    const { errors, ...createSubscriptionFromCart } =
+      response.createSubscriptionFromCart ?? {};
     if (errors && errors.length > 0) {
-      throw new ValidationError(errors)
+      throw new ValidationError(errors);
     }
     return { ...createSubscriptionFromCart };
+  }
+
+  /**
+   * Updates the active plan of a subscription
+   * @param planSlug Slug of the plan to update the subscription to
+   * @param subscriptionToken Subscription token
+   * @returns Updated subscription
+   */
+  public async updatePlan(planSlug: string, subscriptionToken: string) {
+    const response = await this.client.request(
+      UpdatePlanDocument,
+      { input: { planSlug } },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    return response.updatePlan;
   }
 
   private checkSubscriptionToken(

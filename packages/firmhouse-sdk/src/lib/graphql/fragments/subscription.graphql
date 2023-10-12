@@ -4,16 +4,10 @@ fragment SubscriptionFragment on Subscription {
   currency
   amountForStartingSubscriptionCents
   monthlyAmountCents
+  locale
   checkoutUrl
-  subscribedPlan {
-    name
-    showInPriceBreakDown
-    billingCycleIntervalUnit
-    billingCycleInterval
-  }
   activePlan {
-    id
-    monthlyAmountCents
+    ...PlanFragment
   }
   orderedProducts {
     ...OrderedProductFragment

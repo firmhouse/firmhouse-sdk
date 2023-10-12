@@ -50,11 +50,13 @@ describe('lib/resources/products/index.ts', () => {
       const graphQLClient = new GraphQLClient('test', 'http://test.com');
       graphQLClient.request = jest
         .fn()
-        .mockResolvedValue({ products: { nodes: [{ id: 'test' }, null] } });
+        .mockResolvedValue({ products: { nodes: [{ id: 'test' }, null], totalCount: 1, pageInfo: {hasNextPage: false, hasPreviousPage:false }  }});
       const testResource = new ProductsResource(graphQLClient);
       const res = await testResource.fetchAll();
       expect(res.results).toHaveLength(1);
       expect(res.results).not.toContain(null);
+      expect(res.total).toBe(1);
+      expect(res.pageInfo).toStrictEqual({hasNextPage: false, hasPreviousPage:false });
     });
 
     it('should return empty array if API returns null', async () => {

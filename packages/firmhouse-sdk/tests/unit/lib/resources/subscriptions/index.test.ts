@@ -7,6 +7,7 @@ import {
     SubscriptionStatus,
     UpdateAddressDetailsDocument,
     UpdateOrderedProductQuantityDocument,
+    UpdatePlanDocument,
 } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
 import GraphQLClient from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { ValidationError } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
@@ -472,4 +473,39 @@ describe('lib/resources/subscriptions/index.ts', () => {
             })
         });
     });
+
+    describe('updatePlan', () => {
+        it('should call the correct mutation', async () => {
+            mockGraphQLClient.request = jest.fn().mockResolvedValue({
+                updatePlan: { subscription: { id: 'test' } },
+            });
+            const testResource = new SubscriptionsResource(mockGraphQLClient);
+            const planSlug = 'new-plan';
+            await testResource.updatePlan(planSlug, 'testToken');
+            expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+                UpdatePlanDocument,
+                { input: {planSlug: planSlug} },
+                { 'X-Subscription-Token': 'testToken' }
+            );
+        });
+
+        it('should return updated subscription', async () => {
+            const input = 'new-plan';
+            const response = {
+                subscription: {
+                    id: 'test',
+                    activePlan: {
+                        slug: input,
+                    }
+                }
+            };
+            mockGraphQLClient.request = jest
+                .fn()
+                .mockResolvedValue({ updatePlan: response });
+            const testResource = new SubscriptionsResource(mockGraphQLClient);
+            expect(
+                testResource.updatePlan(input, 'testToken')
+            ).resolves.toStrictEqual({ subscription: response.subscription });
+        });
+    })
 });

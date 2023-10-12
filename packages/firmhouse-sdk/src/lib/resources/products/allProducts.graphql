@@ -20,10 +20,7 @@ query allProducts(
   ) {
     totalCount
     pageInfo {
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
+      ...PageInfoFragment
     }
     nodes {
       ...ProductFragment

@@ -19,15 +19,15 @@ export function CartProduct({
   onRemove,
   onUpdateQuantity,
   quantity = 1,
-
+  
 }: CartProductProps) {
   return (
     <div className="flex flex-row items-center my-2">
       <Image
-      className='px-2'
+        className='px-2 h-12 w-16 rounded-2xl object-cover'
         src={imageUrl ?? ''}
-        width={75}
-        height={75}
+        width={64}
+        height={64}
         alt={title}
       />
       <div className="flex-col justify-between px-2">

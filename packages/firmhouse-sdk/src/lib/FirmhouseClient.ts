@@ -1,4 +1,5 @@
 import GraphQLClient from './helpers/GraphQLClient';
+import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import {
   SubscriptionsResource,
@@ -13,14 +14,29 @@ export class FirmhouseClient {
   private readonly API_TOKEN: string;
   private readonly BASE_URL: string;
   private client: GraphQLClient;
-  public products: ProductsResource;
-  public subscriptions: SubscriptionsResource;
+  private _products: ProductsResource;
+  private _subscriptions: SubscriptionsResource;
+  private _plans: PlansResource;
 
   constructor(config: FirmhouseConfig) {
     this.API_TOKEN = config.apiToken;
     this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
     this.client = new GraphQLClient(this.API_TOKEN, this.BASE_URL);
-    this.products = new ProductsResource(this.client);
-    this.subscriptions = new SubscriptionsResource(this.client);
+    this._products = new ProductsResource(this.client);
+    this._subscriptions = new SubscriptionsResource(this.client);
+    this._plans = new PlansResource(this.client);
   }
+  
+  public get plans() : PlansResource {
+    return this._plans
+  }
+
+  public get products() : ProductsResource {
+    return this._products
+  }
+
+  public get subscriptions() : SubscriptionsResource {
+    return this._subscriptions
+  }
+  
 }

@@ -1,10 +1,10 @@
-import { type ProductsType } from '@firmhouse/firmhouse-sdk';
+import { type ProductType } from '@firmhouse/firmhouse-sdk';
 import { Button, Product } from '@firmhouse/ui-components';
 import { useState } from 'react';
 import { firmhouseClient } from '../lib/firmhouse';
 
 export interface ProductListProps {
-  products: ProductsType;
+  products: ProductType[];
   endCursor?: string | null;
   hasNextPage?: boolean;
   pageSize: number;

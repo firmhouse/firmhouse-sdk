@@ -10,10 +10,8 @@ import { NotFoundError } from '../../helpers/errors';
 export type AllProductsResponse = Awaited<
 ReturnType<InstanceType<typeof ProductsResource>['fetchAll']>
 >;
-export type ProductsType = AllProductsResponse['results'];
-export type ProductType = Awaited<
-  ReturnType<InstanceType<typeof ProductsResource>['fetchById']>
->;
+export type ProductType = AllProductsResponse['results'][0];
+
 export class ProductsResource extends BaseResource {
   /**
    * Retrieve products

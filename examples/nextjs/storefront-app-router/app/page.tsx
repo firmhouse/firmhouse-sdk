@@ -7,6 +7,7 @@ import {
 import { firmhouseClient } from '../lib/firmhouse';
 import Cart from '../components/Cart';
 import ProductList from '../components/ProductList';
+import PlanList from '../components/PlanList';
 
 export default async function Index() {
   const pageSize = 2;
@@ -25,6 +26,8 @@ export default async function Index() {
     first: pageSize
   });
 
+  const {results: plans} = await firmhouseClient.plans.fetchAll();
+
   // Marking the function explicity with "use server" to be able to pass it down to client component ProductList
   async function loadMoreProducts(endCursor?: string | null) {
     "use server"
@@ -41,8 +44,13 @@ export default async function Index() {
 
   return (
     <div className="flex h-full w-full justify-start flex-row mt-12 pr-[300px]">
-      <div className="p-8 w-full">
-        <ProductList products={products} loadMoreProducts={loadMoreProducts} endCursor={pageInfo?.endCursor} hasNextPage={pageInfo?.hasNextPage} pageSize={pageSize}/>
+      <div className='flex-col  w-full'>
+        <div className='p-8 w-full overflow-x-auto'>
+          <PlanList activePlanSlug={subscription.activePlan?.slug} plans={plans} locale={subscription.locale} />
+        </div>
+        <div className="p-8 w-full">
+          <ProductList products={products} loadMoreProducts={loadMoreProducts} endCursor={pageInfo?.endCursor} hasNextPage={pageInfo?.hasNextPage} pageSize={pageSize}/>
+        </div>
       </div>
       <div className="h-full bg-white w-[300px] fixed top-0 right-0 pt-8">
         <Cart
