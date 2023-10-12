@@ -74,3 +74,11 @@ mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
     returnUrl
   }
 }
+
+mutation updatePlan($input: UpdatePlanInput!) {
+  updatePlan(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+  }
+}
