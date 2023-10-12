@@ -12,10 +12,10 @@ export function Product({ title, imageUrl, price, children, isRecurring }: Produ
   return (
     <div className="p-4 m-2 rounded-2xl bg-white">
       <Image
-        className="rounded-2xl"
+        className="rounded-2xl w-64 h-48 object-cover"
         src={imageUrl ?? ''}
-        width={300}
-        height={300}
+        width={256}
+        height={192}
         alt={title}
       />
       <div className="flex justify-between my-2 px-2">

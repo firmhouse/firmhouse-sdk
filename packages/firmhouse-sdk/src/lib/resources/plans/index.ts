@@ -5,10 +5,11 @@ import {
 } from '../../graphql/generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 
-export type AllPlansResponse = Awaited<
+type AllPlansResponse = Awaited<
 ReturnType<InstanceType<typeof PlansResource>['fetchAll']>
 >;
-export type PlansType = AllPlansResponse['results'];
+
+export type PlanType = AllPlansResponse['results'][0];
 
 export class PlansResource extends BaseResource {
   /**

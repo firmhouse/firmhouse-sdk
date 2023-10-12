@@ -4,6 +4,7 @@ fragment SubscriptionFragment on Subscription {
   currency
   amountForStartingSubscriptionCents
   monthlyAmountCents
+  locale
   checkoutUrl
   activePlan {
     ...PlanFragment

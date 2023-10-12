@@ -28,13 +28,8 @@ export default function Cart({
         )}
         {orderedProducts?.map((orderedProduct) => (
           <CartProduct
-            id={orderedProduct.id}
             key={orderedProduct.id}
-            title={orderedProduct.product.title}
-            quantity={orderedProduct.quantity ?? 1}
-            isRecurring={orderedProduct.recurring}
-            imageUrl={orderedProduct.product.imageUrl}
-            price={orderedProduct.totalAmountIncludingTaxCents}
+            {...orderedProduct}
             onRemove={onRemove}
             onUpdateQuantity={onUpdateQuantity}
           />

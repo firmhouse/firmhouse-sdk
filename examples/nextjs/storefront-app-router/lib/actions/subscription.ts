@@ -120,3 +120,12 @@ export async function updateCheckoutDetails(data: FormData) {
     redirect(paymentUrl);
   }
 }
+
+export async function updatePlan(data: FormData) {
+  const planSlug = data.get('planSlug') as string;
+  await firmhouseClient.subscriptions.updatePlan(
+    planSlug,
+    await getSubscriptionToken()
+  );
+  revalidatePath('/');
+}

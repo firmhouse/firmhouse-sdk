@@ -1,17 +1,16 @@
 'use client';
-import { type ProductsType } from '@firmhouse/firmhouse-sdk';
-import { firmhouseClient } from '../lib/firmhouse';
+import { type ProductType } from '@firmhouse/firmhouse-sdk';
 import { startTransition, useState } from 'react';
 import { addToCart } from '../lib/actions/subscription';
 import { Button, Product } from '@firmhouse/ui-components';
 
 export interface ProductListProps {
-  products: ProductsType;
+  products: ProductType[];
   endCursor?: string | null;
   hasNextPage?: boolean;
   pageSize: number;
   loadMoreProducts?: (endCursor?: string | null) => Promise<{
-    products: ProductsType;
+    products: ProductType[];
     endCursor?: string | null;
     hasNextPage?: boolean;
   }>;
@@ -47,7 +46,7 @@ export default function ProductList({
   };
 
   return (
-    <div className='flex-col justify-center align-middle text-center'>
+    <div className="flex-col justify-center align-middle text-center">
       <div className="flex justify-center align-middle flex-wrap">
         {products?.map((product) => (
           <Product
