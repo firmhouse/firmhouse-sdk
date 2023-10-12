@@ -19,14 +19,4 @@ describe('helpers/GraphQLClient', () => {
             responseMiddleware: expect.any(Function)
         })
     })
-
-    // it('should run the responseMiddleware when a response is received', async () => {
-    //     const token = 'test'
-    //     new GraphQLClient(token)
-    //     const responseMiddleware = mockedBaseClient.mock.calls?.[0]?.[1]?.responseMiddleware
-    //     const clientError = new ClientError({ errors: [], status: 200 }, { query: '' })
-    //     clientError.response = { errors: [], status: 200 }
-    //     expect(responseMiddleware).toBeDefined()
-    //     expect(() => responseMiddleware && responseMiddleware(clientError)).toThrowError()
-    // })
 })

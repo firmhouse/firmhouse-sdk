@@ -5,15 +5,8 @@ fragment SubscriptionFragment on Subscription {
   amountForStartingSubscriptionCents
   monthlyAmountCents
   checkoutUrl
-  subscribedPlan {
-    name
-    showInPriceBreakDown
-    billingCycleIntervalUnit
-    billingCycleInterval
-  }
   activePlan {
-    id
-    monthlyAmountCents
+    ...PlanFragment
   }
   orderedProducts {
     ...OrderedProductFragment

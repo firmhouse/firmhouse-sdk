@@ -1,14 +1,32 @@
 fragment ProductFragment on Product {
-  id
-  title
-  sku
-  imageUrl
-  priceCents
   available
+  eligibleForDiscount
+  graceCancellationEnabled
+  graceCancellationPeriod
+  graceCancellationUnit
+  id
+  imageUrl
   interval
   intervalUnitOfMeasure
+  mandatory
+  maximumCommitmentEnabled
+  maximumCommitmentPeriod
+  maximumCommitmentUnit
+  metadata
+  minimumCommitmentEnabled
+  minimumCommitmentPeriod
+  minimumCommitmentUnit
+  nthProductFree
+  priceCents
+  priceExcludingTaxCents
   priceIncludingTaxCents
-  taxPercentage
-  taxAmountCents
   productType
+  shopifyProductId
+  shopifyVariantId
+  sku
+  slug
+  supplier
+  taxAmountCents
+  taxPercentage
+  title
 }
