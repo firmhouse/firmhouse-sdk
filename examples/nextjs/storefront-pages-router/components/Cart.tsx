@@ -1,5 +1,8 @@
 import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
-import { CartProduct, formatCentsToEuros } from '@firmhouse/ui-components';
+import {
+  CartProduct,
+  formatCentsWithCurrency,
+} from '@firmhouse/ui-components';
 
 export interface CartProps {
   subscription: SubscriptionType;
@@ -15,11 +18,10 @@ export default function Cart({
   const {
     orderedProducts,
     amountForStartingSubscriptionCents,
-    monthlyAmountCents,
   } = subscription;
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
-      <div className='max-h-[280px] overflow-y-auto'>
+      <div className="max-h-auto overflow-y-auto">
         <h2 className="font-bold text-xl">Cart</h2>
         {orderedProducts?.length === 0 && (
           <p className="text-gray-500 p-4">No products in cart</p>
@@ -27,11 +29,7 @@ export default function Cart({
         {orderedProducts?.map((orderedProduct) => (
           <CartProduct
             key={orderedProduct.id}
-            title={orderedProduct.product.title}
-            quantity={orderedProduct.quantity}
-            isRecurring={orderedProduct.recurring}
-            imageUrl={orderedProduct.product.imageUrl}
-            price={orderedProduct.totalAmountIncludingTaxCents}
+            {...orderedProduct}
             onRemove={() => onRemove(orderedProduct.id)}
             onUpdateQuantity={(quantity) =>
               onUpdateQuantity(orderedProduct.id, quantity)
@@ -39,17 +37,30 @@ export default function Cart({
           />
         ))}
       </div>
-      <div className='mt-auto py-4'>
-        <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
-          <p className="font-semibold">Subtotal (pay now)</p>
-          <p className="font-light">
-            {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
+      <div className="mt-auto py-4">
+        <div className="flex flex-row justify-between border-t-gray-100 border-t pt-8">
+          <p className="font-semibold text-sm">Subtotal (pay now)</p>
+          <p className="font-light text-sm">
+            {formatCentsWithCurrency(
+              amountForStartingSubscriptionCents ?? 0,
+              'EUR'
+            )}
+          </p>
+        </div>
+        <div className="flex flex-row justify-between border-t-gray-100 mb-4">
+          <p className="font-semibold text-sm">Shipping</p>
+          <p className="font-light text-sm">
+            Calculated at next step
           </p>
         </div>
         <div className="flex flex-row justify-between">
-          <p className="font-light">Total per month</p>
+          <p className="font-light">Total</p>
           <p className="font-light">
-            {formatCentsToEuros(monthlyAmountCents ?? 0)}
+            {formatCentsWithCurrency(
+              amountForStartingSubscriptionCents ?? 0,
+              'EUR'
+            )}
+            {' '}+ Shipping
           </p>
         </div>
         {subscription.checkoutUrl && (
