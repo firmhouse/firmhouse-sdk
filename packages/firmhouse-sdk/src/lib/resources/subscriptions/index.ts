@@ -55,13 +55,12 @@ export class SubscriptionsResource extends BaseResource {
   /**
    * Get a subscription by subscription token
    * @param token Subscription token
-   * @param includeCheckoutDetails Include checkout details
    * @returns Subscription
    */
-  public async get(token: string, includeCheckoutDetails = false) {
+  public async get(token: string) {
     const response = await this.client.request(
       GetSubscriptionDocument,
-      { token, includeCheckoutDetails },
+      { token },
       this.getSubscriptionTokenHeader(token)
     );
     if (
@@ -185,12 +184,12 @@ export class SubscriptionsResource extends BaseResource {
   /**
    * Finalises a subscription and returns payment details based on a cart/draft subscription
    * Will return validation error messages if required fields for payment is missing.
-   * @param paymentPageUrl The URL the user gets redirected to after completing payment
-   * @param returnUrl The URL where the user can sign up for a new subscription
-   * @param subscriptionToken Subscription token
+   * @param paymentPageUrl The URL where the user can sign up for a new subscription
+   * @param returnUrl The URL the user gets redirected to after completing payment
+  * @param subscriptionToken Subscription token
    * @returns Payment details and validation errors if any
    */
-  public async finaliseSubscription(
+  public async createSubscriptionFromCart(
     paymentPageUrl: string,
     returnUrl: string,
     subscriptionToken: string

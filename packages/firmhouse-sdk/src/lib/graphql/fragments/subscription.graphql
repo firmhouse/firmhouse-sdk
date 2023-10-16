@@ -1,30 +1,81 @@
 fragment SubscriptionFragment on Subscription {
-  token
-  status
-  currency
+  address
   amountForStartingSubscriptionCents
-  monthlyAmountCents
-  locale
+  billToAddress
+  billToCity
+  billToCompanyName
+  billToCountry
+  billToDistrict
+  billToFullAddress
+  billToFullName
+  billToHouseNumber
+  billToLastName
+  billToName
+  billToPhoneNumber
+  billToSalutation
+  billToState
+  billToZipcode
+  cancellationStartedAt
+  cancelledAt
+  chargeDayOfTheMonth
   checkoutUrl
+  city
+  companyName
+  country
+  createdAt
+  currency
+  customerId
+  customerReference
+  dateOfBirth
+  differentBillingAddress
+  district
+  email
+  fullAddress
+  fullName
+  houseNumber
+  id
+  identityVerificationUrl
+  lastName
+  locale
+  marketingOptIn
+  metadata
+  monthlyAmountCents
+  name
+  phoneNumber
+  salutation
+  signupCompletedAt
+  skipAutoActivationOnSignup
+  startDate
+  state
+  status
+  stoppedAt
+  termsAccepted
+  termsAcceptedOn
+  token
+  trialPeriodMonths
+  updatePaymentMethodUrl
+  updatedAt
+  vatNumber
+  zipcode
   activePlan {
     ...PlanFragment
   }
   orderedProducts {
     ...OrderedProductFragment
   }
+  extraFields {
+    ...ExtraFieldAnswerFragment
+  }
 }
 
-fragment CheckoutDetailsFragment on Subscription {
-  email
+fragment ExtraFieldAnswerFragment on ExtraFieldAnswer {
+  extraFieldId
+  fieldType
+  id
   name
-  lastName
-  phoneNumber
-  dateOfBirth
-  address
-  houseNumber
-  zipcode
-  city
-  country
-  district
-  termsAccepted
+  position
+  required
+  selectOptions
+  value
+  visibility
 }

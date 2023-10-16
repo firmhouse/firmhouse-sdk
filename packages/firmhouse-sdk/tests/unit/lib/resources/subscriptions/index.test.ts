@@ -112,7 +112,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
             await testResource.get(token);
             expect(mockGraphQLClient.request).toHaveBeenCalledWith(
                 GetSubscriptionDocument,
-                { token, includeCheckoutDetails: false },
+                { token },
                 { 'X-Subscription-Token': token }
             );
         });
@@ -386,7 +386,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
             const testResource = new SubscriptionsResource(mockGraphQLClient);
             const paymentPageUrl = 'test';
             const returnUrl = 'test';
-            await testResource.finaliseSubscription(
+            await testResource.createSubscriptionFromCart(
                 paymentPageUrl,
                 returnUrl,
                 'testToken'
@@ -412,7 +412,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
                 .mockResolvedValue({ createSubscriptionFromCart: response });
             const testResource = new SubscriptionsResource(mockGraphQLClient);
             expect(
-                testResource.finaliseSubscription(
+                testResource.createSubscriptionFromCart(
                     paymentPageUrl,
                     returnUrl,
                     'testToken'
@@ -429,7 +429,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
                 .mockResolvedValue({ createSubscriptionFromCart: response });
             const testResource = new SubscriptionsResource(mockGraphQLClient);
             expect(
-                testResource.finaliseSubscription(
+                testResource.createSubscriptionFromCart(
                     paymentPageUrl,
                     returnUrl,
                     'testToken'
@@ -457,7 +457,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
             const testResource = new SubscriptionsResource(mockGraphQLClient);
             let thrownError: ValidationError | undefined
             try {
-                await testResource.finaliseSubscription(
+                await testResource.createSubscriptionFromCart(
                     paymentPageUrl,
                     returnUrl,
                     'testToken'

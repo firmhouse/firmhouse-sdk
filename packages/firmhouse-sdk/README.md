@@ -10,9 +10,9 @@ const client = new FirmhouseClient({
   apiToken: token,
 })
 
-const products = await client.products.fetchAll()
+const { results } = await client.products.fetchAll()
 const product = await client.products.fetchById('123')
-await client.subscription.createCart()
+const token = await client.subscription.createSubscriptionToken()
 
 ```
 
