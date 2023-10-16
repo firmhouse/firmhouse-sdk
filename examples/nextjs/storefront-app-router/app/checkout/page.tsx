@@ -12,8 +12,7 @@ export default async function Index() {
   let subscription = null;
   if (await isInitialized()) {
     subscription = await firmhouseClient.subscriptions.get(
-      await getSubscriptionToken(),
-      true
+      await getSubscriptionToken()
     );
   } else {
     redirect('/');

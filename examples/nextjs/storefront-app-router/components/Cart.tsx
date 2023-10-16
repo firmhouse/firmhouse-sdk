@@ -30,6 +30,7 @@ export default function Cart({
           <CartProduct
             key={orderedProduct.id}
             {...orderedProduct}
+            plan={subscription?.activePlan ?? null}
             onRemove={onRemove}
             onUpdateQuantity={onUpdateQuantity}
           />

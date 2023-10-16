@@ -1,6 +1,6 @@
 'use client';
 
-import { SubscriptionType, ValidationError } from '@firmhouse/firmhouse-sdk';
+import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
 import { Input, Select } from '@firmhouse/ui-components';
 import { useState } from 'react';
 import { updateCheckoutDetails } from '../lib/actions/subscription';

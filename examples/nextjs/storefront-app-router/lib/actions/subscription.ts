@@ -92,7 +92,7 @@ export async function updateCheckoutDetails(data: FormData) {
       await getSubscriptionToken()
     );
     const paymentResponse =
-      await firmhouseClient.subscriptions.finaliseSubscription(
+      await firmhouseClient.subscriptions.createSubscriptionFromCart(
         '',
         '',
         await getSubscriptionToken()
