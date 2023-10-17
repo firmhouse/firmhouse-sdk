@@ -10,7 +10,10 @@
     "url": "https://github.com/firmhouse/firmhouse-sdk",
     "directory": "packages/firmhouse-sdk"
   },
-  "keywords": ["firmhouse", "sdk"],
+  "keywords": [
+    "firmhouse",
+    "sdk"
+  ],
   "author": {
     "name": "firmhouse",
     "email": "info@firmhouse.com",
