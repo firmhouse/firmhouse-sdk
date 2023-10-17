@@ -23,6 +23,8 @@
         "external": ["react", "react-dom", "react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "generateExportsField": true,
         "assets": [
           {
             "glob": "packages/firmhouse-sdk/README.md",
@@ -52,6 +54,13 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js"
       }
     }
   }
