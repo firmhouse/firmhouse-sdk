@@ -1,9 +1,7 @@
 import GraphQLClient from './helpers/GraphQLClient';
 import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
-import {
-  SubscriptionsResource,
-} from './resources/subscriptions';
+import { SubscriptionsResource } from './resources/subscriptions';
 
 export type FirmhouseConfig = {
   apiToken: string;
@@ -26,17 +24,16 @@ export class FirmhouseClient {
     this._subscriptions = new SubscriptionsResource(this.client);
     this._plans = new PlansResource(this.client);
   }
-  
-  public get plans() : PlansResource {
-    return this._plans
+
+  public get plans(): PlansResource {
+    return this._plans;
   }
 
-  public get products() : ProductsResource {
-    return this._products
+  public get products(): ProductsResource {
+    return this._products;
   }
 
-  public get subscriptions() : SubscriptionsResource {
-    return this._subscriptions
+  public get subscriptions(): SubscriptionsResource {
+    return this._subscriptions;
   }
-  
 }

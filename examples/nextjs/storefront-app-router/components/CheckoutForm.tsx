@@ -25,8 +25,16 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
       formData.set(
         'extraFields',
         JSON.stringify([
-          { extraFieldId: '1243', value: referrer, ...{id: extraFields['1243']?.id} ?? {} },
-          { extraFieldId: '1251', value: isGift, ...{id: extraFields['1251']?.id} ?? {} },
+          {
+            extraFieldId: '1243',
+            value: referrer,
+            ...({ id: extraFields['1243']?.id } ?? {}),
+          },
+          {
+            extraFieldId: '1251',
+            value: isGift,
+            ...({ id: extraFields['1251']?.id } ?? {}),
+          },
         ])
       );
       const err = await updateCheckoutDetails(formData);

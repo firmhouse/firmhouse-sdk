@@ -1,1 +1,1 @@
-export { mapExtraFieldsByFieldId } from "./extra-fields";
+export { mapExtraFieldsByFieldId } from './extra-fields';

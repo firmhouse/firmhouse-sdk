@@ -25,9 +25,11 @@ export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & {
   token: string;
 };
 
-export type OrderedProductType = NonNullable<SubscriptionType['orderedProducts']>[0];
+export type OrderedProductType = NonNullable<
+  SubscriptionType['orderedProducts']
+>[0];
 
-export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0]
+export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0];
 
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
@@ -188,7 +190,7 @@ export class SubscriptionsResource extends BaseResource {
    * Will return validation error messages if required fields for payment is missing.
    * @param paymentPageUrl The URL where the user can sign up for a new subscription
    * @param returnUrl The URL the user gets redirected to after completing payment
-  * @param subscriptionToken Subscription token
+   * @param subscriptionToken Subscription token
    * @returns Payment details and validation errors if any
    */
   public async createSubscriptionFromCart(

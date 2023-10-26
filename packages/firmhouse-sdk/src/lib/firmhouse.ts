@@ -24,7 +24,7 @@ export type {
   PlanType,
   CommitmentUnit,
   OrderedProductType,
-  ExtraFieldAnswerType
+  ExtraFieldAnswerType,
 };
 
 export {

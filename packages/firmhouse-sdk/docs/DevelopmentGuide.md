@@ -2,7 +2,7 @@
 
 ## Updating GraphQL Schema
 
-- After you create or update `.graphql` files, you need to run graphql codegen to update the generated typescript files. 
+- After you create or update `.graphql` files, you need to run graphql codegen to update the generated typescript files.
 
 ```bash
 nx run firmhouse-sdk:graphql-codegen

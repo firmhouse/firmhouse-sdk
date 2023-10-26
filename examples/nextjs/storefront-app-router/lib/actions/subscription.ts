@@ -80,7 +80,7 @@ export async function updateCheckoutDetails(data: FormData) {
       city: data.get('city') as string,
       country: data.get('country') as string,
       termsAccepted: data.get('termsAccepted ') === 'on',
-      extraFields: JSON.parse(data.get('extraFields') as string ?? '[]')
+      extraFields: JSON.parse((data.get('extraFields') as string) ?? '[]'),
     }).filter(
       ([, value]) => value !== undefined && value !== null && value !== ''
     )
@@ -114,9 +114,11 @@ export async function updateCheckoutDetails(data: FormData) {
     if (error instanceof ServerError) {
       return { error: error.message };
     }
-    return { error: 'Cannot proceed with the payment now. Please try again later.' };
+    return {
+      error: 'Cannot proceed with the payment now. Please try again later.',
+    };
   }
-  
+
   if (success) {
     redirect(paymentUrl);
   }

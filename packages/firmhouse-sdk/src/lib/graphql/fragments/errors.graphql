@@ -3,5 +3,3 @@ fragment ModelValidationErrorFragment on ModelValidationError {
   message
   path
 }
-
-

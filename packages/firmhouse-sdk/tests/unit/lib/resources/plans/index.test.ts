@@ -17,10 +17,7 @@ describe('lib/resources/plans/index.ts', () => {
         .mockResolvedValue({ plans: { nodes: [] } });
       const testResource = new PlansResource(graphQLClient);
       await testResource.fetchAll();
-      expect(graphQLClient.request).toHaveBeenCalledWith(
-        AllPlansDocument,
-        {}
-      );
+      expect(graphQLClient.request).toHaveBeenCalledWith(AllPlansDocument, {});
     });
 
     it('should parse parameters correctly', async () => {
@@ -44,15 +41,22 @@ describe('lib/resources/plans/index.ts', () => {
 
     it('should filter the null values', async () => {
       const graphQLClient = new GraphQLClient('test', 'http://test.com');
-      graphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ plans: { nodes: [{ id: 'test' }, null], totalCount: 1, pageInfo: {hasNextPage: false, hasPreviousPage:false } } });
+      graphQLClient.request = jest.fn().mockResolvedValue({
+        plans: {
+          nodes: [{ id: 'test' }, null],
+          totalCount: 1,
+          pageInfo: { hasNextPage: false, hasPreviousPage: false },
+        },
+      });
       const testResource = new PlansResource(graphQLClient);
       const res = await testResource.fetchAll();
       expect(res.results).toHaveLength(1);
       expect(res.results).not.toContain(null);
       expect(res.total).toBe(1);
-      expect(res.pageInfo).toStrictEqual({hasNextPage: false, hasPreviousPage:false });
+      expect(res.pageInfo).toStrictEqual({
+        hasNextPage: false,
+        hasPreviousPage: false,
+      });
     });
 
     it('should return empty array if API returns null', async () => {
@@ -63,5 +67,4 @@ describe('lib/resources/plans/index.ts', () => {
       expect(res.results).toStrictEqual([]);
     });
   });
-
 });

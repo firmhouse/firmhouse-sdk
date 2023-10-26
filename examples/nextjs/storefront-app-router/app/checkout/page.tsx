@@ -30,40 +30,42 @@ export default async function Index() {
           <div>
             {subscription.activePlan && (
               <>
-              <div className="flex flex-col align-middle relative">
-                <h3 className='text-xs font-bold px-1 m-0 py-0 text-gray-500 absolute top-2 right-0'>Active plan</h3>
-                <Plan className="!p-1 !m-0 w-auto" {...subscription.activePlan}>
-                  <div className="-mx-2 -mt-2">
-                    {subscription.activePlan.minimumCommitmentEnabled && (
-                      <p>
-                        <span className="text-xs">Min commitment: </span>
-                        <span className="text-xs font-light">
-                          {subscription.activePlan.minimumCommitmentPeriod}{' '}
-                          {subscription.activePlan.minimumCommitmentUnit.toLowerCase()}
-                        </span>
-                      </p>
-                    )}
-                    {subscription.activePlan.maximumCommitmentEnabled && (
-                      <p>
-                        <span className="text-xs">Max commitment: </span>
-                        <span className="text-xs font-light">
-                          {subscription.activePlan.maximumCommitmentPeriod}{' '}
-                          {subscription.activePlan.maximumCommitmentUnit?.toLowerCase()}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </Plan>
-              </div>
-              <hr className="border-gray-100 border-t mb-4" />
+                <div className="flex flex-col align-middle relative">
+                  <h3 className="text-xs font-bold px-1 m-0 py-0 text-gray-500 absolute top-2 right-0">
+                    Active plan
+                  </h3>
+                  <Plan
+                    className="!p-1 !m-0 w-auto"
+                    {...subscription.activePlan}
+                  >
+                    <div className="-mx-2 -mt-2">
+                      {subscription.activePlan.minimumCommitmentEnabled && (
+                        <p>
+                          <span className="text-xs">Min commitment: </span>
+                          <span className="text-xs font-light">
+                            {subscription.activePlan.minimumCommitmentPeriod}{' '}
+                            {subscription.activePlan.minimumCommitmentUnit.toLowerCase()}
+                          </span>
+                        </p>
+                      )}
+                      {subscription.activePlan.maximumCommitmentEnabled && (
+                        <p>
+                          <span className="text-xs">Max commitment: </span>
+                          <span className="text-xs font-light">
+                            {subscription.activePlan.maximumCommitmentPeriod}{' '}
+                            {subscription.activePlan.maximumCommitmentUnit?.toLowerCase()}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                  </Plan>
+                </div>
+                <hr className="border-gray-100 border-t mb-4" />
               </>
             )}
-            
+
             {orderedProducts?.map((orderedProduct) => (
-              <CartProduct
-                key={orderedProduct.id}
-                {...orderedProduct}
-              />
+              <CartProduct key={orderedProduct.id} {...orderedProduct} />
             ))}
           </div>
 
