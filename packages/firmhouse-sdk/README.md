@@ -3,16 +3,14 @@
 ## Usage
 
 ```typescript
-import { FirmhouseClient } from '@firmhouse/firmhouse-sdk'
-const token = "YOUR_PROJECT_ACCESS_TOKEN"
+import { FirmhouseClient } from '@firmhouse/firmhouse-sdk';
+const token = 'YOUR_PROJECT_ACCESS_TOKEN';
 
 const client = new FirmhouseClient({
   apiToken: token,
-})
+});
 
-const { results } = await client.products.fetchAll()
-const product = await client.products.fetchById('123')
-const token = await client.subscription.createSubscriptionToken()
-
+const { results } = await client.products.fetchAll();
+const product = await client.products.fetchById('123');
+const token = await client.subscription.createSubscriptionToken();
 ```
-

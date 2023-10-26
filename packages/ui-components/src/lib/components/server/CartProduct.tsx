@@ -31,16 +31,14 @@ export async function CartProduct({
         <p className="font-semibold">
           {title} x {quantity}
         </p>
-        {(price && plan === null) && (
+        {price && plan === null && (
           <p className="text-sm font-light">
             {formatCentsToEuros(price, 2)}
             {recurring && ' / month'}
           </p>
         )}
-        {(plan !== null) && (
-          <p className="text-sm font-light">
-            Included in plan
-          </p>
+        {plan !== null && (
+          <p className="text-sm font-light">Included in plan</p>
         )}
         <div className="flex items-center">
           {onUpdateQuantity && (

@@ -1,1 +1,1 @@
-export * from './lib/components/server'
+export * from './lib/components/server';

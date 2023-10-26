@@ -1,8 +1,5 @@
 import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
-import {
-  CartProduct,
-  formatCentsWithCurrency,
-} from '@firmhouse/ui-components';
+import { CartProduct, formatCentsWithCurrency } from '@firmhouse/ui-components';
 
 export interface CartProps {
   subscription: SubscriptionType;
@@ -15,10 +12,7 @@ export default function Cart({
   onRemove,
   onUpdateQuantity,
 }: CartProps) {
-  const {
-    orderedProducts,
-    amountForStartingSubscriptionCents,
-  } = subscription;
+  const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
       <div className="max-h-auto overflow-y-auto">
@@ -49,9 +43,7 @@ export default function Cart({
         </div>
         <div className="flex flex-row justify-between border-t-gray-100 mb-4">
           <p className="font-semibold text-sm">Shipping</p>
-          <p className="font-light text-sm">
-            Calculated at next step
-          </p>
+          <p className="font-light text-sm">Calculated at next step</p>
         </div>
         <div className="flex flex-row justify-between">
           <p className="font-light">Total</p>
@@ -59,8 +51,8 @@ export default function Cart({
             {formatCentsWithCurrency(
               amountForStartingSubscriptionCents ?? 0,
               'EUR'
-            )}
-            {' '}+ Shipping
+            )}{' '}
+            + Shipping
           </p>
         </div>
         {subscription.checkoutUrl && (

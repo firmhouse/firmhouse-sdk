@@ -10,6 +10,7 @@ import {
   SubscriptionType,
   SubscriptionWithTokenType,
   OrderedProductType,
+  ExtraFieldAnswerType,
 } from './resources/subscriptions';
 import { PlanType } from './resources/plans';
 
@@ -22,7 +23,8 @@ export type {
   SubscriptionWithTokenType,
   PlanType,
   CommitmentUnit,
-  OrderedProductType
+  OrderedProductType,
+  ExtraFieldAnswerType,
 };
 
 export {
