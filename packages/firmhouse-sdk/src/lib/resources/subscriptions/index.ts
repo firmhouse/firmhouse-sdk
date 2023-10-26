@@ -27,6 +27,8 @@ export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & {
 
 export type OrderedProductType = NonNullable<SubscriptionType['orderedProducts']>[0];
 
+export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0]
+
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
     const response = await this.client.request(CreateCartDocument, {

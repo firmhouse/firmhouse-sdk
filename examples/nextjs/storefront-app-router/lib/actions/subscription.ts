@@ -79,7 +79,8 @@ export async function updateCheckoutDetails(data: FormData) {
       zipcode: data.get('zipcode') as string,
       city: data.get('city') as string,
       country: data.get('country') as string,
-      termsAccepted: data.get('termsAccepted ') === 'on'
+      termsAccepted: data.get('termsAccepted ') === 'on',
+      extraFields: JSON.parse(data.get('extraFields') as string ?? '[]')
     }).filter(
       ([, value]) => value !== undefined && value !== null && value !== ''
     )
