@@ -24,7 +24,7 @@ export function getOrderedProductInfo(
   locale?: string | null
 ) {
   const isPlanBased = orderedProduct.plan?.id !== undefined;
-  const { product, intervalUnitOfMeasure, interval } = orderedProduct;
+  const { product, intervalUnitOfMeasure } = orderedProduct;
   const { productType } = product;
   const intervalText = productType === 'one_time_purchase' ? '' : ` / month`;
   const shippingText =

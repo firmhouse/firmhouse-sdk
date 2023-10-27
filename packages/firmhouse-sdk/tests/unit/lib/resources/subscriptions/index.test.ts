@@ -61,9 +61,8 @@ describe('lib/resources/subscriptions/index.ts', () => {
         .fn()
         .mockResolvedValue({ createCart: { subscription: { token } } });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.createCart()).resolves.toStrictEqual({
-        subscription: { token },
-      });
+      const {subscription} = await testResource.createCart();
+      expect(subscription?.token).toBe(token);
     });
   });
 
@@ -118,11 +117,11 @@ describe('lib/resources/subscriptions/index.ts', () => {
     });
 
     it('should return subscription with given token', async () => {
-      const subscription = { id: 'test' };
+      const token = 'testToken';
+      const subscription = { id: 'test', token, orderedProducts: [] };
       mockGraphQLClient.request = jest
         .fn()
         .mockResolvedValue({ getSubscription: subscription });
-      const token = 'testToken';
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       expect(testResource.get(token)).resolves.toStrictEqual(subscription);
     });
@@ -143,6 +142,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const subscription = {
         status: SubscriptionStatus.Draft,
         token: 'testToken',
+        orderedProducts: []
       };
       testResource.get = jest.fn().mockResolvedValue(subscription);
       expect(
@@ -154,7 +154,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       const activeSubscription = { status: 'Active', token: 'token' };
       testResource.get = jest.fn().mockResolvedValue(activeSubscription);
-      const subscription = { status: SubscriptionStatus.Draft, token: 'token' };
+      const subscription = { status: SubscriptionStatus.Draft, token: 'token', orderedProducts: [] };
       testResource.createCart = jest.fn().mockResolvedValue({ subscription });
       expect(
         testResource.getOrCreateDraftSubscription('testToken')
