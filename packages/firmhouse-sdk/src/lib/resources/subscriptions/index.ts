@@ -81,7 +81,7 @@ export class SubscriptionsResource extends BaseResource {
       try {
         const response = await this.get(token);
         if (response.status === SubscriptionStatus.Draft) {
-          subscription = response;
+          subscription = formatSubscription(response);
         }
       } catch (error) {
         // ignore
@@ -92,7 +92,7 @@ export class SubscriptionsResource extends BaseResource {
       subscription = response.subscription;
     }
 
-    return formatSubscription(subscription);
+    return subscription;
   }
 
   /**

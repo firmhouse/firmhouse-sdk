@@ -34,8 +34,8 @@ export function formatOrderedProduct(
   formattedOrderedProduct.intervalUnitOfMeasureType =
     unit in OrderedProductIntervalUnitOfMeasure
       ? OrderedProductIntervalUnitOfMeasure[
-      unit as keyof typeof OrderedProductIntervalUnitOfMeasure
-      ]
+          unit as keyof typeof OrderedProductIntervalUnitOfMeasure
+        ]
       : null;
   return formattedOrderedProduct;
 }
@@ -45,17 +45,17 @@ export function formatSubscription(
 ): SubscriptionType {
   const { orderedProducts, token, ...rest } = subscription;
   if (!token) {
-    throw new ServerError('No token returned from API')
+    throw new ServerError('No token returned from API');
   }
   const response: SubscriptionType = {
     ...rest,
-    token
+    token,
   };
   if (orderedProducts === null || orderedProducts === undefined) {
-    return response
+    return response;
   }
   response.orderedProducts = orderedProducts.map(formatOrderedProduct);
-  return response
+  return response;
 }
 
 export function formatSubscriptionInResponse<T extends ContainsSubscription>(
@@ -64,7 +64,7 @@ export function formatSubscriptionInResponse<T extends ContainsSubscription>(
   return (
     response && {
       ...response,
-      subscription: formatSubscription(response?.subscription),
+      subscription: formatSubscription(response.subscription),
     }
   );
 }
