@@ -248,7 +248,7 @@ export class SubscriptionsResource extends BaseResource {
       throw new ValidationError(errors);
     }
 
-    const subscription = updateAddressDetails?.subscription ?? null;
+    const subscription = updateAddressDetails.subscription ?? null;
     if (subscription === null) {
       throw new ServerError('Could not update address details');
     }
@@ -289,7 +289,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     if (subscription === null) {
-      throw new ServerError('Could  not create subscription');
+      throw new ServerError('Could not create subscription');
     }
 
     return {
