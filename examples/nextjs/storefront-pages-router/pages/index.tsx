@@ -22,6 +22,7 @@ export default function Index({
     addToCart,
     removeFromCart,
     updateOrderedProductQuantity,
+    updateOrderedProductInterval,
   } = useSubscription();
 
   return (
@@ -42,6 +43,7 @@ export default function Index({
               subscription={subscription}
               onRemove={removeFromCart}
               onUpdateQuantity={updateOrderedProductQuantity}
+              onUpdateInterval={updateOrderedProductInterval}
             />
           )}
         </div>

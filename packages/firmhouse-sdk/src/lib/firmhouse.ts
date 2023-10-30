@@ -1,4 +1,9 @@
-import { CommitmentUnit, SubscriptionStatus } from './graphql/generated';
+import {
+  CommitmentUnit,
+  SubscriptionStatus,
+  OrderedProductIntervalUnitOfMeasure,
+  UpdateOrderedProductInput,
+} from './graphql/generated';
 import {
   ErrorType,
   NotFoundError,
@@ -8,10 +13,9 @@ import {
 import { AllProductsResponse, ProductType } from './resources/products';
 import {
   SubscriptionType,
-  SubscriptionWithTokenType,
   OrderedProductType,
   ExtraFieldAnswerType,
-} from './resources/subscriptions';
+} from './helpers/subscription';
 import { PlanType } from './resources/plans';
 
 export * from './FirmhouseClient';
@@ -20,11 +24,11 @@ export type {
   AllProductsResponse,
   ProductType,
   SubscriptionType,
-  SubscriptionWithTokenType,
   PlanType,
   CommitmentUnit,
   OrderedProductType,
   ExtraFieldAnswerType,
+  UpdateOrderedProductInput,
 };
 
 export {
@@ -33,4 +37,5 @@ export {
   ServerError,
   NotFoundError,
   ErrorType,
+  OrderedProductIntervalUnitOfMeasure,
 };

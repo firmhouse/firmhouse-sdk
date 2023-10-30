@@ -9,6 +9,8 @@ import {
   SubscriptionStatus,
   UpdateAddressDetailsDocument,
   UpdateAddressDetailsInput,
+  UpdateOrderedProductDocument,
+  UpdateOrderedProductInput,
   UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
 } from '../../graphql/generated';
@@ -17,20 +19,12 @@ import {
   ServerError,
   ValidationError,
 } from '../../helpers/errors';
-
-export type SubscriptionType = Awaited<
-  ReturnType<InstanceType<typeof SubscriptionsResource>['get']>
->;
-export type SubscriptionWithTokenType = Omit<SubscriptionType, 'token'> & {
-  token: string;
-};
-
-export type OrderedProductType = NonNullable<
-  SubscriptionType['orderedProducts']
->[0];
-
-export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0];
-
+import {
+  SubscriptionType,
+  formatOrderedProduct,
+  formatSubscription,
+  formatSubscriptionInResponse,
+} from '../../helpers/subscription';
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
     const response = await this.client.request(CreateCartDocument, {
@@ -39,7 +33,7 @@ export class SubscriptionsResource extends BaseResource {
     if (response.createCart === null || response.createCart === undefined) {
       throw new ServerError('Could not create subscription');
     }
-    return response.createCart;
+    return formatSubscriptionInResponse(response.createCart);
   }
 
   /**
@@ -73,7 +67,7 @@ export class SubscriptionsResource extends BaseResource {
     ) {
       throw new NotFoundError('Subscription not found');
     }
-    return response.getSubscription;
+    return formatSubscription(response.getSubscription);
   }
 
   /**
@@ -87,7 +81,7 @@ export class SubscriptionsResource extends BaseResource {
       try {
         const response = await this.get(token);
         if (response.status === SubscriptionStatus.Draft) {
-          subscription = response;
+          subscription = formatSubscription(response);
         }
       } catch (error) {
         // ignore
@@ -98,10 +92,7 @@ export class SubscriptionsResource extends BaseResource {
       subscription = response.subscription;
     }
 
-    if (this.checkSubscriptionToken(subscription)) {
-      return subscription;
-    }
-    throw new ServerError('No token returned from API');
+    return subscription;
   }
 
   /**
@@ -119,7 +110,20 @@ export class SubscriptionsResource extends BaseResource {
       { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return response.createOrderedProduct;
+    const createOrderedProduct = response.createOrderedProduct ?? null;
+    if (createOrderedProduct === null) {
+      throw new ServerError('Could not add product to cart');
+    }
+    const subscription = createOrderedProduct.subscription ?? null;
+    const orderedProduct = createOrderedProduct.orderedProduct ?? null;
+    if (subscription === null || orderedProduct === null) {
+      throw new ServerError('Could not add product to cart');
+    }
+
+    return {
+      orderedProduct: formatOrderedProduct(orderedProduct),
+      subscription: formatSubscription(subscription),
+    };
   }
 
   /**
@@ -137,11 +141,24 @@ export class SubscriptionsResource extends BaseResource {
       { input: { id: orderedProductId } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return response.destroyOrderedProduct;
+    const destroyOrderedProduct = response.destroyOrderedProduct ?? null;
+    if (destroyOrderedProduct === null) {
+      throw new ServerError('Could not remove product from cart');
+    }
+    const subscription = destroyOrderedProduct.subscription ?? null;
+    const orderedProduct = destroyOrderedProduct.orderedProduct ?? null;
+    if (subscription === null || orderedProduct === null) {
+      throw new ServerError('Could not remove product from cart');
+    }
+
+    return {
+      orderedProduct: formatOrderedProduct(orderedProduct),
+      subscription: formatSubscription(subscription),
+    };
   }
 
   /**
-   * Update a product in the cart
+   * Update a product quantity in the cart
    * @param orderedProductId Ordered product id to update quantity
    * @param quantity New quantity
    * @param subscriptionToken Subscription token
@@ -157,7 +174,50 @@ export class SubscriptionsResource extends BaseResource {
       { input: { orderedProduct: { id: orderedProductId, quantity } } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return response.updateOrderedProductQuantity;
+    const updateOrderedProductQuantity =
+      response.updateOrderedProductQuantity ?? null;
+    if (updateOrderedProductQuantity === null) {
+      throw new ServerError('Could not update ordered product quantity');
+    }
+    const subscription = updateOrderedProductQuantity.subscription ?? null;
+    const orderedProduct = updateOrderedProductQuantity.orderedProduct ?? null;
+    if (subscription === null || orderedProduct === null) {
+      throw new ServerError('Could not update ordered product quantity');
+    }
+
+    return {
+      orderedProduct: formatOrderedProduct(orderedProduct),
+      subscription: formatSubscription(subscription),
+    };
+  }
+
+  /**
+   * Update a product in the cart
+   * @param input
+   * @param subscriptionToken Subscription token
+   * @returns Updated subscription
+   */
+  public async updateOrderedProduct(
+    input: UpdateOrderedProductInput,
+    subscriptionToken: string
+  ) {
+    const response = await this.client.request(
+      UpdateOrderedProductDocument,
+      { input },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    const updateOrderedProduct = response.updateOrderedProduct ?? null;
+    if (updateOrderedProduct === null) {
+      throw new ServerError('Could not update ordered product');
+    }
+    const orderedProduct = updateOrderedProduct.orderedProduct ?? null;
+    if (orderedProduct === null) {
+      throw new ServerError('Could not update ordered product');
+    }
+
+    return {
+      orderedProduct: formatOrderedProduct(orderedProduct),
+    };
   }
 
   /**
@@ -177,12 +237,25 @@ export class SubscriptionsResource extends BaseResource {
       { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { errors, ...updateAddressDetails } =
-      response.updateAddressDetails ?? {};
+
+    const updateAddressDetails = response.updateAddressDetails ?? null;
+    if (updateAddressDetails === null) {
+      throw new ServerError('Could not update address details');
+    }
+
+    const { errors } = updateAddressDetails;
     if (errors && errors.length > 0) {
       throw new ValidationError(errors);
     }
-    return { ...updateAddressDetails };
+
+    const subscription = updateAddressDetails.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not update address details');
+    }
+
+    return {
+      subscription: formatSubscription(subscription),
+    };
   }
 
   /**
@@ -203,12 +276,27 @@ export class SubscriptionsResource extends BaseResource {
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { errors, ...createSubscriptionFromCart } =
-      response.createSubscriptionFromCart ?? {};
+    const createSubscriptionFromCart =
+      response.createSubscriptionFromCart ?? null;
+
+    if (createSubscriptionFromCart === null) {
+      throw new ServerError('Could not create subscription');
+    }
+
+    const { errors, subscription, paymentUrl } = createSubscriptionFromCart;
     if (errors && errors.length > 0) {
       throw new ValidationError(errors);
     }
-    return { ...createSubscriptionFromCart };
+
+    if (subscription === null) {
+      throw new ServerError('Could not create subscription');
+    }
+
+    return {
+      paymentUrl,
+      returnUrl: createSubscriptionFromCart.returnUrl,
+      subscription: formatSubscription(subscription),
+    };
   }
 
   /**
@@ -223,13 +311,13 @@ export class SubscriptionsResource extends BaseResource {
       { input: { planSlug } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    return response.updatePlan;
-  }
+    const updatePlan = response.updatePlan ?? null;
 
-  private checkSubscriptionToken(
-    subscription: SubscriptionType
-  ): subscription is SubscriptionWithTokenType {
-    return subscription.token !== undefined && subscription.token !== null;
+    if (updatePlan === null) {
+      throw new ServerError('Could not update plan');
+    }
+
+    return formatSubscriptionInResponse(updatePlan);
   }
 
   private getSubscriptionTokenHeader(subscriptionToken: string) {

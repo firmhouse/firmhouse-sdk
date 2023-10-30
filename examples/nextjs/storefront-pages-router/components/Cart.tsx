@@ -1,16 +1,25 @@
-import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
+import {
+  OrderedProductIntervalUnitOfMeasure,
+  SubscriptionType,
+} from '@firmhouse/firmhouse-sdk';
 import { CartProduct, formatCentsWithCurrency } from '@firmhouse/ui-components';
 
 export interface CartProps {
   subscription: SubscriptionType;
   onRemove: (orderedProductId: string) => void;
   onUpdateQuantity: (orderedProductId: string, quantity: number) => void;
+  onUpdateInterval?: (
+    orderedProductId: string,
+    interval: number,
+    type: OrderedProductIntervalUnitOfMeasure
+  ) => void;
 }
 
 export default function Cart({
   subscription,
   onRemove,
   onUpdateQuantity,
+  onUpdateInterval,
 }: CartProps) {
   const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
   return (
@@ -27,6 +36,10 @@ export default function Cart({
             onRemove={() => onRemove(orderedProduct.id)}
             onUpdateQuantity={(quantity) =>
               onUpdateQuantity(orderedProduct.id, quantity)
+            }
+            onUpdateInterval={(interval, type) =>
+              onUpdateInterval &&
+              onUpdateInterval(orderedProduct.id, interval, type)
             }
           />
         ))}

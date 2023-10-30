@@ -1,7 +1,6 @@
 mutation createCart($input: CreateCartInput!) {
   createCart(input: $input) {
     subscription {
-      token
       ...SubscriptionFragment
     }
   }
@@ -44,6 +43,14 @@ mutation updateOrderedProductQuantity(
     }
     subscription {
       ...SubscriptionFragment
+    }
+  }
+}
+
+mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
+  updateOrderedProduct(input: $input) {
+    orderedProduct {
+      ...OrderedProductFragment
     }
   }
 }
