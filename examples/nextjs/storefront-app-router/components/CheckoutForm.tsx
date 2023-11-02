@@ -1,8 +1,9 @@
 'use client';
 
 import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
+import { mapExtraFieldsByFieldId } from '@firmhouse/firmhouse-sdk/utils';
 import { Input, Select } from '@firmhouse/ui-components';
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { updateCheckoutDetails } from '../lib/actions/subscription';
 
 export interface CheckoutFormProps {
@@ -11,15 +12,39 @@ export interface CheckoutFormProps {
 
 export function CheckoutForm({ subscription }: CheckoutFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const extraFields = useMemo(
+    () => mapExtraFieldsByFieldId(subscription.extraFields),
+    [subscription.extraFields]
+  );
 
-  async function onSubmit(formData: FormData) {
-    setErrors({});
-
-    const err = await updateCheckoutDetails(formData);
-    if (err !== undefined) {
-      setErrors((prev) => ({ ...prev, ...err }));
-    }
-  }
+  const onSubmit = useCallback(
+    async (formData: FormData) => {
+      setErrors({});
+      const isGift = formData.get('isGift');
+      const referrer = formData.get('referrer');
+      formData.set(
+        'extraFields',
+        JSON.stringify([
+          {
+            extraFieldId: '1243',
+            value: referrer,
+            ...({ id: extraFields['1243']?.id } ?? {}),
+          },
+          {
+            extraFieldId: '1251',
+            value: isGift,
+            ...({ id: extraFields['1251']?.id } ?? {}),
+          },
+        ])
+      );
+      const err = await updateCheckoutDetails(formData);
+      if (err !== undefined) {
+        setErrors((prev) => ({ ...prev, ...err }));
+      }
+    },
+    [extraFields]
+  );
+  // Convert array of extra fields to a map for more efficient lookup
 
   return (
     <form action={onSubmit} className="w-4/6 py-4 px-8 checkout">
@@ -115,6 +140,24 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
           defaultValue={subscription.country ?? undefined}
           error={errors.country}
           required
+        />
+      </div>
+      <div className="flex flex-nowrap">
+        <Input
+          name="referrer"
+          label="How did you hear about us?"
+          placeholder="Social Media, Google, Friends, etc."
+          defaultValue={extraFields['1243']?.value ?? ''}
+        />
+        <Select
+          name="isGift"
+          options={[
+            { label: 'Yes', value: 'Yes' },
+            { label: 'No', value: 'No' },
+          ]}
+          label="Is this a gift?"
+          placeholder=""
+          defaultValue={extraFields['1251']?.value ?? 'No'}
         />
       </div>
       <div className="mt-4">

@@ -1,20 +1,78 @@
 import Image from 'next/image';
-import { formatCentsToEuros, getOrderedProductInfo } from '../utils/price';
+import { getOrderedProductInfo } from '../utils/price';
 import { NumberInput } from './NumberInput';
-import { OrderedProductType } from '@firmhouse/firmhouse-sdk';
+import {
+  OrderedProductIntervalUnitOfMeasure,
+  OrderedProductType,
+} from '@firmhouse/firmhouse-sdk';
 export interface CartProductProps extends OrderedProductType {
   onRemove?: () => void;
   onUpdateQuantity?: (quantity: number) => void;
+  onUpdateInterval?: (
+    interval: number,
+    type: OrderedProductIntervalUnitOfMeasure
+  ) => void;
 }
 
 export function CartProduct({
   onRemove,
   onUpdateQuantity,
+  onUpdateInterval,
   ...orderedProduct
 }: CartProductProps) {
-  const { title, product, quantity } = orderedProduct;
+  const { title, product, quantity, intervalUnitOfMeasureType } =
+    orderedProduct;
   const orderedProductInfo = getOrderedProductInfo(orderedProduct);
   const { billingAndShipping, totalPrice } = orderedProductInfo;
+  const intervalOptionParams = [
+    {
+      label: 'Weekly',
+      interval: 1,
+      unit: OrderedProductIntervalUnitOfMeasure.Weeks,
+    },
+    {
+      label: 'Biweekly',
+      interval: 2,
+      unit: OrderedProductIntervalUnitOfMeasure.Weeks,
+    },
+    {
+      label: 'Monthly',
+      interval: 1,
+      unit: OrderedProductIntervalUnitOfMeasure.Months,
+    },
+    {
+      label: 'Once',
+      interval: 0,
+      unit: OrderedProductIntervalUnitOfMeasure.Default,
+    },
+  ];
+  const selectedInterval =
+    intervalUnitOfMeasureType === OrderedProductIntervalUnitOfMeasure.Default
+      ? 3
+      : intervalOptionParams.findIndex(
+          ({ interval, unit }) =>
+            interval === orderedProduct.interval &&
+            unit === orderedProduct.intervalUnitOfMeasureType
+        );
+  const intervalOptions = intervalOptionParams.map(
+    ({ label, interval, unit }, index) => (
+      <option
+        key={`${orderedProduct.id}-${label}`}
+        value={index}
+        selected={index === selectedInterval}
+        onSelect={() => onUpdateInterval && onUpdateInterval(interval, unit)}
+      >
+        {label}
+      </option>
+    )
+  );
+
+  const onIntervalSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const { interval, unit } = intervalOptionParams[parseInt(value)];
+    onUpdateInterval && onUpdateInterval(interval, unit);
+  };
+
   return (
     <div className="flex flex-row items-center my-2">
       <Image
@@ -44,6 +102,19 @@ export function CartProduct({
           >
             Remove
           </button>
+        </div>
+        <div className="py-1">
+          {onUpdateInterval &&
+            orderedProduct.product.intervalUnitOfMeasure === 'only_once' && (
+              <div className="flex flex-row items-center">
+                <select
+                  className="text-sm font-light mx-2 bg-white"
+                  onChange={onIntervalSelected}
+                >
+                  {intervalOptions}
+                </select>
+              </div>
+            )}
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ fragment PlanFragment on Plan {
   slug
   taxAmountCents
   taxPercentage
-  planProducts  {
+  planProducts {
     product {
       ...ProductFragment
     }

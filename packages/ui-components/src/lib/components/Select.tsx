@@ -44,7 +44,9 @@ export function Select({
           </option>
         ))}
       </select>
-      {error && <label className="text-sm w-full text-red-500 p-2">{error}</label> }
+      {error && (
+        <label className="text-sm w-full text-red-500 p-2">{error}</label>
+      )}
     </div>
   );
 }

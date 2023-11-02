@@ -1,24 +1,27 @@
-import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
 import {
-  CartProduct,
-  formatCentsWithCurrency,
-} from '@firmhouse/ui-components';
+  OrderedProductIntervalUnitOfMeasure,
+  SubscriptionType,
+} from '@firmhouse/firmhouse-sdk';
+import { CartProduct, formatCentsWithCurrency } from '@firmhouse/ui-components';
 
 export interface CartProps {
   subscription: SubscriptionType;
   onRemove: (orderedProductId: string) => void;
   onUpdateQuantity: (orderedProductId: string, quantity: number) => void;
+  onUpdateInterval?: (
+    orderedProductId: string,
+    interval: number,
+    type: OrderedProductIntervalUnitOfMeasure
+  ) => void;
 }
 
 export default function Cart({
   subscription,
   onRemove,
   onUpdateQuantity,
+  onUpdateInterval,
 }: CartProps) {
-  const {
-    orderedProducts,
-    amountForStartingSubscriptionCents,
-  } = subscription;
+  const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
       <div className="max-h-auto overflow-y-auto">
@@ -33,6 +36,10 @@ export default function Cart({
             onRemove={() => onRemove(orderedProduct.id)}
             onUpdateQuantity={(quantity) =>
               onUpdateQuantity(orderedProduct.id, quantity)
+            }
+            onUpdateInterval={(interval, type) =>
+              onUpdateInterval &&
+              onUpdateInterval(orderedProduct.id, interval, type)
             }
           />
         ))}
@@ -49,9 +56,7 @@ export default function Cart({
         </div>
         <div className="flex flex-row justify-between border-t-gray-100 mb-4">
           <p className="font-semibold text-sm">Shipping</p>
-          <p className="font-light text-sm">
-            Calculated at next step
-          </p>
+          <p className="font-light text-sm">Calculated at next step</p>
         </div>
         <div className="flex flex-row justify-between">
           <p className="font-light">Total</p>
@@ -59,8 +64,8 @@ export default function Cart({
             {formatCentsWithCurrency(
               amountForStartingSubscriptionCents ?? 0,
               'EUR'
-            )}
-            {' '}+ Shipping
+            )}{' '}
+            + Shipping
           </p>
         </div>
         {subscription.checkoutUrl && (

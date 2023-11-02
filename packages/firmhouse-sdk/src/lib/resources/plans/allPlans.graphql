@@ -1,15 +1,5 @@
-query allPlans(
-  $after: String
-  $before: String
-  $last: Int
-  $first: Int
-) {
-  plans(
-    after: $after
-    before: $before
-    last: $last
-    first: $first
-  ) {
+query allPlans($after: String, $before: String, $last: Int, $first: Int) {
+  plans(after: $after, before: $before, last: $last, first: $first) {
     totalCount
     pageInfo {
       ...PageInfoFragment

@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { firmhouseClient } from '../firmhouse';
-import { SubscriptionWithTokenType } from '@firmhouse/firmhouse-sdk';
+import {
+  OrderedProductIntervalUnitOfMeasure,
+  OrderedProductType,
+  SubscriptionType,
+} from '@firmhouse/firmhouse-sdk';
 const SUBSCRIPTION_TOKEN_KEY = 'Firmhouse.cartToken';
 
 async function addToCart(
@@ -38,7 +42,7 @@ async function updateOrderedProductQuantity(
 
 export function useSubscription() {
   const [subscription, setSubscription] = useState(
-    null as SubscriptionWithTokenType | null
+    null as SubscriptionType | null
   );
   useEffect(() => {
     const token =
@@ -123,6 +127,45 @@ export function useSubscription() {
           setSubscription({
             ...response.subscription,
             token: subscription.token,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    updateOrderedProductInterval: (
+      orderedProductId: string,
+      interval: number,
+      intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+    ) => {
+      if (subscription === null) {
+        return;
+      }
+      firmhouseClient.subscriptions
+        .updateOrderedProduct(
+          {
+            id: orderedProductId,
+            interval,
+            intervalUnitOfMeasureType,
+          },
+          subscription.token
+        )
+        .then((response) => {
+          const updatedOrderedProduct = response?.orderedProduct;
+          if (
+            updatedOrderedProduct === null ||
+            updatedOrderedProduct === undefined
+          )
+            return;
+          setSubscription({
+            ...subscription,
+            orderedProducts:
+              subscription?.orderedProducts?.map((op): OrderedProductType => {
+                if (op.id === orderedProductId) {
+                  return updatedOrderedProduct;
+                }
+                return { ...op, intervalUnitOfMeasureType: null };
+              }) ?? [],
           });
         })
         .catch((error) => {

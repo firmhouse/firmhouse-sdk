@@ -1,5 +1,8 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import { GraphQLClient as GraphQLClientBase, ClientError } from 'graphql-request';
+import {
+  GraphQLClient as GraphQLClientBase,
+  ClientError,
+} from 'graphql-request';
 import { mapToLibraryErrorTypes } from './errors';
 // Wraps the graphql-request client to provide a typed interface
 export default class GraphQLClient {
@@ -21,11 +24,10 @@ export default class GraphQLClient {
       },
       responseMiddleware: async (res) => {
         if (res instanceof ClientError) {
-          return mapToLibraryErrorTypes(res as ClientError)
+          return mapToLibraryErrorTypes(res as ClientError);
         }
-      }
+      },
     });
     this.request = this.client.request.bind(this.client);
   }
 }
-

@@ -6,7 +6,7 @@ import {
 import { arrayFilterNulls } from '../../helpers/utils';
 
 type AllPlansResponse = Awaited<
-ReturnType<InstanceType<typeof PlansResource>['fetchAll']>
+  ReturnType<InstanceType<typeof PlansResource>['fetchAll']>
 >;
 
 export type PlanType = AllPlansResponse['results'][0];
@@ -22,8 +22,7 @@ export class PlansResource extends BaseResource {
     return {
       total: response.plans?.totalCount ?? 0,
       pageInfo: response.plans?.pageInfo,
-      results: arrayFilterNulls(response.plans?.nodes)
-    }
+      results: arrayFilterNulls(response.plans?.nodes),
+    };
   }
-
 }

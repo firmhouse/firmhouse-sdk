@@ -8,7 +8,13 @@ export interface ProductProps {
   children?: React.ReactNode;
 }
 
-export function Product({ title, imageUrl, price, children, isRecurring }: ProductProps) {
+export function Product({
+  title,
+  imageUrl,
+  price,
+  children,
+  isRecurring,
+}: ProductProps) {
   return (
     <div className="p-4 m-2 rounded-2xl bg-white">
       <Image
@@ -28,7 +34,7 @@ export function Product({ title, imageUrl, price, children, isRecurring }: Produ
             </span>
           )}
         </div>
-        { children }
+        {children}
       </div>
     </div>
   );

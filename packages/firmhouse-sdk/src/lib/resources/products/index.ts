@@ -6,9 +6,8 @@ import {
 import { arrayFilterNulls } from '../../helpers/utils';
 import { NotFoundError } from '../../helpers/errors';
 
-
 export type AllProductsResponse = Awaited<
-ReturnType<InstanceType<typeof ProductsResource>['fetchAll']>
+  ReturnType<InstanceType<typeof ProductsResource>['fetchAll']>
 >;
 export type ProductType = AllProductsResponse['results'][0];
 
@@ -23,10 +22,9 @@ export class ProductsResource extends BaseResource {
     return {
       total: response.products?.totalCount ?? 0,
       pageInfo: response.products?.pageInfo,
-      results: arrayFilterNulls(response.products?.nodes)
-    }
+      results: arrayFilterNulls(response.products?.nodes),
+    };
   }
-
 
   /**
    * Retrieve a product by ID
