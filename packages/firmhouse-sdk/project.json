@@ -62,6 +62,13 @@
       "options": {
         "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js"
       }
+    },
+    "api-extractor": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "npx api-extractor run --local --diagnostics -c ./packages/firmhouse-sdk/api-extractor.json"
+      }
     }
   }
 }

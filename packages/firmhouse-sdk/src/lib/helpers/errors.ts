@@ -1,5 +1,10 @@
 import { ClientError } from 'graphql-request';
 
+/**
+ * @internal
+ * @param str
+ * @returns 
+ */
 export function snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
     group.toUpperCase().replace('-', '').replace('_', '')
@@ -7,6 +12,7 @@ export function snakeToCamelCase(str: string) {
 }
 
 /**
+ * @internal
  * Formats validation errors as a single object with paths as keys and error messages as values
  * @param errors Validation errors
  * @returns Object with paths as keys and error messages as values
@@ -86,6 +92,11 @@ export class ValidationError extends Error {
   }
 }
 
+/**
+ * @internal
+ * @param error 
+ * @returns 
+ */
 export function mapToLibraryErrorTypes(error: ClientError) {
   if (error.response.errors?.[0]?.extensions?.code === 'RECORD_NOT_FOUND') {
     return new NotFoundError(error);
