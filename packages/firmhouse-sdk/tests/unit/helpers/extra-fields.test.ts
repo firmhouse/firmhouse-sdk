@@ -4,6 +4,17 @@ import { mapExtraFieldsByFieldId } from '@firmhouse/firmhouse-sdk/lib/helpers/ex
 describe('helpers/extra-fields', () => {
   describe('mapExtraFieldsByFieldId', () => {
     it('should convert a list of extra fields to a map', () => {
+      const field: ExtraFieldAnswerType = {
+        id: '1',
+        extraFieldId: '1',
+        value: 'test',
+        name: 'test',
+        required: true,
+        fieldType: 'text',
+        visibility: 'public',
+        position: null,
+        selectOptions: null,
+      };
       const input: ExtraFieldAnswerType[] = [
         {
           id: '1',
@@ -13,6 +24,8 @@ describe('helpers/extra-fields', () => {
           required: true,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
         {
           id: '2',
@@ -22,6 +35,8 @@ describe('helpers/extra-fields', () => {
           required: false,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
       ];
       const output = mapExtraFieldsByFieldId(input);

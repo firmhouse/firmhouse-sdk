@@ -1,30 +1,60 @@
-import { OrderedProductIntervalUnitOfMeasure, ServerError } from '../firmhouse';
-import { GetSubscriptionQuery } from '../graphql/generated';
+import { ServerError } from './errors';
+import {
+  GetSubscriptionQuery,
+  OrderedProductIntervalUnitOfMeasure,
+} from '../graphql/generated';
 import { ResolveObject } from './types';
 import { capitalize } from './utils';
 
-type BaseSubscriptionType = NonNullable<
+/**
+ * @internal
+ */
+export type BaseSubscriptionType = NonNullable<
   GetSubscriptionQuery['getSubscription']
 >;
 
-type BaseOrderedProductType = NonNullable<
+/**
+ * @internal
+ */
+export type BaseOrderedProductType = NonNullable<
   BaseSubscriptionType['orderedProducts']
 >[0];
-type ContainsSubscription = { subscription: BaseSubscriptionType };
 
+/**
+ * @internal
+ */
+export type ContainsSubscription = { subscription: BaseSubscriptionType };
+
+/**
+ * @public
+ * Ordered Product
+ */
 export type OrderedProductType = ResolveObject<
   BaseOrderedProductType & {
     intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure | null;
   }
 >;
+
+/**
+ * @public
+ * Subscription
+ */
 export type SubscriptionType = ResolveObject<
   Omit<BaseSubscriptionType, 'orderedProducts' | 'token'> & {
-    orderedProducts?: OrderedProductType[] | null;
+    orderedProducts: OrderedProductType[] | null;
     token: string;
   }
 >;
+
+/**
+ * @public
+ * Extra field answer
+ */
 export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0];
 
+/**
+ * @internal
+ */
 export function formatOrderedProduct(
   orderedProduct: BaseOrderedProductType
 ): OrderedProductType {
@@ -40,6 +70,9 @@ export function formatOrderedProduct(
   return formattedOrderedProduct;
 }
 
+/**
+ * @internal
+ */
 export function formatSubscription(
   subscription: BaseSubscriptionType
 ): SubscriptionType {
@@ -50,14 +83,17 @@ export function formatSubscription(
   const response: SubscriptionType = {
     ...rest,
     token,
+    orderedProducts:
+      orderedProducts === null
+        ? null
+        : orderedProducts.map(formatOrderedProduct),
   };
-  if (orderedProducts === null || orderedProducts === undefined) {
-    return response;
-  }
-  response.orderedProducts = orderedProducts.map(formatOrderedProduct);
   return response;
 }
 
+/**
+ * @internal
+ */
 export function formatSubscriptionInResponse<T extends ContainsSubscription>(
   response: T
 ) {

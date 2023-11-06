@@ -5,9 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": [
-      "node",
-    ]
+    "types": ["node"]
   },
   "exclude": [
     "jest.config.ts",

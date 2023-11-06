@@ -25,6 +25,11 @@ import {
   formatSubscription,
   formatSubscriptionInResponse,
 } from '../../helpers/subscription';
+
+/**
+ * @public
+ * Subscription methods
+ */
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
     const response = await this.client.request(CreateCartDocument, {
@@ -38,7 +43,7 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Create a new cart and return the subscription token
-   * @param clientMutationId Optional client mutation id
+   * @param clientMutationId - Optional client mutation id
    * @returns subscription token
    */
   public async createSubscriptionToken(clientMutationId?: string) {
@@ -52,7 +57,7 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Get a subscription by subscription token
-   * @param token Subscription token
+   * @param token - Subscription token
    * @returns Subscription
    */
   public async get(token: string) {
@@ -61,10 +66,7 @@ export class SubscriptionsResource extends BaseResource {
       { token },
       this.getSubscriptionTokenHeader(token)
     );
-    if (
-      response.getSubscription === null ||
-      response.getSubscription === undefined
-    ) {
+    if (response.getSubscription === null) {
       throw new NotFoundError('Subscription not found');
     }
     return formatSubscription(response.getSubscription);
@@ -72,7 +74,7 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Try to get a subscription by token, if it exists and is a draft subscription, return it. Otherwise create a new draft subscription.
-   * @param token Subscription token
+   * @param token - Subscription token
    * @returns Subscription if it exists, otherwise a new draft subscription
    */
   public async getOrCreateDraftSubscription(token?: string) {
@@ -97,8 +99,8 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Add a product to the cart
-   * @param input Selected product and quantity
-   * @param subscriptionToken Subscription token
+   * @param input - Selected product and quantity
+   * @param subscriptionToken - Subscription token
    * @returns subscription after adding the product and the ordered product
    */
   public async addToCart(
@@ -128,8 +130,8 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Remove a product from the cart
-   * @param orderedProductId Ordered product id to remove from the cart
-   * @param subscriptionToken Subscription token
+   * @param orderedProductId - Ordered product id to remove from the cart
+   * @param subscriptionToken - Subscription token
    * @returns subscription after removing the product and the removed product
    */
   public async removeFromCart(
@@ -159,9 +161,9 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Update a product quantity in the cart
-   * @param orderedProductId Ordered product id to update quantity
-   * @param quantity New quantity
-   * @param subscriptionToken Subscription token
+   * @param orderedProductId - Ordered product id to update quantity
+   * @param quantity - New quantity
+   * @param subscriptionToken - Subscription token
    * @returns Updated subscription
    */
   public async updateOrderedProductQuantity(
@@ -193,8 +195,8 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Update a product in the cart
-   * @param input
-   * @param subscriptionToken Subscription token
+   * @param input - Payload for fields to update
+   * @param subscriptionToken - Subscription token
    * @returns Updated subscription
    */
   public async updateOrderedProduct(
@@ -222,11 +224,12 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Update the address details of a subscription.
+   * @param input - Address details, address, name, email, etc
+   * @param subscriptionToken - Subscription token
+   * @returns Updated subscription and validation errors
+   * @remarks
    * Will save changes to certain fields even when other fields given are invalid.
    * Will return validation error messages for invalid fields.
-   * @param input Address details, address, name, email, etc
-   * @param subscriptionToken Subscription token
-   * @returns Updated subscription and validation errors
    */
   public async updateAddressDetails(
     input: UpdateAddressDetailsInput,
@@ -238,7 +241,7 @@ export class SubscriptionsResource extends BaseResource {
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
 
-    const updateAddressDetails = response.updateAddressDetails ?? null;
+    const updateAddressDetails = response.updateAddressDetails;
     if (updateAddressDetails === null) {
       throw new ServerError('Could not update address details');
     }
@@ -248,7 +251,7 @@ export class SubscriptionsResource extends BaseResource {
       throw new ValidationError(errors);
     }
 
-    const subscription = updateAddressDetails.subscription ?? null;
+    const subscription = updateAddressDetails.subscription;
     if (subscription === null) {
       throw new ServerError('Could not update address details');
     }
@@ -260,11 +263,12 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Finalises a subscription and returns payment details based on a cart/draft subscription
-   * Will return validation error messages if required fields for payment is missing.
-   * @param paymentPageUrl The URL where the user can sign up for a new subscription
-   * @param returnUrl The URL the user gets redirected to after completing payment
-   * @param subscriptionToken Subscription token
+   * @param paymentPageUrl - The URL where the user can sign up for a new subscription
+   * @param returnUrl - The URL the user gets redirected to after completing payment
+   * @param subscriptionToken - subscriptionToken Subscription token
    * @returns Payment details and validation errors if any
+   * @throws {@link helpers/errors#ValidationError}
+   * Thrown if required fields for payment is missing.
    */
   public async createSubscriptionFromCart(
     paymentPageUrl: string,
@@ -276,8 +280,7 @@ export class SubscriptionsResource extends BaseResource {
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const createSubscriptionFromCart =
-      response.createSubscriptionFromCart ?? null;
+    const { createSubscriptionFromCart } = response;
 
     if (createSubscriptionFromCart === null) {
       throw new ServerError('Could not create subscription');
@@ -301,8 +304,8 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Updates the active plan of a subscription
-   * @param planSlug Slug of the plan to update the subscription to
-   * @param subscriptionToken Subscription token
+   * @param planSlug - Slug of the plan to update the subscription to
+   * @param subscriptionToken - Subscription token
    * @returns Updated subscription
    */
   public async updatePlan(planSlug: string, subscriptionToken: string) {
@@ -311,7 +314,7 @@ export class SubscriptionsResource extends BaseResource {
       { input: { planSlug } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const updatePlan = response.updatePlan ?? null;
+    const { updatePlan } = response;
 
     if (updatePlan === null) {
       throw new ServerError('Could not update plan');
