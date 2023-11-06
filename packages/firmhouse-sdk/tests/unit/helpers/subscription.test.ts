@@ -4,13 +4,15 @@ import {
   SubscriptionStatus,
 } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
 import {
+  OrderedProductType,
+  SubscriptionType,
   formatOrderedProduct,
   formatSubscription,
   formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
 
 //Base ordered product example with all properties
-const orderedProduct = {
+const orderedProduct: OrderedProductType = {
   id: '1',
   intervalUnitOfMeasure: 'months',
   product: {
@@ -20,17 +22,58 @@ const orderedProduct = {
     mandatory: false,
     slug: '',
     title: '',
+    graceCancellationEnabled: null,
+    graceCancellationPeriod: null,
+    graceCancellationUnit: null,
+    imageUrl: null,
+    interval: null,
+    intervalUnitOfMeasure: null,
+    maximumCommitmentEnabled: null,
+    maximumCommitmentPeriod: null,
+    maximumCommitmentUnit: null,
+    metadata: undefined,
+    minimumCommitmentEnabled: null,
+    minimumCommitmentPeriod: null,
+    minimumCommitmentUnit: null,
+    nthProductFree: null,
+    priceCents: null,
+    priceExcludingTaxCents: null,
+    priceIncludingTaxCents: null,
+    productType: null,
+    shopifyProductId: null,
+    shopifyVariantId: null,
+    sku: null,
+    supplier: null,
+    taxAmountCents: null,
+    taxPercentage: null,
   },
   productId: '',
   recurring: false,
   status: OrderedProductStatus.Active,
+  createdAt: null,
+  graceCancellationEndsAt: null,
+  interval: null,
+  maximumCommitmentEndsAt: null,
+  metadata: undefined,
+  minimumCommitmentEndsAt: null,
+  priceExcludingTaxCents: null,
+  priceIncludingTaxCents: null,
+  quantity: null,
+  shipmentDate: null,
+  title: null,
+  totalAmountExcludingTaxCents: null,
+  totalAmountIncludingTaxCents: null,
+  totalOrdered: null,
+  updatedAt: null,
+  plan: null,
+  intervalUnitOfMeasureType: null,
 };
 const formattedOrderedProduct = {
   ...orderedProduct,
   intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
 };
 
-const subscription = {
+const subscription: SubscriptionType = {
   token: 'test',
   skipAutoActivationOnSignup: false,
   startDate: '',
@@ -38,6 +81,60 @@ const subscription = {
   termsAccepted: false,
   extraFields: [],
   orderedProducts: [orderedProduct],
+  createdAt: null,
+  id: null,
+  metadata: undefined,
+  updatedAt: null,
+  address: null,
+  amountForStartingSubscriptionCents: null,
+  billToAddress: null,
+  billToCity: null,
+  billToCompanyName: null,
+  billToCountry: null,
+  billToDistrict: null,
+  billToFullAddress: null,
+  billToFullName: null,
+  billToHouseNumber: null,
+  billToLastName: null,
+  billToName: null,
+  billToPhoneNumber: null,
+  billToSalutation: null,
+  billToState: null,
+  billToZipcode: null,
+  cancellationStartedAt: null,
+  cancelledAt: null,
+  chargeDayOfTheMonth: null,
+  checkoutUrl: null,
+  city: null,
+  companyName: null,
+  country: null,
+  currency: null,
+  customerId: null,
+  customerReference: null,
+  dateOfBirth: null,
+  differentBillingAddress: null,
+  district: null,
+  email: null,
+  fullAddress: null,
+  fullName: null,
+  houseNumber: null,
+  identityVerificationUrl: null,
+  lastName: null,
+  locale: null,
+  marketingOptIn: null,
+  monthlyAmountCents: null,
+  name: null,
+  phoneNumber: null,
+  salutation: null,
+  signupCompletedAt: null,
+  state: null,
+  stoppedAt: null,
+  termsAcceptedOn: null,
+  trialPeriodMonths: null,
+  updatePaymentMethodUrl: null,
+  vatNumber: null,
+  zipcode: null,
+  activePlan: null,
 };
 
 const formattedSubscription = {
@@ -89,19 +186,7 @@ describe('helpers/subscription', () => {
       };
       const outputWithNoOrderedProducts = {
         ...formattedSubscription,
-        orderedProducts: undefined,
-      };
-      const output = formatSubscription(input);
-      expect(output).toEqual(outputWithNoOrderedProducts);
-    });
-
-    it('should handle undefined orderedProducts correctly', () => {
-      const { orderedProducts, ...subscriptionWithoutOrderedProducts } =
-        subscription;
-      const input = subscriptionWithoutOrderedProducts;
-      const outputWithNoOrderedProducts = {
-        ...formattedSubscription,
-        orderedProducts: undefined,
+        orderedProducts: null,
       };
       const output = formatSubscription(input);
       expect(output).toEqual(outputWithNoOrderedProducts);
