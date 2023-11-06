@@ -331,7 +331,7 @@ export class SubscriptionsResource extends BaseResource {
   }
 }
 
-export {
+export type {
   BaseSubscriptionType,
   SubscriptionType,
   BaseOrderedProductType,
@@ -339,4 +339,4 @@ export {
   ExtraFieldAnswerType,
 } from '../../helpers/subscription';
 
-export { GetSubscriptionQuery } from './subscriptions.generated';
+export type { GetSubscriptionQuery } from './subscriptions.generated';
