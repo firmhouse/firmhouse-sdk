@@ -1,20 +1,18 @@
 import { ServerError } from './errors';
-import {
-  GetSubscriptionQuery,
-  OrderedProductIntervalUnitOfMeasure,
-} from '../graphql/generated';
+import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.generated';
 import { ResolveObject } from './types';
 import { capitalize } from './utils';
+import { OrderedProductIntervalUnitOfMeasure } from '../graphql/generated';
 
 /**
- * @internal
+ * @public
  */
 export type BaseSubscriptionType = NonNullable<
   GetSubscriptionQuery['getSubscription']
 >;
 
 /**
- * @internal
+ * @public
  */
 export type BaseOrderedProductType = NonNullable<
   BaseSubscriptionType['orderedProducts']
@@ -55,7 +53,7 @@ export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0];
 /**
  * @internal
  */
-export function formatOrderedProduct(
+export function _formatOrderedProduct(
   orderedProduct: BaseOrderedProductType
 ): OrderedProductType {
   const { intervalUnitOfMeasure } = orderedProduct;
@@ -73,7 +71,7 @@ export function formatOrderedProduct(
 /**
  * @internal
  */
-export function formatSubscription(
+export function _formatSubscription(
   subscription: BaseSubscriptionType
 ): SubscriptionType {
   const { orderedProducts, token, ...rest } = subscription;
@@ -86,7 +84,7 @@ export function formatSubscription(
     orderedProducts:
       orderedProducts === null
         ? null
-        : orderedProducts.map(formatOrderedProduct),
+        : orderedProducts.map(_formatOrderedProduct),
   };
   return response;
 }
@@ -94,13 +92,13 @@ export function formatSubscription(
 /**
  * @internal
  */
-export function formatSubscriptionInResponse<T extends ContainsSubscription>(
+export function _formatSubscriptionInResponse<T extends ContainsSubscription>(
   response: T
 ) {
   return (
     response && {
       ...response,
-      subscription: formatSubscription(response.subscription),
+      subscription: _formatSubscription(response.subscription),
     }
   );
 }

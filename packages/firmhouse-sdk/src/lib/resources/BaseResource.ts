@@ -1,4 +1,4 @@
-import type GraphQLClient from '../helpers/GraphQLClient';
+import type { GraphQLClient } from '../helpers/GraphQLClient';
 
 /**
  * Abstract base resource for unifying the access to GraphQL client

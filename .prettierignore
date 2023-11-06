@@ -3,3 +3,5 @@
 /coverage
 .next
 /.nx/cache
+*.generated.ts
+generated.ts

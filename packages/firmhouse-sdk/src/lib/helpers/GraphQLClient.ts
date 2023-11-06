@@ -3,9 +3,9 @@ import {
   GraphQLClient as GraphQLClientBase,
   ClientError,
 } from 'graphql-request';
-import { mapToLibraryErrorTypes } from './errors';
+import { _mapToLibraryErrorTypes } from './errors';
 // Wraps the graphql-request client to provide a typed interface
-export default class GraphQLClient {
+export class GraphQLClient {
   private readonly API_TOKEN: string;
   private readonly BASE_URL: string;
   private client: GraphQLClientBase;
@@ -24,7 +24,7 @@ export default class GraphQLClient {
       },
       responseMiddleware: async (res) => {
         if (res instanceof ClientError) {
-          return mapToLibraryErrorTypes(res as ClientError);
+          return _mapToLibraryErrorTypes(res as ClientError);
         }
       },
     });

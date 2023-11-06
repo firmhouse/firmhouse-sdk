@@ -5,7 +5,7 @@ import { ClientError } from 'graphql-request';
  * @param str - String value in snake case
  * @returns String value in camel case
  */
-export function snakeToCamelCase(str: string) {
+export function _snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
     group.toUpperCase().replace('-', '').replace('_', '')
   );
@@ -17,7 +17,7 @@ export function snakeToCamelCase(str: string) {
  * @param errors - Validation errors
  * @returns Object with paths as keys and error messages as values
  */
-export function formatValidationErrors<
+export function _formatValidationErrors<
   ErrorT extends {
     attribute?: string;
     message?: string;
@@ -28,7 +28,7 @@ export function formatValidationErrors<
   if (errors.length === 0) return null;
   return errors.reduce((res, error) => {
     const properties = error.path?.length ? error.path : [error.attribute];
-    const path = snakeToCamelCase(properties.join('.'));
+    const path = _snakeToCamelCase(properties.join('.'));
     return {
       ...res,
       [path]: error.message ?? error.explanation ?? 'Invalid',
@@ -103,7 +103,7 @@ export class ValidationError extends Error {
     super(message);
     Object.setPrototypeOf(this, ValidationError.prototype);
     this.name = ErrorType.Validation;
-    this.details = formatValidationErrors(errors);
+    this.details = _formatValidationErrors(errors);
     // this is needed as Safari doesn't support .captureStackTrace
     if (typeof Error.captureStackTrace === `function`) {
       Error.captureStackTrace(this, ValidationError);
@@ -116,7 +116,7 @@ export class ValidationError extends Error {
  * @param error - Client error
  * @returns The error with type as {@link ErrorType}
  */
-export function mapToLibraryErrorTypes(error: ClientError) {
+export function _mapToLibraryErrorTypes(error: ClientError) {
   if (error.response.errors?.[0]?.extensions?.code === 'RECORD_NOT_FOUND') {
     return new NotFoundError(error);
   }

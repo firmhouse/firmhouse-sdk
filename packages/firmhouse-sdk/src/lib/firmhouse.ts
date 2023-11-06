@@ -1,6 +1,11 @@
+import * as Types from './graphql/generated';
+export type * from './resources/BaseResource'
+export type * from './resources/products';
+export type * from './resources/plans';
+export type * from './resources/subscriptions';
 export * from './graphql/generated';
 export * from './helpers/errors';
-export * from './resources/products';
-export * from './helpers/subscription';
-export * from './resources/plans';
+export * from './helpers/types';
+export * from './helpers/GraphQLClient'
 export * from './FirmhouseClient';
+export { Types };

@@ -1,7 +1,12 @@
 import { BaseResource } from '../BaseResource';
-import { AllPlansQuery, AllPlansQueryVariables } from '../../graphql/generated';
+import {
+  AllPlansQuery,
+  AllPlansQueryVariables,
+  AllPlansDocument,
+} from './allPlans.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
-import { AllPlansDocument } from '../../graphql/generated';
+
+export type { AllPlansQuery, AllPlansQueryVariables };
 
 /**
  * @public

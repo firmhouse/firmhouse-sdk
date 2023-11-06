@@ -6,9 +6,9 @@ import {
 import {
   OrderedProductType,
   SubscriptionType,
-  formatOrderedProduct,
-  formatSubscription,
-  formatSubscriptionInResponse,
+  _formatOrderedProduct,
+  _formatSubscription,
+  _formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
 
 //Base ordered product example with all properties
@@ -146,7 +146,7 @@ describe('helpers/subscription', () => {
   describe('formatOrderedProduct', () => {
     it('should format ordered products correctly', () => {
       const input = orderedProduct;
-      const output = formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input);
       expect(output).toEqual(formattedOrderedProduct);
     });
 
@@ -155,7 +155,7 @@ describe('helpers/subscription', () => {
         ...orderedProduct,
         intervalUnitOfMeasure: 'only_once',
       };
-      const output = formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input);
       expect(output).toEqual({
         ...input,
         intervalUnitOfMeasureType: null,
@@ -166,14 +166,16 @@ describe('helpers/subscription', () => {
   describe('formatSubscription', () => {
     it('should format subscription correctly', () => {
       const input = subscription;
-      const output = formatSubscription(input);
+      const output = _formatSubscription(input);
       expect(output).toEqual(formattedSubscription);
     });
 
     it('should throw an error if subscription is missing the token property', () => {
       const input = { ...subscription, token: '' };
       try {
-        expect(formatSubscription(input)).toThrow('No token returned from API');
+        expect(_formatSubscription(input)).toThrow(
+          'No token returned from API'
+        );
       } catch (e) {
         expect(e).toEqual(new Error('No token returned from API'));
       }
@@ -188,7 +190,7 @@ describe('helpers/subscription', () => {
         ...formattedSubscription,
         orderedProducts: null,
       };
-      const output = formatSubscription(input);
+      const output = _formatSubscription(input);
       expect(output).toEqual(outputWithNoOrderedProducts);
     });
   });
@@ -199,7 +201,7 @@ describe('helpers/subscription', () => {
         property: 'test',
         subscription,
       };
-      const output = formatSubscriptionInResponse(input);
+      const output = _formatSubscriptionInResponse(input);
       expect(output).toEqual({
         ...input,
         subscription: formattedSubscription,

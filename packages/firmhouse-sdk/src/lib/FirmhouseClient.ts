@@ -1,4 +1,4 @@
-import GraphQLClient from './helpers/GraphQLClient';
+import { GraphQLClient } from './helpers/GraphQLClient';
 import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';

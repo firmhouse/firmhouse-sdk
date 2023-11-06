@@ -3,9 +3,11 @@ import {
   AllProductsDocument,
   AllProductsQueryVariables,
   AllProductsQuery,
-} from '../../graphql/generated';
+} from './allProducts.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 import { NotFoundError } from '../../helpers/errors';
+
+export type { AllProductsQuery, AllProductsQueryVariables };
 
 /**
  * @public

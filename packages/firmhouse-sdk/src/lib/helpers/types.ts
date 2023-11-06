@@ -1,5 +1,5 @@
 /**
- * @internal
+ * @public
  * Resolves all modifiers in a type.
  * @remarks
  * e.g. \{ foo: string \} & \{ bar: number \} =\> \{ foo: string, bar: number\}

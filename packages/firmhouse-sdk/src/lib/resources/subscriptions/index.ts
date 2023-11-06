@@ -1,19 +1,22 @@
 import { BaseResource } from '../BaseResource';
 import {
+  CreateOrderedProductInput,
+  SubscriptionStatus,
+  UpdateAddressDetailsInput,
+  UpdateOrderedProductInput,
+} from '../../graphql/generated';
+
+import {
   AddToCartDocument,
   CreateCartDocument,
-  CreateOrderedProductInput,
   CreateSubscriptionFromCartDocument,
   GetSubscriptionDocument,
   RemoveFromCartDocument,
-  SubscriptionStatus,
   UpdateAddressDetailsDocument,
-  UpdateAddressDetailsInput,
   UpdateOrderedProductDocument,
-  UpdateOrderedProductInput,
   UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
-} from '../../graphql/generated';
+} from './subscriptions.generated';
 import {
   NotFoundError,
   ServerError,
@@ -21,9 +24,9 @@ import {
 } from '../../helpers/errors';
 import {
   SubscriptionType,
-  formatOrderedProduct,
-  formatSubscription,
-  formatSubscriptionInResponse,
+  _formatOrderedProduct,
+  _formatSubscription,
+  _formatSubscriptionInResponse,
 } from '../../helpers/subscription';
 
 /**
@@ -38,7 +41,7 @@ export class SubscriptionsResource extends BaseResource {
     if (response.createCart === null || response.createCart === undefined) {
       throw new ServerError('Could not create subscription');
     }
-    return formatSubscriptionInResponse(response.createCart);
+    return _formatSubscriptionInResponse(response.createCart);
   }
 
   /**
@@ -69,7 +72,7 @@ export class SubscriptionsResource extends BaseResource {
     if (response.getSubscription === null) {
       throw new NotFoundError('Subscription not found');
     }
-    return formatSubscription(response.getSubscription);
+    return _formatSubscription(response.getSubscription);
   }
 
   /**
@@ -83,7 +86,7 @@ export class SubscriptionsResource extends BaseResource {
       try {
         const response = await this.get(token);
         if (response.status === SubscriptionStatus.Draft) {
-          subscription = formatSubscription(response);
+          subscription = _formatSubscription(response);
         }
       } catch (error) {
         // ignore
@@ -123,8 +126,8 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: formatOrderedProduct(orderedProduct),
-      subscription: formatSubscription(subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -154,8 +157,8 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: formatOrderedProduct(orderedProduct),
-      subscription: formatSubscription(subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -188,8 +191,8 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: formatOrderedProduct(orderedProduct),
-      subscription: formatSubscription(subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -218,7 +221,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
     };
   }
 
@@ -257,7 +260,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      subscription: formatSubscription(subscription),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -298,7 +301,7 @@ export class SubscriptionsResource extends BaseResource {
     return {
       paymentUrl,
       returnUrl: createSubscriptionFromCart.returnUrl,
-      subscription: formatSubscription(subscription),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -320,10 +323,20 @@ export class SubscriptionsResource extends BaseResource {
       throw new ServerError('Could not update plan');
     }
 
-    return formatSubscriptionInResponse(updatePlan);
+    return _formatSubscriptionInResponse(updatePlan);
   }
 
   private getSubscriptionTokenHeader(subscriptionToken: string) {
     return { 'X-Subscription-Token': subscriptionToken };
   }
 }
+
+export {
+  BaseSubscriptionType,
+  SubscriptionType,
+  BaseOrderedProductType,
+  OrderedProductType,
+  ExtraFieldAnswerType,
+} from '../../helpers/subscription';
+
+export { GetSubscriptionQuery } from './subscriptions.generated';

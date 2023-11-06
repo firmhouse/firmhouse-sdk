@@ -1,22 +1,14 @@
 import {
   SubscriptionType,
-  AddToCartDocument,
-  CreateCartDocument,
-  CreateSubscriptionFromCartDocument,
-  GetSubscriptionDocument,
-  RemoveFromCartDocument,
   SubscriptionStatus,
-  UpdateAddressDetailsDocument,
-  UpdateOrderedProductDocument,
-  UpdateOrderedProductQuantityDocument,
-  UpdatePlanDocument,
 } from '@firmhouse/firmhouse-sdk';
-import GraphQLClient from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
   ServerError,
   ValidationError,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
 import { SubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
+import { CreateCartDocument, GetSubscriptionDocument, AddToCartDocument, RemoveFromCartDocument, UpdateOrderedProductQuantityDocument, UpdateOrderedProductDocument, UpdateAddressDetailsDocument, CreateSubscriptionFromCartDocument, UpdatePlanDocument } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 
 const subscription: SubscriptionType = {

@@ -21,5 +21,6 @@
   },
   "scripts": {
     "generate": "graphql-codegen --config ./graphql.config.yml"
-  }
+  },
+  "typings": "index.d.ts"
 }

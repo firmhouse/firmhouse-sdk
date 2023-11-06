@@ -15,23 +15,33 @@
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
+        "main": "packages/firmhouse-sdk/src/index.ts",
         "outputPath": "dist/packages/firmhouse-sdk",
         "tsConfig": "packages/firmhouse-sdk/tsconfig.lib.json",
-        "project": "packages/firmhouse-sdk/package.json",
-        "entryFile": "packages/firmhouse-sdk/src/index.ts",
-        "external": ["react", "react-dom", "react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "swc",
-        "format": ["cjs", "esm"],
         "generateExportsField": true,
+        "deleteOutputPath": true,
+        "compiler": "swc",
+        "project": "packages/firmhouse-sdk/package.json",
+        "format": ["esm", "cjs"],
         "assets": [
           {
-            "glob": "packages/firmhouse-sdk/README.md",
+            "glob": "packages/firmhouse-sdk/*.md",
             "input": ".",
             "output": "."
           }
         ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": true,
+          "namedChunks": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "minify": true
+        }
       }
     },
     "graphql-codegen": {
@@ -66,6 +76,7 @@
     "api-extractor": {
       "executor": "nx:run-commands",
       "outputs": [],
+      "dependsOn": ["build"],
       "options": {
         "command": "npx api-extractor run --local --diagnostics -c ./packages/firmhouse-sdk/api-extractor.json"
       }
