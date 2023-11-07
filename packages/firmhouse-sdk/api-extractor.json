@@ -255,7 +255,7 @@
      * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
      * DEFAULT VALUE: "<projectFolder>/dist/<unscopedPackageName>.d.ts"
      */
-    "untrimmedFilePath": "../../dist/packages/firmhouse-sdk/index.d.ts",
+    "untrimmedFilePath": "../../dist/packages/<unscopedPackageName>.d.ts",
 
     /**
      * Specifies the output path for a .d.ts rollup file to be generated with trimming for an "alpha" release.
@@ -267,7 +267,7 @@
      * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
      * DEFAULT VALUE: ""
      */
-    "alphaTrimmedFilePath": "../../dist/packages/firmhouse-sdk/<unscopedPackageName>-alpha.d.ts",
+    "alphaTrimmedFilePath": "../../dist/packages/<unscopedPackageName>-alpha.d.ts",
 
     /**
      * Specifies the output path for a .d.ts rollup file to be generated with trimming for a "beta" release.
@@ -279,7 +279,7 @@
      * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
      * DEFAULT VALUE: ""
      */
-    "betaTrimmedFilePath": "../../dist/packages/firmhouse-sdk/<unscopedPackageName>-beta.d.ts",
+    "betaTrimmedFilePath": "../../dist/packages/<unscopedPackageName>-beta.d.ts",
 
     /**
      * Specifies the output path for a .d.ts rollup file to be generated with trimming for a "public" release.
@@ -293,7 +293,7 @@
      * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
      * DEFAULT VALUE: ""
      */
-    "publicTrimmedFilePath": "../../dist/packages/firmhouse-sdk/<unscopedPackageName>-beta.d.ts"
+    "publicTrimmedFilePath": "../../dist/packages/firmhouse-sdk/index.cjs.d.ts"
 
     /**
      * When a declaration is trimmed, by default it will be replaced by a code comment such as

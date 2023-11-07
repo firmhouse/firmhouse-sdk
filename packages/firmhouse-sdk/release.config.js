@@ -8,7 +8,11 @@ module.exports = {
   pkgRoot: `dist/${srcRoot}`,
   tagFormat: `${name}-v\${version}`,
   commitPaths: [`${srcRoot}/*`],
-  branches: ['main'],
+  branches: [
+    'main',
+    { name: 'beta', prerelease: true },
+    { name: 'alpha', prerelease: true },
+  ],
   plugins: [
     // Wraps commit-analyzer and release-notes-generator plguins to support squash and merge
     'semantic-release-unsquash',

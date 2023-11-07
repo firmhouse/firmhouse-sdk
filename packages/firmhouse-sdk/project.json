@@ -22,9 +22,10 @@
         "tsConfig": "packages/firmhouse-sdk/tsconfig.lib.json",
         "generateExportsField": true,
         "deleteOutputPath": true,
-        "compiler": "swc",
+        "compiler": "tsc",
         "project": "packages/firmhouse-sdk/package.json",
         "format": ["esm", "cjs"],
+        "additionalEntryPoints": ["packages/firmhouse-sdk/src/utils.ts"],
         "assets": [
           {
             "glob": "packages/firmhouse-sdk/*.md",
@@ -36,7 +37,7 @@
       "configurations": {
         "production": {
           "optimization": true,
-          "sourceMap": true,
+          "sourceMap": false,
           "namedChunks": true,
           "extractLicenses": true,
           "vendorChunk": false,
@@ -71,7 +72,7 @@
       "outputs": [],
       "dependsOn": ["api-extractor"],
       "options": {
-        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js --no-ci",
+        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js",
         "parallel": false
       }
     },

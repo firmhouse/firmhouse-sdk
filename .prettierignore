@@ -5,3 +5,4 @@
 /.nx/cache
 *.generated.ts
 generated.ts
+/tmp

@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+      - alpha
+      - beta
 
 jobs:
   build:
@@ -21,7 +23,6 @@ jobs:
       - run: npx nx format:check
       - run: npx nx affected -t lint --parallel=3
       - run: npx nx affected -t test --parallel=3
-      - run: npx nx run firmhouse-sdk:build
       - uses: nrwl/nx-set-shas@v3
       - name: Release
         run: npx nx affected --target release --all
