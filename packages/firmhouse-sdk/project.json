@@ -69,13 +69,15 @@
     "release": {
       "executor": "nx:run-commands",
       "outputs": [],
+      "dependsOn": ["api-extractor"],
       "options": {
-        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js"
+        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js --no-ci",
+        "parallel": false
       }
     },
     "api-extractor": {
       "executor": "nx:run-commands",
-      "outputs": [],
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "dependsOn": ["build"],
       "options": {
         "command": "npx api-extractor run --local --diagnostics -c ./packages/firmhouse-sdk/api-extractor.json"

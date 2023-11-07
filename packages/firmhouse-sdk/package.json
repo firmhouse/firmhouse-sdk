@@ -2,8 +2,7 @@
   "name": "@firmhouse/firmhouse-sdk",
   "version": "0.0.0-semantic-release",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
