@@ -9,8 +9,6 @@ generates:
   src/lib/graphql/generated.ts:
     plugins:
       - typescript
-      - typescript-operations:
-      - typed-document-node
     config:
       skipTypenameForRoot: true
       skipTypename: true
@@ -21,4 +19,26 @@ generates:
         ISO8601Date: string
         ISO8601DateTime: string
         JSON: unknown
-      avoidOptionals: false
+      avoidOptionals:
+        field: true
+      extractAllFieldsToTypes: true
+  src/:
+    preset: 'near-operation-file'
+    presetConfig:
+      extension: '.generated.ts'
+      baseTypesPath: 'lib/graphql/generated.ts'
+    plugins:
+      - typescript-operations
+      - typed-document-node
+    config:
+      skipTypenameForRoot: true
+      skipTypename: true
+      onlyOperationTypes: true
+      strictScalars: true
+      scalars:
+        ISO8601Date: string
+        ISO8601DateTime: string
+        JSON: unknown
+      avoidOptionals:
+        field: true
+      extractAllFieldsToTypes: true

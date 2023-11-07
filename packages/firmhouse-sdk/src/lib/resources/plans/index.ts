@@ -1,20 +1,29 @@
 import { BaseResource } from '../BaseResource';
 import {
-  AllPlansDocument,
+  AllPlansQuery,
   AllPlansQueryVariables,
-} from '../../graphql/generated';
+  AllPlansDocument,
+} from './allPlans.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 
-type AllPlansResponse = Awaited<
-  ReturnType<InstanceType<typeof PlansResource>['fetchAll']>
+export type { AllPlansQuery, AllPlansQueryVariables };
+
+/**
+ * @public
+ * Plan
+ */
+export type PlanType = NonNullable<
+  NonNullable<NonNullable<AllPlansQuery['plans']>['nodes']>[0]
 >;
 
-export type PlanType = AllPlansResponse['results'][0];
-
+/**
+ * @public
+ * Plan methods
+ */
 export class PlansResource extends BaseResource {
   /**
    * Retrieve Plans
-   * @param params Parameters to filter products by
+   * @param params - Parameters to filter products by
    * @returns List of products with pagination info
    */
   public async fetchAll(params: AllPlansQueryVariables = {}) {
@@ -22,7 +31,7 @@ export class PlansResource extends BaseResource {
     return {
       total: response.plans?.totalCount ?? 0,
       pageInfo: response.plans?.pageInfo,
-      results: arrayFilterNulls(response.plans?.nodes),
+      results: arrayFilterNulls(response.plans?.nodes) as PlanType[],
     };
   }
 }

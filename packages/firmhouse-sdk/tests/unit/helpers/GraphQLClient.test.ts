@@ -1,4 +1,4 @@
-import GraphQLClient from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { GraphQLClient as GraphQLClientBase } from 'graphql-request';
 jest.mock('graphql-request');
 

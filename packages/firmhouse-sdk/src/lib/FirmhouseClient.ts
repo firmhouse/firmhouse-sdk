@@ -1,13 +1,21 @@
-import GraphQLClient from './helpers/GraphQLClient';
+import { GraphQLClient } from './helpers/GraphQLClient';
 import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';
 
+/**
+ * @public
+ * Configuration for firmhouse client
+ */
 export type FirmhouseConfig = {
   apiToken: string;
   baseUrl?: string;
 };
 
+/**
+ * @public
+ * Client for accessing Firmhouse GraphQL api
+ */
 export class FirmhouseClient {
   private readonly API_TOKEN: string;
   private readonly BASE_URL: string;
@@ -25,14 +33,26 @@ export class FirmhouseClient {
     this._plans = new PlansResource(this.client);
   }
 
+  /**
+   * @public
+   * Plan methods
+   */
   public get plans(): PlansResource {
     return this._plans;
   }
 
+  /**
+   * @public
+   * Product methods
+   */
   public get products(): ProductsResource {
     return this._products;
   }
 
+  /**
+   * @public
+   * Subscription methods
+   */
   public get subscriptions(): SubscriptionsResource {
     return this._subscriptions;
   }

@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "conventionalCommits.scopes": ["firmhouse-sdk"]
+}

@@ -1,6 +1,6 @@
-import { AllPlansDocument } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
-import GraphQLClient from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { PlansResource } from '@firmhouse/firmhouse-sdk/lib/resources/plans';
+import { AllPlansDocument } from '@firmhouse/firmhouse-sdk/lib/resources/plans/allPlans.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 describe('lib/resources/plans/index.ts', () => {
   it('should initialize the PlansResource correctly', () => {

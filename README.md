@@ -2,6 +2,8 @@
 
 ## SDK
 
+You can find the SDK documentation [here](./packages/firmhouse-sdk/README.md).
+
 ## Example Apps
 
 ### Next.js

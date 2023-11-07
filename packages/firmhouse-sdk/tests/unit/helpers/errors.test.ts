@@ -1,11 +1,11 @@
 import {
-  formatValidationErrors,
-  snakeToCamelCase,
+  _formatValidationErrors,
+  _snakeToCamelCase,
   NotFoundError,
   ServerError,
   ErrorType,
   ValidationError,
-  mapToLibraryErrorTypes,
+  _mapToLibraryErrorTypes,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -13,15 +13,15 @@ import { GraphQLError } from 'graphql-request/build/esm/types';
 describe('helpers/errors', () => {
   describe('snakeToCamelCase', () => {
     it('should convert snake_case to camelCase', () => {
-      expect(snakeToCamelCase('test_test')).toBe('testTest');
-      expect(snakeToCamelCase('test_test_test')).toBe('testTestTest');
-      expect(snakeToCamelCase('test_test_test_test')).toBe('testTestTestTest');
+      expect(_snakeToCamelCase('test_test')).toBe('testTest');
+      expect(_snakeToCamelCase('test_test_test')).toBe('testTestTest');
+      expect(_snakeToCamelCase('test_test_test_test')).toBe('testTestTestTest');
     });
   });
 
   describe('formatValidationErrors', () => {
     it('should return null if no errors are passed', () => {
-      expect(formatValidationErrors([])).toBeNull();
+      expect(_formatValidationErrors([])).toBeNull();
     });
 
     it('should return an object with paths and attributes as keys and error messages as values', () => {
@@ -31,7 +31,7 @@ describe('helpers/errors', () => {
         { explanation: 'test3', path: ['test3'] },
         { attribute: 'test4' },
       ];
-      expect(formatValidationErrors(errors)).toEqual({
+      expect(_formatValidationErrors(errors)).toEqual({
         'base.property': 'test',
         test2: 'test2',
         test3: 'test3',
@@ -103,7 +103,9 @@ describe('helpers/errors', () => {
         },
         { query: '' }
       );
-      expect(mapToLibraryErrorTypes(clientError).name).toBe(ErrorType.NotFound);
+      expect(_mapToLibraryErrorTypes(clientError).name).toBe(
+        ErrorType.NotFound
+      );
     });
 
     it('should return a ValidationError if the error is a ValidationError', () => {
@@ -127,7 +129,7 @@ describe('helpers/errors', () => {
         },
         { query: '' }
       );
-      const error = mapToLibraryErrorTypes(clientError);
+      const error = _mapToLibraryErrorTypes(clientError);
       expect(error.name).toBe(ErrorType.Validation);
       expect((error as ValidationError).details).toEqual({
         test: 'test explanation',
@@ -140,7 +142,7 @@ describe('helpers/errors', () => {
         { errors: [{ message } as unknown as GraphQLError], status: 200 },
         { query: '' }
       );
-      const error = mapToLibraryErrorTypes(clientError);
+      const error = _mapToLibraryErrorTypes(clientError);
       expect(error.name).toBe(ErrorType.Server);
       expect(error.message).toBe(message);
     });

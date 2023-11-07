@@ -13,6 +13,8 @@ describe('helpers/extra-fields', () => {
           required: true,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
         {
           id: '2',
@@ -22,6 +24,8 @@ describe('helpers/extra-fields', () => {
           required: false,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
       ];
       const output = mapExtraFieldsByFieldId(input);

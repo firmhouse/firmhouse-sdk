@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/firmhouse-sdk/**/*.{ts,tsx,js,jsx}"]
@@ -15,21 +15,34 @@
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
+        "main": "packages/firmhouse-sdk/src/index.ts",
         "outputPath": "dist/packages/firmhouse-sdk",
         "tsConfig": "packages/firmhouse-sdk/tsconfig.lib.json",
+        "generateExportsField": true,
+        "deleteOutputPath": true,
+        "compiler": "tsc",
         "project": "packages/firmhouse-sdk/package.json",
-        "entryFile": "packages/firmhouse-sdk/src/index.ts",
-        "external": ["react", "react-dom", "react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "additionalEntryPoints": ["packages/firmhouse-sdk/src/utils.ts"],
         "assets": [
           {
-            "glob": "packages/firmhouse-sdk/README.md",
+            "glob": "packages/firmhouse-sdk/*.md",
             "input": ".",
             "output": "."
           }
         ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "minify": true
+        }
       }
     },
     "graphql-codegen": {
@@ -52,6 +65,23 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "dependsOn": ["api-extractor"],
+      "options": {
+        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js",
+        "parallel": false
+      }
+    },
+    "api-extractor": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "dependsOn": ["build"],
+      "options": {
+        "command": "npx api-extractor run --local --diagnostics -c ./packages/firmhouse-sdk/api-extractor.json"
       }
     }
   }

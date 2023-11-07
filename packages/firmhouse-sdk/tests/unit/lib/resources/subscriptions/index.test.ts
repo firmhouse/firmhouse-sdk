@@ -1,22 +1,86 @@
-import {
-  AddToCartDocument,
-  CreateCartDocument,
-  CreateSubscriptionFromCartDocument,
-  GetSubscriptionDocument,
-  RemoveFromCartDocument,
-  SubscriptionStatus,
-  UpdateAddressDetailsDocument,
-  UpdateOrderedProductDocument,
-  UpdateOrderedProductQuantityDocument,
-  UpdatePlanDocument,
-} from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
-import GraphQLClient from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { SubscriptionType, SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
+import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
   ServerError,
   ValidationError,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
 import { SubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
+import {
+  CreateCartDocument,
+  GetSubscriptionDocument,
+  AddToCartDocument,
+  RemoveFromCartDocument,
+  UpdateOrderedProductQuantityDocument,
+  UpdateOrderedProductDocument,
+  UpdateAddressDetailsDocument,
+  CreateSubscriptionFromCartDocument,
+  UpdatePlanDocument,
+} from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
+
+const subscription: SubscriptionType = {
+  token: 'test',
+  skipAutoActivationOnSignup: false,
+  startDate: '',
+  status: SubscriptionStatus.Draft,
+  termsAccepted: false,
+  extraFields: [],
+  orderedProducts: [],
+  createdAt: null,
+  id: null,
+  metadata: undefined,
+  updatedAt: null,
+  address: null,
+  amountForStartingSubscriptionCents: null,
+  billToAddress: null,
+  billToCity: null,
+  billToCompanyName: null,
+  billToCountry: null,
+  billToDistrict: null,
+  billToFullAddress: null,
+  billToFullName: null,
+  billToHouseNumber: null,
+  billToLastName: null,
+  billToName: null,
+  billToPhoneNumber: null,
+  billToSalutation: null,
+  billToState: null,
+  billToZipcode: null,
+  cancellationStartedAt: null,
+  cancelledAt: null,
+  chargeDayOfTheMonth: null,
+  checkoutUrl: null,
+  city: null,
+  companyName: null,
+  country: null,
+  currency: null,
+  customerId: null,
+  customerReference: null,
+  dateOfBirth: null,
+  differentBillingAddress: null,
+  district: null,
+  email: null,
+  fullAddress: null,
+  fullName: null,
+  houseNumber: null,
+  identityVerificationUrl: null,
+  lastName: null,
+  locale: null,
+  marketingOptIn: null,
+  monthlyAmountCents: null,
+  name: null,
+  phoneNumber: null,
+  salutation: null,
+  signupCompletedAt: null,
+  state: null,
+  stoppedAt: null,
+  termsAcceptedOn: null,
+  trialPeriodMonths: null,
+  updatePaymentMethodUrl: null,
+  vatNumber: null,
+  zipcode: null,
+  activePlan: null,
+};
 
 describe('lib/resources/subscriptions/index.ts', () => {
   let mockGraphQLClient: GraphQLClient;
@@ -31,9 +95,9 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
   describe('createCart', () => {
     it('should call the correct query', async () => {
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createCart: { subscription: { token: 'test' } } });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        createCart: { subscription: { ...subscription, token: 'test' } },
+      });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       await testResource.createCart();
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
@@ -61,20 +125,21 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
     it('should return subscription token', async () => {
       const token = 'test';
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createCart: { subscription: { token } } });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        createCart: { subscription: { ...subscription, token } },
+      });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const { subscription } = await testResource.createCart();
-      expect(subscription?.token).toBe(token);
+      const { subscription: draftSubscription } =
+        await testResource.createCart();
+      expect(draftSubscription?.token).toBe(token);
     });
   });
 
   describe('createSubscriptionToken', () => {
     it('should call createCart method', async () => {
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createCart: { subscription: { token: 'test' } } });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        createCart: { subscription: { ...subscription, token: 'test' } },
+      });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       testResource.createCart = jest
         .fn()
@@ -107,9 +172,9 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
   describe('get', () => {
     it('should call the correct query', async () => {
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ getSubscription: { token: 'test' } });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscription: { ...subscription, token: 'test' },
+      });
       const token = 'testToken';
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       await testResource.get(token);
@@ -122,12 +187,12 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
     it('should return subscription with given token', async () => {
       const token = 'testToken';
-      const subscription = { id: 'test', token, orderedProducts: [] };
+      const draftSubscription = { ...subscription, id: 'test', token };
       mockGraphQLClient.request = jest
         .fn()
-        .mockResolvedValue({ getSubscription: subscription });
+        .mockResolvedValue({ getSubscription: draftSubscription });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.get(token)).resolves.toStrictEqual(subscription);
+      expect(testResource.get(token)).resolves.toStrictEqual(draftSubscription);
     });
 
     it('should throw error if no subscription found matching the given token', async () => {
@@ -143,30 +208,34 @@ describe('lib/resources/subscriptions/index.ts', () => {
   describe('getOrCreateDraftSubscription', () => {
     it('should return subscription if a draft subscription matching the given token exists ', async () => {
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const subscription = {
+      const draftSubscription = {
+        ...subscription,
         status: SubscriptionStatus.Draft,
         token: 'testToken',
         orderedProducts: [],
       };
-      testResource.get = jest.fn().mockResolvedValue(subscription);
+      testResource.get = jest.fn().mockResolvedValue(draftSubscription);
       expect(
         testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(subscription);
+      ).resolves.toStrictEqual(draftSubscription);
     });
 
     it('should create a new subscription if the subscription matching the given token is not a draft subscription ', async () => {
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       const activeSubscription = { status: 'Active', token: 'token' };
       testResource.get = jest.fn().mockResolvedValue(activeSubscription);
-      const subscription = {
+      const draftSubscription = {
+        ...subscription,
         status: SubscriptionStatus.Draft,
         token: 'token',
         orderedProducts: [],
       };
-      testResource.createCart = jest.fn().mockResolvedValue({ subscription });
+      testResource.createCart = jest
+        .fn()
+        .mockResolvedValue({ subscription: draftSubscription });
       expect(
         testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(subscription);
+      ).resolves.toStrictEqual(draftSubscription);
     });
 
     it('should create a new subscription if no subscription matches given token', async () => {
@@ -174,14 +243,17 @@ describe('lib/resources/subscriptions/index.ts', () => {
       testResource.get = jest
         .fn()
         .mockRejectedValue(new Error('Subscription not found'));
-      const subscription = {
+      const draftSubscription = {
+        ...subscription,
         status: SubscriptionStatus.Draft,
         token: 'testToken',
       };
-      testResource.createCart = jest.fn().mockResolvedValue({ subscription });
+      testResource.createCart = jest
+        .fn()
+        .mockResolvedValue({ subscription: draftSubscription });
       expect(
         testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(subscription);
+      ).resolves.toStrictEqual(draftSubscription);
     });
 
     it('should throw an error if returned subscription does not have a token', async () => {
@@ -202,7 +274,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         createOrderedProduct: {
-          subscription: { id: 'test', token: 'test' },
+          subscription,
           orderedProduct: {},
         },
       });
@@ -222,10 +294,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
           id: 'test',
           quantity: 1,
         },
-        subscription: {
-          id: 'test',
-          token: 'testToken',
-        },
+        subscription,
       };
       mockGraphQLClient.request = jest
         .fn()
@@ -252,10 +321,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should throw an error if returned ordered product is null', async () => {
       const response = {
         orderedProduct: null,
-        subscription: {
-          id: 'test',
-          token: 'test',
-        },
+        subscription,
       };
       mockGraphQLClient.request = jest
         .fn()
@@ -289,7 +355,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         destroyOrderedProduct: {
-          subscription: { id: 'test', token: 'test' },
+          subscription,
           orderedProduct: {},
         },
       });
@@ -309,10 +375,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
           id: 'test',
           quantity: 1,
         },
-        subscription: {
-          id: 'test',
-          token: 'testToken',
-        },
+        subscription,
       };
       mockGraphQLClient.request = jest
         .fn()
@@ -372,7 +435,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         updateOrderedProductQuantity: {
-          subscription: { id: 'test', token: 'test' },
+          subscription: { ...subscription, id: 'test', token: 'test' },
           orderedProduct: {},
         },
       });
@@ -398,6 +461,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
           quantity: 1,
         },
         subscription: {
+          ...subscription,
           id: 'test',
           token: 'test',
         },
@@ -530,7 +594,9 @@ describe('lib/resources/subscriptions/index.ts', () => {
   describe('updateAddressDetails', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        updateAddressDetails: { subscription: { id: 'test', token: 'token' } },
+        updateAddressDetails: {
+          subscription: { ...subscription, id: 'test', token: 'token' },
+        },
       });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       const input = { address: 'test' };
@@ -546,6 +612,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const input = { address: 'test', name: 'test name' };
       const response = {
         subscription: {
+          ...subscription,
           id: 'test',
           token: 'test',
           ...input,
@@ -564,18 +631,6 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should handle empty response correctly', async () => {
       const input = { address: 'test', name: 'test name' };
       const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateAddressDetails: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateAddressDetails(input, 'testToken')
-      ).rejects.toThrow('Could not update address details');
-    });
-
-    it('should throw an error if response is empty', async () => {
-      const input = { address: 'test', name: 'test name' };
-      const response = {};
       mockGraphQLClient.request = jest
         .fn()
         .mockResolvedValue({ updateAddressDetails: response });
@@ -635,7 +690,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         createSubscriptionFromCart: {
-          subscription: { id: 'test', token: 'test' },
+          subscription: { ...subscription, id: 'test', token: 'test' },
         },
       });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
@@ -658,6 +713,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const returnUrl = 'test';
       const response = {
         subscription: {
+          ...subscription,
           id: 'test',
           token: 'test',
         },
@@ -726,6 +782,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const returnUrl = 'test';
       const response = {
         subscription: {
+          ...subscription,
           id: 'test',
           token: 'test',
         },
@@ -760,7 +817,9 @@ describe('lib/resources/subscriptions/index.ts', () => {
   describe('updatePlan', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        updatePlan: { subscription: { id: 'test', token: 'test' } },
+        updatePlan: {
+          subscription: { ...subscription, id: 'test', token: 'test' },
+        },
       });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       const planSlug = 'new-plan';
@@ -776,6 +835,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       const input = 'new-plan';
       const response = {
         subscription: {
+          ...subscription,
           id: 'test',
           token: 'test',
           activePlan: {
