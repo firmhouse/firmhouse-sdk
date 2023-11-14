@@ -20,3 +20,7 @@ const { results } = await client.products.fetchAll();
 const product = await client.products.fetchById('123');
 const token = await client.subscriptions.createSubscriptionToken();
 ```
+
+## Development Guide
+
+You can check the [Development Guide](./docs/DevelopmentGuide.md) for learning about the conventions and tools used in the project.
