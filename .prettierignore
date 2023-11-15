@@ -6,3 +6,4 @@
 *.generated.ts
 generated.ts
 /tmp
+CHANGELOG.md
