@@ -66,7 +66,7 @@ export class FirmhouseClient {
    * @public
    * SelfServiceCenterToken methods
    */
-  public get SelfServiceCenterToken(): SelfServiceCenterTokenResource {
+  public get selfServiceCenterToken(): SelfServiceCenterTokenResource {
     return this._selfServiceCenterToken;
   }
 }
