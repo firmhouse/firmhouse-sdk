@@ -2,6 +2,7 @@ import { GraphQLClient } from './helpers/GraphQLClient';
 import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';
+import { SelfServiceCenterTokenResource } from './resources/selfServiceCenterToken';
 
 /**
  * @public
@@ -23,6 +24,7 @@ export class FirmhouseClient {
   private _products: ProductsResource;
   private _subscriptions: SubscriptionsResource;
   private _plans: PlansResource;
+  private _selfServiceCenterToken: SelfServiceCenterTokenResource;
 
   constructor(config: FirmhouseConfig) {
     this.API_TOKEN = config.apiToken;
@@ -31,6 +33,9 @@ export class FirmhouseClient {
     this._products = new ProductsResource(this.client);
     this._subscriptions = new SubscriptionsResource(this.client);
     this._plans = new PlansResource(this.client);
+    this._selfServiceCenterToken = new SelfServiceCenterTokenResource(
+      this.client
+    );
   }
 
   /**
@@ -55,5 +60,13 @@ export class FirmhouseClient {
    */
   public get subscriptions(): SubscriptionsResource {
     return this._subscriptions;
+  }
+
+  /**
+   * @public
+   * SelfServiceCenterToken methods
+   */
+  public get selfServiceCenterToken(): SelfServiceCenterTokenResource {
+    return this._selfServiceCenterToken;
   }
 }

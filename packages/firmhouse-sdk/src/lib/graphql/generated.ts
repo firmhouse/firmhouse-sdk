@@ -547,9 +547,11 @@ export enum FeedbackTypeEnum {
 export type FulfillOrderInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The timestamp of when the order was fulfilled. Will use the current time if the argument is missing. */
+  fulfilledAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
   /** ID of the confirmed or fulfilled order to (re-)fulfill. */
   id: Scalars['ID']['input'];
-  /** An optional tracking code for the order that can be included in an email. If a tracking code is provided then the order track and trace email will be sent. Please note: The the same tracking code will not be stored or emailed more than once.  */
+  /** An optional tracking code for the order that can be included in an email. If a tracking code is provided then the order track and trace email will be sent. Please note: The the same tracking code will not be stored or emailed more than once. */
   trackingCode?: InputMaybe<Scalars['String']['input']>;
 };
 
