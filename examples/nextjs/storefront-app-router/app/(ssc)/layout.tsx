@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import './global.css';
 import { NavBar } from '@firmhouse/ui-components';
 
 export const metadata = {
@@ -14,10 +12,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex-row bg-slate-50">
-        <NavBar title={metadata.title}>
-          <Link href="/self-service-center/login">Manage subscription</Link>
-        </NavBar>
-        {children}
+        <NavBar title={metadata.title} />
+        <div>{children}</div>
       </body>
     </html>
   );

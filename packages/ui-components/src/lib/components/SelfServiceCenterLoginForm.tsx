@@ -1,18 +1,20 @@
+'use client';
 import { Button, Input } from '@firmhouse/ui-components';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 export interface SelfServiceCenterLoginFormProps {
   createSelfServiceToken: (email: string) => void;
   error?: string;
 }
 
-export default function SelfServiceCenterLoginForm({
+export function SelfServiceCenterLoginForm({
   createSelfServiceToken,
   error,
 }: SelfServiceCenterLoginFormProps) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const onSubmit = () => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     setLoading(true);
     createSelfServiceToken(email);
   };
@@ -33,7 +35,6 @@ export default function SelfServiceCenterLoginForm({
           placeholder="Email"
         />
         <Button
-          type="submit"
           className=" w-full py-2 my-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
           text="Sign in with E-mail"
           disabled={email.length === 0 || loading}

@@ -1,15 +1,19 @@
-import { firmhouseClient } from '../../lib/firmhouse';
+import { firmhouseClient } from '../../../../lib/firmhouse';
 import { SelfServiceCenterLoginForm } from '@firmhouse/ui-components';
-import { useRouter } from 'next/router';
+import { RedirectType, redirect } from 'next/navigation';
 
-export default function Login() {
-  const router = useRouter();
-  const onSubmit = (email: string) => {
-    firmhouseClient.selfServiceCenterToken
-      .create(email)
-      .catch((e) => console.error(e));
-    router.replace('/self-service-center/status');
-  };
+export default async function Login() {
+  async function onSubmit(email: string) {
+    'use server';
+    console.log(email);
+
+    try {
+      await firmhouseClient.selfServiceCenterToken.create(email);
+    } catch (e) {
+      console.error(e);
+    }
+    redirect('/self-service-center/status', RedirectType.replace);
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">

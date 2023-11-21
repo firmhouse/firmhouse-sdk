@@ -6,5 +6,6 @@ export * from './lib/components/NumberInput';
 export * from './lib/components/Input';
 export * from './lib/components/Select';
 export * from './lib/components/Plan';
+export * from './lib/components/SelfServiceCenterLoginForm';
 export * from './lib/utils/price';
 export * from './lib/utils/date';
