@@ -1,4 +1,4 @@
-import { BaseResource } from '../BaseResource';
+import { SubscriptionsResource } from './index';
 import {
   CreateOrderedProductInput,
   SubscriptionStatus,
@@ -33,31 +33,7 @@ import {
  * @public
  * Subscription methods
  */
-export class SubscriptionsResource extends BaseResource {
-  async createCart(clientMutationId?: string) {
-    const response = await this.client.request(CreateCartDocument, {
-      input: { clientMutationId },
-    });
-    if (response.createCart === null || response.createCart === undefined) {
-      throw new ServerError('Could not create subscription');
-    }
-    return _formatSubscriptionInResponse(response.createCart);
-  }
-
-  /**
-   * Create a new cart and return the subscription token
-   * @param clientMutationId - Optional client mutation id
-   * @returns subscription token
-   */
-  public async createSubscriptionToken(clientMutationId?: string) {
-    const response = await this.createCart(clientMutationId);
-    const token = response.subscription.token;
-    if (token === null || token === undefined) {
-      throw new ServerError('No token returned from API');
-    }
-    return token;
-  }
-
+export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
   /**
    * Get a subscription by subscription token
    * @param token - Subscription token
@@ -73,31 +49,6 @@ export class SubscriptionsResource extends BaseResource {
       throw new NotFoundError('Subscription not found');
     }
     return _formatSubscription(response.getSubscription);
-  }
-
-  /**
-   * Try to get a subscription by token, if it exists and is a draft subscription, return it. Otherwise create a new draft subscription.
-   * @param token - Subscription token
-   * @returns Subscription if it exists, otherwise a new draft subscription
-   */
-  public async getOrCreateDraftSubscription(token?: string) {
-    let subscription: SubscriptionType | null = null;
-    if (token !== undefined) {
-      try {
-        const response = await this.get(token);
-        if (response.status === SubscriptionStatus.Draft) {
-          subscription = _formatSubscription(response);
-        }
-      } catch (error) {
-        // ignore
-      }
-    }
-    if (subscription === null) {
-      const response = await this.createCart();
-      subscription = response.subscription;
-    }
-
-    return subscription;
   }
 
   /**
@@ -326,8 +277,8 @@ export class SubscriptionsResource extends BaseResource {
     return _formatSubscriptionInResponse(updatePlan);
   }
 
-  protected getSubscriptionTokenHeader(subscriptionToken: string) {
-    return { 'X-Subscription-Token': subscriptionToken };
+  public async shouldOnlyExistInWrite() {
+    return '';
   }
 }
 
