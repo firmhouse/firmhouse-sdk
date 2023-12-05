@@ -20,6 +20,8 @@ export type Scalars = {
 export enum AcceptanceCheckStatus {
   /** Acceptance check has passed. */
   Accepted = 'ACCEPTED',
+  /** Acceptance check is cancelled by customer care. */
+  Cancelled = 'CANCELLED',
   /** Acceptance checks is pending. */
   Pending = 'PENDING',
   /** Acceptance check is rejected. */

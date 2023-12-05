@@ -37,18 +37,20 @@ export type OrderedProductType = ResolveObject<
  * @public
  * Subscription
  */
-export type SubscriptionType = ResolveObject<
-  Omit<BaseSubscriptionType, 'orderedProducts' | 'token'> & {
-    orderedProducts: OrderedProductType[] | null;
-    token: string;
-  }
->;
+export type SubscriptionType<T extends BaseSubscriptionType> = Omit<
+  T,
+  'orderedProducts' | 'token'
+> & {
+  orderedProducts: OrderedProductType[] | null;
+  token: string;
+};
 
 /**
  * @public
  * Extra field answer
  */
-export type ExtraFieldAnswerType = SubscriptionType['extraFields'][0];
+export type ExtraFieldAnswerType =
+  SubscriptionType<BaseSubscriptionType>['extraFields'][0];
 
 /**
  * @internal
@@ -71,14 +73,14 @@ export function _formatOrderedProduct(
 /**
  * @internal
  */
-export function _formatSubscription(
-  subscription: BaseSubscriptionType
-): SubscriptionType {
+export function _formatSubscription<
+  T extends BaseSubscriptionType = BaseSubscriptionType
+>(subscription: T): SubscriptionType<T> {
   const { orderedProducts, token, ...rest } = subscription;
   if (!token) {
     throw new ServerError('No token returned from API');
   }
-  const response: SubscriptionType = {
+  const response: SubscriptionType<T> = {
     ...rest,
     token,
     orderedProducts:

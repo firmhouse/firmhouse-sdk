@@ -86,3 +86,30 @@ mutation updatePlan($input: UpdatePlanInput!) {
     }
   }
 }
+
+query getCompleteSubscription($token: ID!) {
+  getSubscription(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+  }
+}
+
+query getSubscriptionWith(
+  $token: ID!
+  $includeVerifiedIdentity: Boolean! = false
+  $includeCollectionCases: Boolean! = false
+) {
+  getSubscription(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+    collectionCases @include(if: $includeCollectionCases) {
+      nodes {
+        ...CollectionCaseFields
+      }
+    }
+
+    verifiedIdentity @include(if: $includeVerifiedIdentity) {
+      ...SubscriptionIdentityFields
+    }
+  }
+}

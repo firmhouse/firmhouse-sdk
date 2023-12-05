@@ -15,8 +15,6 @@ fragment SubscriptionFragment on Subscription {
   billToSalutation
   billToState
   billToZipcode
-  cancellationStartedAt
-  cancelledAt
   chargeDayOfTheMonth
   checkoutUrl
   city
@@ -43,17 +41,13 @@ fragment SubscriptionFragment on Subscription {
   name
   phoneNumber
   salutation
-  signupCompletedAt
-  skipAutoActivationOnSignup
   startDate
   state
   status
-  stoppedAt
   termsAccepted
   termsAcceptedOn
   token
   trialPeriodMonths
-  updatePaymentMethodUrl
   updatedAt
   vatNumber
   zipcode
@@ -78,4 +72,27 @@ fragment ExtraFieldAnswerFragment on ExtraFieldAnswer {
   selectOptions
   value
   visibility
+}
+
+fragment CompleteSubscriptionFields on Subscription {
+  activatedAt
+  cancellationStartedAt
+  cancelledAt
+  identityVerificationUrl
+  inTrialPeriod
+  markedAsNonPayingAt
+  notes
+  paidAmount
+  pausedAt
+  pausedUntil
+  paymentMethod
+  paymentMethodSummary
+  paymentMethodTranslated
+  projectId
+  pspPaymentMethodDetails
+  signupCompletedAt
+  skipAutoActivationOnSignup
+  stoppedAt
+  updatePaymentMethodUrl
+  updatedAt
 }
