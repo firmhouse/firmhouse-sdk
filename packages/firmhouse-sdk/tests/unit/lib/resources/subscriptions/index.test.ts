@@ -4,7 +4,10 @@ import {
   ServerError,
   ValidationError,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
-import { SubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
+import {
+  BaseSubscriptionType,
+  SubscriptionsResource,
+} from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
 import {
   CreateCartDocument,
   GetSubscriptionDocument,
@@ -18,9 +21,8 @@ import {
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 
-const subscription: SubscriptionType = {
+const subscription: SubscriptionType<BaseSubscriptionType> = {
   token: 'test',
-  skipAutoActivationOnSignup: false,
   startDate: '',
   status: SubscriptionStatus.Draft,
   termsAccepted: false,
@@ -46,8 +48,6 @@ const subscription: SubscriptionType = {
   billToSalutation: null,
   billToState: null,
   billToZipcode: null,
-  cancellationStartedAt: null,
-  cancelledAt: null,
   chargeDayOfTheMonth: null,
   checkoutUrl: null,
   city: null,
@@ -71,12 +71,9 @@ const subscription: SubscriptionType = {
   name: null,
   phoneNumber: null,
   salutation: null,
-  signupCompletedAt: null,
   state: null,
-  stoppedAt: null,
   termsAcceptedOn: null,
   trialPeriodMonths: null,
-  updatePaymentMethodUrl: null,
   vatNumber: null,
   zipcode: null,
   activePlan: null,
@@ -603,7 +600,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       await testResource.updateAddressDetails(input, 'testToken');
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateAddressDetailsDocument,
-        { input },
+        input,
         { 'X-Subscription-Token': 'testToken' }
       );
     });

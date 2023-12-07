@@ -4,6 +4,7 @@ import {
   SubscriptionStatus,
 } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
 import {
+  BaseSubscriptionType,
   OrderedProductType,
   SubscriptionType,
   _formatOrderedProduct,
@@ -73,9 +74,8 @@ const formattedOrderedProduct = {
   intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
 };
 
-const subscription: SubscriptionType = {
+const subscription: SubscriptionType<BaseSubscriptionType> = {
   token: 'test',
-  skipAutoActivationOnSignup: false,
   startDate: '',
   status: SubscriptionStatus.Draft,
   termsAccepted: false,
@@ -101,8 +101,6 @@ const subscription: SubscriptionType = {
   billToSalutation: null,
   billToState: null,
   billToZipcode: null,
-  cancellationStartedAt: null,
-  cancelledAt: null,
   chargeDayOfTheMonth: null,
   checkoutUrl: null,
   city: null,
@@ -126,12 +124,9 @@ const subscription: SubscriptionType = {
   name: null,
   phoneNumber: null,
   salutation: null,
-  signupCompletedAt: null,
   state: null,
-  stoppedAt: null,
   termsAcceptedOn: null,
   trialPeriodMonths: null,
-  updatePaymentMethodUrl: null,
   vatNumber: null,
   zipcode: null,
   activePlan: null,

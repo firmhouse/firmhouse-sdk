@@ -55,8 +55,80 @@ mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
   }
 }
 
-mutation updateAddressDetails($input: UpdateAddressDetailsInput!) {
-  updateAddressDetails(input: $input) {
+mutation updateAddressDetails(
+  $clientMutationId: String
+  $metadata: JSON
+  $companyName: String
+  $salutation: String
+  $name: String
+  $lastName: String
+  $address: String
+  $zipcode: String
+  $houseNumber: String
+  $city: String
+  $country: String
+  $state: String
+  $district: String
+  $phoneNumber: String
+  $dateOfBirth: ISO8601Date
+  $differentBillingAddress: Boolean
+  $billToCompanyName: String
+  $billToSalutation: String
+  $billToName: String
+  $billToLastName: String
+  $billToAddress: String
+  $billToZipcode: String
+  $billToHouseNumber: String
+  $billToCity: String
+  $billToCountry: String
+  $billToState: String
+  $billToDistrict: String
+  $billToPhoneNumber: String
+  $email: String
+  $termsAccepted: Boolean
+  $marketingOptIn: Boolean
+  $extraFields: [ExtraFieldInput!]
+  $locale: String
+  $chargeDayOfTheMonth: Int
+) {
+  updateAddressDetails(
+    input: {
+      clientMutationId: $clientMutationId
+      metadata: $metadata
+      companyName: $companyName
+      salutation: $salutation
+      name: $name
+      lastName: $lastName
+      address: $address
+      zipcode: $zipcode
+      houseNumber: $houseNumber
+      city: $city
+      country: $country
+      state: $state
+      district: $district
+      phoneNumber: $phoneNumber
+      dateOfBirth: $dateOfBirth
+      differentBillingAddress: $differentBillingAddress
+      billToCompanyName: $billToCompanyName
+      billToSalutation: $billToSalutation
+      billToName: $billToName
+      billToLastName: $billToLastName
+      billToAddress: $billToAddress
+      billToZipcode: $billToZipcode
+      billToHouseNumber: $billToHouseNumber
+      billToCity: $billToCity
+      billToCountry: $billToCountry
+      billToState: $billToState
+      billToDistrict: $billToDistrict
+      billToPhoneNumber: $billToPhoneNumber
+      email: $email
+      termsAccepted: $termsAccepted
+      marketingOptIn: $marketingOptIn
+      extraFields: $extraFields
+      locale: $locale
+      chargeDayOfTheMonth: $chargeDayOfTheMonth
+    }
+  ) {
     subscription {
       ...SubscriptionFragment
     }
