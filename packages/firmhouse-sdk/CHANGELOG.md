@@ -1,3 +1,17 @@
+# [1.0.0-alpha.3](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.2...firmhouse-sdk-v1.0.0-alpha.3) (2023-12-08)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix build ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+
+
+### Features
+
+* **firmhouse-sdk:** add write access support ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+* **firmhouse-sdk:** customize field access ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+* **firmhouse-sdk:** modify updateOrderedProduct ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+
 # [1.0.0-alpha.2](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.1...firmhouse-sdk-v1.0.0-alpha.2) (2023-11-21)
 
 
