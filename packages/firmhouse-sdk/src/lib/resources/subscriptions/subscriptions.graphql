@@ -34,10 +34,10 @@ mutation removeFromCart($input: DestroyOrderedProductInput!) {
   }
 }
 
-mutation updateOrderedProductQuantity(
-  $input: UpdateOrderedProductQuantityInput!
-) {
-  updateOrderedProductQuantity(input: $input) {
+mutation updateOrderedProductQuantity($id: ID, $quantity: Int) {
+  updateOrderedProductQuantity(
+    input: { orderedProduct: { id: $id, quantity: $quantity } }
+  ) {
     orderedProduct {
       ...OrderedProductFragment
     }
@@ -47,8 +47,54 @@ mutation updateOrderedProductQuantity(
   }
 }
 
-mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
-  updateOrderedProduct(input: $input) {
+mutation updateOrderedProduct(
+  $id: ID
+  $interval: Int
+  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+  $metadata: JSON
+  $productId: ID
+  $quantity: Int
+  $shipmentDate: ISO8601Date
+) {
+  updateOrderedProduct(
+    input: {
+      id: $id
+      interval: $interval
+      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
+      metadata: $metadata
+      productId: $productId
+      quantity: $quantity
+      shipmentDate: $shipmentDate
+    }
+  ) {
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation updateOrderedProductWithWriteAccess(
+  $id: ID
+  $customPriceCents: Int
+  $interval: Int
+  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+  $metadata: JSON
+  $productId: ID
+  $quantity: Int
+  $shipmentDate: ISO8601Date
+) {
+  updateOrderedProduct(
+    input: {
+      id: $id
+      customPriceCents: $customPriceCents
+      interval: $interval
+      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
+      metadata: $metadata
+      productId: $productId
+      quantity: $quantity
+      shipmentDate: $shipmentDate
+    }
+  ) {
     orderedProduct {
       ...OrderedProductFragment
     }
@@ -56,7 +102,6 @@ mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
 }
 
 mutation updateAddressDetails(
-  $clientMutationId: String
   $metadata: JSON
   $companyName: String
   $salutation: String
@@ -93,7 +138,6 @@ mutation updateAddressDetails(
 ) {
   updateAddressDetails(
     input: {
-      clientMutationId: $clientMutationId
       metadata: $metadata
       companyName: $companyName
       salutation: $salutation

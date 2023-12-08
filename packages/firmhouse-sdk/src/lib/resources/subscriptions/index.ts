@@ -14,6 +14,7 @@ import {
   UpdateAddressDetailsDocument,
   UpdateAddressDetailsMutationVariables,
   UpdateOrderedProductDocument,
+  UpdateOrderedProductMutationVariables,
   UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
 } from './subscriptions.generated';
@@ -177,7 +178,7 @@ export class SubscriptionsResource extends BaseResource {
   ) {
     const response = await this.client.request(
       UpdateOrderedProductQuantityDocument,
-      { input: { orderedProduct: { id: orderedProductId, quantity } } },
+      { id: orderedProductId, quantity },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProductQuantity =
@@ -204,12 +205,12 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Updated subscription
    */
   public async updateOrderedProduct(
-    input: UpdateOrderedProductInput,
+    input: UpdateOrderedProductMutationVariables,
     subscriptionToken: string
   ) {
     const response = await this.client.request(
       UpdateOrderedProductDocument,
-      { input },
+      input,
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProduct = response.updateOrderedProduct ?? null;

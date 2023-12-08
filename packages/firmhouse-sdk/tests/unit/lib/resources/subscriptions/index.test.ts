@@ -446,7 +446,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       );
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateOrderedProductQuantityDocument,
-        { input: { orderedProduct: { id: testId, quantity: testQuantity } } },
+        { id: testId, quantity: testQuantity },
         { 'X-Subscription-Token': 'testToken' }
       );
     });
@@ -533,7 +533,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       await testResource.updateOrderedProduct(input, 'testToken');
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateOrderedProductDocument,
-        { input },
+        input,
         { 'X-Subscription-Token': 'testToken' }
       );
     });

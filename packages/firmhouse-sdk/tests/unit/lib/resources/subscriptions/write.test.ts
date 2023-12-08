@@ -5,6 +5,7 @@ import { BaseSubscriptionType } from '@firmhouse/firmhouse-sdk/lib/resources/sub
 import {
   GetCompleteSubscriptionDocument,
   GetSubscriptionWithDocument,
+  UpdateOrderedProductWithWriteAccessDocument,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 import { WriteAccessSubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/write';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
@@ -166,6 +167,81 @@ describe('lib/resources/subscriptions/write.ts', () => {
         mockGraphQLClient
       );
       expect(testResource.get(token)).rejects.toThrow('Subscription not found');
+    });
+  });
+
+  describe('updateOrderedProduct', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        updateOrderedProduct: {
+          orderedProduct: {},
+        },
+      });
+      const input = { id: 'test', shipmentDate: '20-01-2024' };
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      await testResource.updateOrderedProduct(input, 'testToken');
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        UpdateOrderedProductWithWriteAccessDocument,
+        input,
+        { 'X-Subscription-Token': 'testToken' }
+      );
+    });
+
+    it('should return updated product', async () => {
+      const input = {
+        id: 'test',
+        shipmentDate: '20-01-2024',
+      };
+      const response = {
+        orderedProduct: input,
+      };
+      mockGraphQLClient.request = jest
+        .fn()
+        .mockResolvedValue({ updateOrderedProduct: response });
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      expect(
+        testResource.updateOrderedProduct(input, 'testToken')
+      ).resolves.toStrictEqual(response);
+    });
+
+    it('should throw an error if response is null', async () => {
+      const input = {
+        id: 'test',
+        shipmentDate: '20-01-2024',
+      };
+      const response = null;
+      mockGraphQLClient.request = jest
+        .fn()
+        .mockResolvedValue({ updateOrderedProduct: response });
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      expect(
+        testResource.updateOrderedProduct(input, 'testToken')
+      ).rejects.toThrow('Could not update ordered product');
+    });
+
+    it('should throw an error if returned ordered product is null', async () => {
+      const input = {
+        id: 'test',
+        shipmentDate: '20-01-2024',
+      };
+      const response = {
+        orderedProduct: null,
+      };
+      mockGraphQLClient.request = jest
+        .fn()
+        .mockResolvedValue({ updateOrderedProduct: response });
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      expect(
+        testResource.updateOrderedProduct(input, 'testToken')
+      ).rejects.toThrow('Could not update ordered product');
     });
   });
 });
