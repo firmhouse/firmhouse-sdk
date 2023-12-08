@@ -229,3 +229,10 @@ query getSubscriptionWith(
     }
   }
 }
+
+query getSubscriptionBySelfServiceCenterLoginToken($token: ID!) {
+  getSubscriptionBySelfServiceCenterLoginToken(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+  }
+}

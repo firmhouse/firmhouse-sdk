@@ -2,6 +2,8 @@ import { SubscriptionsResource } from './index';
 import {
   GetCompleteSubscriptionDocument,
   GetCompleteSubscriptionQuery,
+  GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   GetSubscriptionWithDocument,
   UpdateOrderedProductWithWriteAccessDocument,
 } from './subscriptions.generated';
@@ -98,5 +100,26 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
     return {
       orderedProduct: _formatOrderedProduct(orderedProduct),
     };
+  }
+
+  /**
+   * Get a subscription by self service center login token
+   * @param token - Self service center login token
+   * @returns Subscription
+   */
+  public async getBySelfServiceCenterLoginToken(token: string) {
+    const response = await this.client.request(
+      GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+      { token },
+      this.getSubscriptionTokenHeader(token)
+    );
+    if (response.getSubscriptionBySelfServiceCenterLoginToken === null) {
+      throw new NotFoundError('Subscription not found');
+    }
+    return _formatSubscription<
+      NonNullable<
+        GetSubscriptionBySelfServiceCenterLoginTokenQuery['getSubscriptionBySelfServiceCenterLoginToken']
+      >
+    >(response.getSubscriptionBySelfServiceCenterLoginToken);
   }
 }

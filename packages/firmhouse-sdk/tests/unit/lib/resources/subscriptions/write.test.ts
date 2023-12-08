@@ -4,6 +4,7 @@ import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClien
 import { BaseSubscriptionType } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
 import {
   GetCompleteSubscriptionDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionWithDocument,
   UpdateOrderedProductWithWriteAccessDocument,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
@@ -242,6 +243,58 @@ describe('lib/resources/subscriptions/write.ts', () => {
       expect(
         testResource.updateOrderedProduct(input, 'testToken')
       ).rejects.toThrow('Could not update ordered product');
+    });
+  });
+
+  describe('getBySelfServiceCenterLoginToken', () => {
+    it('should call the correct query', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscriptionBySelfServiceCenterLoginToken: {
+          ...subscription,
+          token: 'test',
+        },
+      });
+      const token = 'testToken';
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      await testResource.getBySelfServiceCenterLoginToken(token);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+        { token },
+        { 'X-Subscription-Token': token }
+      );
+    });
+
+    it('should return subscription with given self service center login token', async () => {
+      const token = 'testToken';
+      const activeSubscription = { ...subscription, id: 'test', token };
+      mockGraphQLClient.request = jest
+        .fn()
+        .mockResolvedValue({
+          getSubscriptionBySelfServiceCenterLoginToken: activeSubscription,
+        });
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      expect(
+        testResource.getBySelfServiceCenterLoginToken(token)
+      ).resolves.toStrictEqual(activeSubscription);
+    });
+
+    it('should throw error if no subscription found matching the given token', async () => {
+      mockGraphQLClient.request = jest
+        .fn()
+        .mockResolvedValue({
+          getSubscriptionBySelfServiceCenterLoginToken: null,
+        });
+      const token = 'testToken';
+      const testResource = new WriteAccessSubscriptionsResource(
+        mockGraphQLClient
+      );
+      expect(
+        testResource.getBySelfServiceCenterLoginToken(token)
+      ).rejects.toThrow('Subscription not found');
     });
   });
 });
