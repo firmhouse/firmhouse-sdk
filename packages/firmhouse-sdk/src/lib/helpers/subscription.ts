@@ -37,10 +37,9 @@ export type OrderedProductType = ResolveObject<
  * @public
  * Subscription
  */
-export type SubscriptionType<T extends BaseSubscriptionType> = Omit<
-  T,
-  'orderedProducts' | 'token'
-> & {
+export type SubscriptionType<
+  T extends BaseSubscriptionType = BaseSubscriptionType
+> = Omit<T, 'orderedProducts' | 'token'> & {
   orderedProducts: OrderedProductType[] | null;
   token: string;
 };

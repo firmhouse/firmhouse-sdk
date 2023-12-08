@@ -108,7 +108,6 @@ export async function updateCheckoutDetails(data: FormData) {
     // We do not redirect here because nextjs handles redirects by throwing special error
     // So if we call redirect here it will be caught by the catch block
   } catch (error) {
-    console.log(error);
     if (error instanceof ValidationError) {
       return error.details;
     }
