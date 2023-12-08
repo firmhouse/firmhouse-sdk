@@ -1,0 +1,7 @@
+fragment SubscriptionIdentityFields on SubscriptionIdentity {
+  createdAt
+  payload
+  serviceProvider
+  status
+  verificationMethod
+}

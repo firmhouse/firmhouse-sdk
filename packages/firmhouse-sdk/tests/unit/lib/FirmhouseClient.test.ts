@@ -1,21 +1,45 @@
-import { BaseResource } from '@firmhouse/firmhouse-sdk/lib/resources/BaseResource';
-import { FirmhouseClient } from '@firmhouse/firmhouse-sdk/lib/FirmhouseClient';
+import {
+  Access,
+  FirmhouseClient,
+} from '@firmhouse/firmhouse-sdk/lib/FirmhouseClient';
+import { WriteAccessSubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/write';
 
 describe('lib/FirmhouseClient.ts', () => {
   describe('FirmhouseClient', () => {
-    it('should initialize the FirmhouseClient correctly', () => {
-      const config = {
-        apiToken: 'test',
-        baseUrl: 'https://portal.firmhouse.com/graphql',
-      };
-      const client = new FirmhouseClient({
-        apiToken: config.apiToken,
-        baseUrl: config.baseUrl,
+    describe('with storefront access type', () => {
+      it('should initialize the FirmhouseClient correctly', () => {
+        const config = {
+          apiToken: 'test',
+          baseUrl: 'https://portal.firmhouse.com/graphql',
+        };
+        const client = new FirmhouseClient({
+          apiToken: config.apiToken,
+          baseUrl: config.baseUrl,
+        });
+        expect(client.products).toBeDefined();
+        expect(client.plans).toBeDefined();
+        expect(client.selfServiceCenterToken).toBeDefined();
+        expect(client.subscriptions).toBeDefined();
       });
-      expect(client.products).toBeDefined();
-      expect(client.plans).toBeDefined();
-      expect(client.selfServiceCenterToken).toBeDefined();
-      expect(client.subscriptions).toBeDefined();
+    });
+
+    describe('with write access type', () => {
+      it('should initialize the FirmhouseClient correctly', () => {
+        const config = {
+          apiToken: 'test',
+          baseUrl: 'https://portal.firmhouse.com/graphql',
+        };
+        const client = new FirmhouseClient({
+          apiToken: config.apiToken,
+          baseUrl: config.baseUrl,
+          accessType: Access.write,
+        });
+        expect(client.products).toBeDefined();
+        expect(client.plans).toBeDefined();
+        expect(client.selfServiceCenterToken).toBeDefined();
+        expect(client.subscriptions).toBeDefined();
+        expect(client.subscriptions.getWith).toBeDefined();
+      });
     });
   });
 });

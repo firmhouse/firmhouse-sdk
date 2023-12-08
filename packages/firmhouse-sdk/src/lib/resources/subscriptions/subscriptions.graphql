@@ -34,10 +34,10 @@ mutation removeFromCart($input: DestroyOrderedProductInput!) {
   }
 }
 
-mutation updateOrderedProductQuantity(
-  $input: UpdateOrderedProductQuantityInput!
-) {
-  updateOrderedProductQuantity(input: $input) {
+mutation updateOrderedProductQuantity($id: ID, $quantity: Int) {
+  updateOrderedProductQuantity(
+    input: { orderedProduct: { id: $id, quantity: $quantity } }
+  ) {
     orderedProduct {
       ...OrderedProductFragment
     }
@@ -47,16 +47,132 @@ mutation updateOrderedProductQuantity(
   }
 }
 
-mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
-  updateOrderedProduct(input: $input) {
+mutation updateOrderedProduct(
+  $id: ID
+  $interval: Int
+  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+  $metadata: JSON
+  $productId: ID
+  $quantity: Int
+  $shipmentDate: ISO8601Date
+) {
+  updateOrderedProduct(
+    input: {
+      id: $id
+      interval: $interval
+      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
+      metadata: $metadata
+      productId: $productId
+      quantity: $quantity
+      shipmentDate: $shipmentDate
+    }
+  ) {
     orderedProduct {
       ...OrderedProductFragment
     }
   }
 }
 
-mutation updateAddressDetails($input: UpdateAddressDetailsInput!) {
-  updateAddressDetails(input: $input) {
+mutation updateOrderedProductWithWriteAccess(
+  $id: ID
+  $customPriceCents: Int
+  $interval: Int
+  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+  $metadata: JSON
+  $productId: ID
+  $quantity: Int
+  $shipmentDate: ISO8601Date
+) {
+  updateOrderedProduct(
+    input: {
+      id: $id
+      customPriceCents: $customPriceCents
+      interval: $interval
+      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
+      metadata: $metadata
+      productId: $productId
+      quantity: $quantity
+      shipmentDate: $shipmentDate
+    }
+  ) {
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation updateAddressDetails(
+  $metadata: JSON
+  $companyName: String
+  $salutation: String
+  $name: String
+  $lastName: String
+  $address: String
+  $zipcode: String
+  $houseNumber: String
+  $city: String
+  $country: String
+  $state: String
+  $district: String
+  $phoneNumber: String
+  $dateOfBirth: ISO8601Date
+  $differentBillingAddress: Boolean
+  $billToCompanyName: String
+  $billToSalutation: String
+  $billToName: String
+  $billToLastName: String
+  $billToAddress: String
+  $billToZipcode: String
+  $billToHouseNumber: String
+  $billToCity: String
+  $billToCountry: String
+  $billToState: String
+  $billToDistrict: String
+  $billToPhoneNumber: String
+  $email: String
+  $termsAccepted: Boolean
+  $marketingOptIn: Boolean
+  $extraFields: [ExtraFieldInput!]
+  $locale: String
+  $chargeDayOfTheMonth: Int
+) {
+  updateAddressDetails(
+    input: {
+      metadata: $metadata
+      companyName: $companyName
+      salutation: $salutation
+      name: $name
+      lastName: $lastName
+      address: $address
+      zipcode: $zipcode
+      houseNumber: $houseNumber
+      city: $city
+      country: $country
+      state: $state
+      district: $district
+      phoneNumber: $phoneNumber
+      dateOfBirth: $dateOfBirth
+      differentBillingAddress: $differentBillingAddress
+      billToCompanyName: $billToCompanyName
+      billToSalutation: $billToSalutation
+      billToName: $billToName
+      billToLastName: $billToLastName
+      billToAddress: $billToAddress
+      billToZipcode: $billToZipcode
+      billToHouseNumber: $billToHouseNumber
+      billToCity: $billToCity
+      billToCountry: $billToCountry
+      billToState: $billToState
+      billToDistrict: $billToDistrict
+      billToPhoneNumber: $billToPhoneNumber
+      email: $email
+      termsAccepted: $termsAccepted
+      marketingOptIn: $marketingOptIn
+      extraFields: $extraFields
+      locale: $locale
+      chargeDayOfTheMonth: $chargeDayOfTheMonth
+    }
+  ) {
     subscription {
       ...SubscriptionFragment
     }
@@ -83,6 +199,33 @@ mutation updatePlan($input: UpdatePlanInput!) {
   updatePlan(input: $input) {
     subscription {
       ...SubscriptionFragment
+    }
+  }
+}
+
+query getCompleteSubscription($token: ID!) {
+  getSubscription(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+  }
+}
+
+query getSubscriptionWith(
+  $token: ID!
+  $includeVerifiedIdentity: Boolean! = false
+  $includeCollectionCases: Boolean! = false
+) {
+  getSubscription(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+    collectionCases @include(if: $includeCollectionCases) {
+      nodes {
+        ...CollectionCaseFields
+      }
+    }
+
+    verifiedIdentity @include(if: $includeVerifiedIdentity) {
+      ...SubscriptionIdentityFields
     }
   }
 }

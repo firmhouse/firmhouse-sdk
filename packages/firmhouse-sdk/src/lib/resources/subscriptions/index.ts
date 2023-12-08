@@ -2,7 +2,6 @@ import { BaseResource } from '../BaseResource';
 import {
   CreateOrderedProductInput,
   SubscriptionStatus,
-  UpdateAddressDetailsInput,
   UpdateOrderedProductInput,
 } from '../../graphql/generated';
 
@@ -13,7 +12,9 @@ import {
   GetSubscriptionDocument,
   RemoveFromCartDocument,
   UpdateAddressDetailsDocument,
+  UpdateAddressDetailsMutationVariables,
   UpdateOrderedProductDocument,
+  UpdateOrderedProductMutationVariables,
   UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
 } from './subscriptions.generated';
@@ -23,6 +24,7 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import {
+  BaseSubscriptionType,
   SubscriptionType,
   _formatOrderedProduct,
   _formatSubscription,
@@ -81,7 +83,7 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Subscription if it exists, otherwise a new draft subscription
    */
   public async getOrCreateDraftSubscription(token?: string) {
-    let subscription: SubscriptionType | null = null;
+    let subscription: SubscriptionType<BaseSubscriptionType> | null = null;
     if (token !== undefined) {
       try {
         const response = await this.get(token);
@@ -176,7 +178,7 @@ export class SubscriptionsResource extends BaseResource {
   ) {
     const response = await this.client.request(
       UpdateOrderedProductQuantityDocument,
-      { input: { orderedProduct: { id: orderedProductId, quantity } } },
+      { id: orderedProductId, quantity },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProductQuantity =
@@ -203,12 +205,12 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Updated subscription
    */
   public async updateOrderedProduct(
-    input: UpdateOrderedProductInput,
+    input: UpdateOrderedProductMutationVariables,
     subscriptionToken: string
   ) {
     const response = await this.client.request(
       UpdateOrderedProductDocument,
-      { input },
+      input,
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProduct = response.updateOrderedProduct ?? null;
@@ -235,12 +237,12 @@ export class SubscriptionsResource extends BaseResource {
    * Will return validation error messages for invalid fields.
    */
   public async updateAddressDetails(
-    input: UpdateAddressDetailsInput,
+    input: UpdateAddressDetailsMutationVariables,
     subscriptionToken: string
   ) {
     const response = await this.client.request(
       UpdateAddressDetailsDocument,
-      { input },
+      input,
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
 
@@ -326,7 +328,7 @@ export class SubscriptionsResource extends BaseResource {
     return _formatSubscriptionInResponse(updatePlan);
   }
 
-  private getSubscriptionTokenHeader(subscriptionToken: string) {
+  protected getSubscriptionTokenHeader(subscriptionToken: string) {
     return { 'X-Subscription-Token': subscriptionToken };
   }
 }

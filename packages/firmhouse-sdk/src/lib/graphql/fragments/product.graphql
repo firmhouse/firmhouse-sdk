@@ -30,3 +30,8 @@ fragment ProductFragment on Product {
   taxPercentage
   title
 }
+
+fragment CompleteProductFragment on Product {
+  ...ProductFragment
+  costPerItemCents
+}

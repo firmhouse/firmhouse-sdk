@@ -1,0 +1,7 @@
+fragment CollectionCaseFields on CollectionCase {
+  caseNumber
+  createdAt
+  id
+  status
+  updatedAt
+}
