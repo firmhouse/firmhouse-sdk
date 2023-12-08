@@ -42,7 +42,10 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    */
   public async getWith(
     token: string,
-    includeRelations: { collectionCases: false; verifiedIdentity: false }
+    includeRelations: {
+      collectionCases: boolean;
+      verifiedIdentity: boolean;
+    } = { collectionCases: false, verifiedIdentity: false }
   ) {
     const response = await this.client.request(
       GetSubscriptionWithDocument,
