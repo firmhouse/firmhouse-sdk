@@ -5,10 +5,12 @@ import { RedirectType, redirect } from 'next/navigation';
 export default async function Login() {
   async function onSubmit(email: string) {
     'use server';
-    console.log(email);
 
     try {
-      await firmhouseClient.selfServiceCenterToken.create(email);
+      await firmhouseClient.selfServiceCenterToken.create(
+        email,
+        `${process.env.NEXT_PUBLIC_SITE_URL}/self-service-center/token-login`
+      );
     } catch (e) {
       console.error(e);
     }

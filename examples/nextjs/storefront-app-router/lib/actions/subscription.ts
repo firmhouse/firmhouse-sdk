@@ -2,12 +2,14 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { firmhouseClient } from '../firmhouse';
+import { writeAccessFirmhouseClient } from '../firmhouse-write';
 import { revalidatePath } from 'next/cache';
 import { getISO8601Date } from '@firmhouse/ui-components';
 import { redirect } from 'next/navigation';
 import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
 
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
+const SSC_SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:ssc';
 
 export async function isInitialized(): Promise<boolean> {
   return cookies().get(SUBSCRIPTION_TOKEN_COOKIE) !== undefined;
@@ -131,4 +133,30 @@ export async function updatePlan(data: FormData) {
     await getSubscriptionToken()
   );
   revalidatePath('/');
+}
+
+export async function createSSCSubscriptionCookie(
+  selfServiceCenterLoginToken: string,
+  redirectURL: string
+): Promise<void> {
+  try {
+    const client = await writeAccessFirmhouseClient();
+    const subscription =
+      await client.subscriptions.getBySelfServiceCenterLoginToken(
+        selfServiceCenterLoginToken
+      );
+    cookies().set(SSC_SUBSCRIPTION_TOKEN_COOKIE, subscription.token);
+  } catch (e) {
+    console.error(e);
+    return redirect('/self-service-center/login');
+  }
+  redirect(redirectURL);
+}
+
+export async function getSSCSubscriptionToken(): Promise<string> {
+  return cookies().get(SSC_SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
+}
+
+export async function clearSSCSubscriptionToken(): Promise<void> {
+  cookies().delete(SSC_SUBSCRIPTION_TOKEN_COOKIE);
 }

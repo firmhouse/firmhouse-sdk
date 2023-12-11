@@ -269,11 +269,9 @@ describe('lib/resources/subscriptions/write.ts', () => {
     it('should return subscription with given self service center login token', async () => {
       const token = 'testToken';
       const activeSubscription = { ...subscription, id: 'test', token };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({
-          getSubscriptionBySelfServiceCenterLoginToken: activeSubscription,
-        });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscriptionBySelfServiceCenterLoginToken: activeSubscription,
+      });
       const testResource = new WriteAccessSubscriptionsResource(
         mockGraphQLClient
       );
@@ -283,11 +281,9 @@ describe('lib/resources/subscriptions/write.ts', () => {
     });
 
     it('should throw error if no subscription found matching the given token', async () => {
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({
-          getSubscriptionBySelfServiceCenterLoginToken: null,
-        });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscriptionBySelfServiceCenterLoginToken: null,
+      });
       const token = 'testToken';
       const testResource = new WriteAccessSubscriptionsResource(
         mockGraphQLClient
