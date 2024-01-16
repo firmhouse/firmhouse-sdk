@@ -1,5 +1,8 @@
 import { type NextRequest } from 'next/server';
-import { createSSCSubscriptionCookie } from '../../../../lib/actions/subscription';
+import {
+  clearSSCSubscriptionToken,
+  createSSCSubscriptionCookie,
+} from '../../../../lib/actions/subscription';
 import { redirect } from 'next/navigation';
 
 export async function GET(request: NextRequest) {
@@ -9,4 +12,9 @@ export async function GET(request: NextRequest) {
     redirect('/self-service-center/login');
   }
   return createSSCSubscriptionCookie(token, '/self-service-center');
+}
+
+export async function DELETE(request: NextRequest) {
+  await clearSSCSubscriptionToken();
+  return redirect('/');
 }
