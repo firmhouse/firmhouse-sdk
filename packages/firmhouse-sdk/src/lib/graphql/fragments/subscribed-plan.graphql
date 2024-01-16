@@ -1,0 +1,26 @@
+fragment SubscribedPlanFragment on SubscribedPlan {
+  activatedAt
+  allowedToCancel
+  billingCycleInterval
+  billingCycleIntervalUnit
+  customInitialAmountCents
+  customRecurringAmountCents
+  graceCancellationEndsAt
+  graceCancellationPeriod
+  graceCancellationUnit
+  id
+  inGraceCancellation
+  inMinimumCommitment
+  maximumCommitmentEndsAt
+  maximumCommitmentPeriod
+  maximumCommitmentUnit
+  minimumCommitmentEndsAt
+  minimumCommitmentPeriod
+  minimumCommitmentUnit
+  name
+  nextBillingDate
+  showInPriceBreakDown
+  trialPeriodPeriod
+  trialPeriodUnit
+  unconsumedContractTermEventCount
+}
