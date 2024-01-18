@@ -153,6 +153,30 @@ export async function createSSCSubscriptionCookie(
   redirect(redirectURL);
 }
 
+export async function updateSubscription(data: FormData) {
+  const body: Record<string, string> = {};
+  const path = data.get('path')?.toString();
+  data.delete('path');
+  data.forEach((value, key) => {
+    body[key] = value.toString();
+  });
+  const client = await writeAccessFirmhouseClient();
+  try {
+    client.subscriptions.updateAddressDetails(
+      body,
+      await getSSCSubscriptionToken()
+    );
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return error.details;
+    }
+    if (error instanceof ServerError) {
+      return { error: error.message };
+    }
+  }
+  revalidatePath(path);
+}
+
 export async function getSSCSubscriptionToken(): Promise<string> {
   return cookies().get(SSC_SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
 }
