@@ -3,6 +3,7 @@ import React from 'react';
 export default function Layout(props: {
   children: React.ReactNode;
   editDetails: React.ReactNode;
+  paymentMethod: React.ReactNode;
 }) {
   return (
     <>
@@ -20,6 +21,7 @@ export default function Layout(props: {
       <div className="grid grid-cols-4 gap-4 container max-w-5xl mx-auto p-4">
         <div className="col-span-full lg:col-span-2 order-2 lg:order-1">
           {props.editDetails}
+          {props.paymentMethod}
         </div>
       </div>
     </>
