@@ -13,10 +13,13 @@ const nextConfig = {
     svgr: false,
   },
   images: {
-    domains: ['s3-eu-west-1.amazonaws.com'],
-  },
-  experimental: {
-    serverActions: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 's3-eu-west-1.amazonaws.com',
+        pathname: '/firmhouse-payments-production/**',
+      },
+    ],
   },
 };
 
