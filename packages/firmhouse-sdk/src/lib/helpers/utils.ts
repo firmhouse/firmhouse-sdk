@@ -19,3 +19,10 @@ export function arrayFilterNulls<T>(
 export function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 }
+
+/**
+ * @internal
+ */
+export function isEdgeRuntime(): boolean {
+  return typeof EdgeRuntime === 'string';
+}

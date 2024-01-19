@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './global.css';
 import { NavBar } from '@firmhouse/ui-components';
 
+export const runtime = 'edge';
+
 export const metadata = {
   title: 'Firmhouse Storefront Next.js App / App Router',
 };

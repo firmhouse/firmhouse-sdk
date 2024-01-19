@@ -4,6 +4,7 @@ import {
   ClientError,
 } from 'graphql-request';
 import { _mapToLibraryErrorTypes } from './errors';
+import { isEdgeRuntime } from './utils';
 // Wraps the graphql-request client to provide a typed interface
 export class GraphQLClient {
   private readonly API_TOKEN: string;
@@ -19,6 +20,7 @@ export class GraphQLClient {
     this.API_TOKEN = apiToken;
     this.BASE_URL = baseUrl;
     this.client = new GraphQLClientBase(this.BASE_URL, {
+      fetch: isEdgeRuntime() ? fetch : undefined,
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },
