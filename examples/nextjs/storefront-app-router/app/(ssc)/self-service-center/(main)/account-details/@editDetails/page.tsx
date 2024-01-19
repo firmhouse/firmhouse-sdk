@@ -17,11 +17,6 @@ export default async function EditDetailsForm() {
     <div className="border rounded-md shadow-xl bg-white p-4 [&>.w-full]:px-0">
       <span className="text-base font-bold">Personal details</span>
       <form action={updateAction}>
-        <input
-          type="hidden"
-          name="path"
-          value="(ssc)/self-service-center/account-details/@editDetails"
-        />
         <Input
           name="name"
           label="First name"

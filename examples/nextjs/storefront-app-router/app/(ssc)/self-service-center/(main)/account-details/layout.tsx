@@ -4,6 +4,7 @@ export default function Layout(props: {
   children: React.ReactNode;
   editDetails: React.ReactNode;
   paymentMethod: React.ReactNode;
+  editAddresses: React.ReactNode;
 }) {
   return (
     <>
@@ -22,6 +23,10 @@ export default function Layout(props: {
         <div className="col-span-full lg:col-span-2 order-2 lg:order-1">
           {props.editDetails}
           {props.paymentMethod}
+        </div>
+
+        <div className="col-span-full lg:col-span-2 order-1 log:order-2">
+          {props.editAddresses}
         </div>
       </div>
     </>
