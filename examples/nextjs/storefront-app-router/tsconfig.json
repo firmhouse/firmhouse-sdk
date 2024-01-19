@@ -16,7 +16,7 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": ["jest", "@edge-runtime/types"]
   },
   "include": [
     "**/*.ts",

@@ -59,10 +59,6 @@ export class NotFoundError extends Error {
     super(message);
     Object.setPrototypeOf(this, NotFoundError.prototype);
     this.name = ErrorType.NotFound;
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, NotFoundError);
-    }
   }
 }
 
@@ -79,11 +75,6 @@ export class ServerError extends Error {
     super(message);
     Object.setPrototypeOf(this, ServerError.prototype);
     this.name = ErrorType.Server;
-
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, ServerError);
-    }
   }
 }
 
@@ -104,10 +95,6 @@ export class ValidationError extends Error {
     Object.setPrototypeOf(this, ValidationError.prototype);
     this.name = ErrorType.Validation;
     this.details = _formatValidationErrors(errors);
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, ValidationError);
-    }
   }
 }
 
