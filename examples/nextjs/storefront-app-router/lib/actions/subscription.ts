@@ -153,10 +153,8 @@ export async function createSSCSubscriptionCookie(
   redirect(redirectURL);
 }
 
-export async function updateSubscription(data: FormData) {
+export async function updateSubscription(path: string, data: FormData) {
   const body: Record<string, string> = {};
-  const path = data.get('path')?.toString();
-  data.delete('path');
   data.forEach((value, key) => {
     body[key] = value.toString();
   });
@@ -174,7 +172,9 @@ export async function updateSubscription(data: FormData) {
       return { error: error.message };
     }
   }
-  revalidatePath(path);
+  if (path) {
+    revalidatePath(path);
+  }
 }
 
 export async function getSSCSubscriptionToken(): Promise<string> {

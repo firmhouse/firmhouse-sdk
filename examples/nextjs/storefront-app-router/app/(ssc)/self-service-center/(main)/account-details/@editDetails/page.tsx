@@ -7,13 +7,13 @@ import { writeAccessFirmhouseClient } from '../../../../../../lib/firmhouse-writ
 
 export default async function EditDetailsForm() {
   const token = await getSSCSubscriptionToken();
-
+  const updateAction = updateSubscription.bind(null, '');
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
   return (
     <div className="border rounded-md shadow-xl bg-white p-4 [&>.w-full]:px-0">
       <span className="text-base font-bold">Personal details</span>
-      <form action={updateSubscription}>
+      <form action={updateAction}>
         <input
           type="hidden"
           name="path"
@@ -43,7 +43,10 @@ export default async function EditDetailsForm() {
         />
 
         <div className="flex flex-row-reverse mt-2">
-          <button className="bg-gray-900 text-gray-50 rounded-md p-2 my-4 font-medium">
+          <button
+            type="submit"
+            className="bg-gray-900 text-gray-50 rounded-md p-2 my-4 font-medium"
+          >
             Update
           </button>
         </div>

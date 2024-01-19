@@ -7,7 +7,9 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
         <div className="fixed w-full top-12 bg-gray-900 z-50 border-b border-gray-700 ">
           <div className="mx-auto">
             <div className="flex items-center justify-between p-4">
-              <div className="text-left order-2 lg:w-1/3"></div>
+              <div className="text-left order-2 lg:w-1/3">
+                Self Service Center
+              </div>
               <div className="lg:hidden text-left order-1 w-1/3 lg:w-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +24,6 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
                   />
                 </svg>
               </div>
-
               <div className="space-x-8 hidden lg:inline-flex order-3 whitespace-nowrap max-w-2xl mx-auto">
                 <TabBar
                   tabs={[
@@ -39,7 +40,6 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
                   ]}
                 />
               </div>
-
               <div className="flex items-center justify-end w-1/3 order-4">
                 <form action="/self-service-center/token-login" method="delete">
                   <input

@@ -18,11 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
-      <body className="min-h-screen flex-row bg-slate-50">
-        <NavBar title={metadata.title} />
-        {children}
-      </body>
-    </html>
+    <>
+      <NavBar title={metadata.title} />
+      {children}
+    </>
   );
 }
