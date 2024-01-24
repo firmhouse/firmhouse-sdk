@@ -4,6 +4,7 @@ import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';
 import { SelfServiceCenterTokenResource } from './resources/selfServiceCenterToken';
 import { WriteAccessSubscriptionsResource } from './resources/subscriptions/write';
+import { InvoicesResource } from './resources/invoices';
 
 export enum Access {
   write,
@@ -40,6 +41,7 @@ export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
     | WriteAccessSubscriptionsResource;
   private _plans: PlansResource;
   private _selfServiceCenterToken: SelfServiceCenterTokenResource;
+  private _invoices: InvoicesResource | null = null;
 
   constructor(readonly config: FirmhouseConfig<TAccess>) {
     this.API_TOKEN = config.apiToken;
@@ -49,6 +51,7 @@ export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
 
     if (this.ACCESS_TYPE === Access.write) {
       this._subscriptions = new WriteAccessSubscriptionsResource(this.client);
+      this._invoices = new InvoicesResource(this.client);
     } else {
       this._subscriptions = new SubscriptionsResource(this.client);
     }
@@ -93,5 +96,17 @@ export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
    */
   public get selfServiceCenterToken(): SelfServiceCenterTokenResource {
     return this._selfServiceCenterToken;
+  }
+
+  /**
+   * @public
+   * Invoice methods
+   */
+  public get invoices(): TAccess extends WriteAccess
+    ? InvoicesResource
+    : never {
+    return this._invoices as TAccess extends WriteAccess
+      ? InvoicesResource
+      : never;
   }
 }
