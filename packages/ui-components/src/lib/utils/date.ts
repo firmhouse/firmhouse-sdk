@@ -8,3 +8,11 @@ export function getISO8601Date(dateString: string | null) {
   }
   return undefined;
 }
+
+export function formatShortDate(date: string | number | Date): string {
+  return Intl.DateTimeFormat('en-US', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+    hour12: false,
+  }).format(new Date(date));
+}
