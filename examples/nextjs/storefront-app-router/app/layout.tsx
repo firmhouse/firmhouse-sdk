@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex-row bg-slate-50">
-        <NavBar title={metadata.title}>
+        <NavBar title="Firmhouse Storefront Next.js App / App Router">
           <Link href="/self-service-center/login">Manage subscription</Link>
         </NavBar>
         {children}
