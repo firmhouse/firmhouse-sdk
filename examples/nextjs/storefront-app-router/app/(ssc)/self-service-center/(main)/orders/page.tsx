@@ -4,7 +4,7 @@ import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
 import { Pill, formatShortDate } from '@firmhouse/ui-components';
 import Image from 'next/image';
 
-export default async function Subscription() {
+export default async function Orders() {
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
