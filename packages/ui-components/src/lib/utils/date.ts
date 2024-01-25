@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function getISO8601Date(dateString: string | null) {
   if (dateString === null) return undefined;
   try {
@@ -10,9 +12,5 @@ export function getISO8601Date(dateString: string | null) {
 }
 
 export function formatShortDate(date: string | number | Date): string {
-  return Intl.DateTimeFormat('en-US', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-    hour12: false,
-  }).format(new Date(date));
+  return dayjs(date).format('DD MMM HH:mm');
 }
