@@ -51,17 +51,39 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    */
   public async getWith(
     token: string,
-    includeRelations: {
-      collectionCases: boolean;
-      verifiedIdentity: boolean;
-    } = { collectionCases: false, verifiedIdentity: false }
+    includeRelations?: {
+      collectionCases?: boolean;
+      verifiedIdentity?: boolean;
+      orders?: {
+        after?: string;
+        before?: string;
+        first?: number;
+        last?: number;
+        includeRelations?: {
+          orderLines?: boolean;
+          payment?: boolean;
+          invoice?: boolean;
+        };
+      };
+    }
   ) {
     const response = await this.client.request(
       GetSubscriptionWithDocument,
       {
         token,
-        includeCollectionCases: includeRelations.collectionCases,
-        includeVerifiedIdentity: includeRelations.verifiedIdentity,
+        includeCollectionCases: includeRelations?.collectionCases ?? false,
+        includeVerifiedIdentity: includeRelations?.verifiedIdentity ?? false,
+        includeOrders: !!includeRelations?.orders,
+        ordersIncludeOrderLines:
+          includeRelations?.orders?.includeRelations?.orderLines ?? false,
+        ordersIncludePayment:
+          includeRelations?.orders?.includeRelations?.payment ?? false,
+        ordersIncludeInvoice:
+          includeRelations?.orders?.includeRelations?.invoice ?? false,
+        ordersAfter: includeRelations?.orders?.after,
+        ordersBefore: includeRelations?.orders?.before,
+        ordersFirst: includeRelations?.orders?.first,
+        ordersLast: includeRelations?.orders?.last,
       },
       this.getSubscriptionTokenHeader(token)
     );

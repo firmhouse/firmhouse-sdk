@@ -715,6 +715,8 @@ export enum LineItemTypeEnum {
   Initial = 'INITIAL',
   /** Line item for manual invoice description */
   ManualInvoice = 'MANUAL_INVOICE',
+  /** Line item indicating the switch to a new subscription plan. */
+  PlanSwitch = 'PLAN_SWITCH',
   /** Line item charging for a product. */
   Product = 'PRODUCT',
   /** Line item for applied promotion */

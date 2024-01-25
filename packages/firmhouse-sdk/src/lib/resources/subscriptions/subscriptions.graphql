@@ -212,8 +212,16 @@ query getCompleteSubscription($token: ID!) {
 
 query getSubscriptionWith(
   $token: ID!
-  $includeVerifiedIdentity: Boolean! = false
-  $includeCollectionCases: Boolean! = false
+  $includeVerifiedIdentity: Boolean!
+  $includeCollectionCases: Boolean!
+  $includeOrders: Boolean!
+  $ordersAfter: String
+  $ordersBefore: String
+  $ordersFirst: Int
+  $ordersLast: Int
+  $ordersIncludeOrderLines: Boolean!
+  $ordersIncludePayment: Boolean!
+  $ordersIncludeInvoice: Boolean!
 ) {
   getSubscription(token: $token) {
     ...SubscriptionFragment
@@ -226,6 +234,30 @@ query getSubscriptionWith(
 
     verifiedIdentity @include(if: $includeVerifiedIdentity) {
       ...SubscriptionIdentityFields
+    }
+
+    ordersV2(
+      after: $ordersAfter
+      before: $ordersBefore
+      first: $ordersFirst
+      last: $ordersLast
+    ) @include(if: $includeOrders) {
+      nodes {
+        ...OrderFields
+        orderLines @include(if: $ordersIncludeOrderLines) {
+          ...OrderLineFields
+        }
+        invoice @include(if: $ordersIncludeInvoice) {
+          ...InvoiceFields
+        }
+        payment @include(if: $ordersIncludePayment) {
+          ...PaymentFields
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+      totalCount
     }
   }
 }
