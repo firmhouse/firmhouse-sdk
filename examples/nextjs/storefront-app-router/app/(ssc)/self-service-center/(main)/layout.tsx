@@ -27,7 +27,7 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
               <div className="space-x-8 hidden lg:inline-flex order-3 whitespace-nowrap max-w-2xl mx-auto">
                 <TabBar
                   tabs={[
-                    { href: '/self-service-center', label: 'Home' },
+                    { href: '/self-service-center', label: 'Subscription' },
                     { href: '/self-service-center/orders', label: 'Orders' },
                     {
                       href: '/self-service-center/invoices',

@@ -1,17 +1,27 @@
 import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
 import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
 import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
-import { LinkButton, formatCentsWithCurrency } from '@firmhouse/ui-components';
+import {
+  LinkButton,
+  formatCentsWithCurrency,
+  Chevron,
+} from '@firmhouse/ui-components';
 import { CartProduct } from '@firmhouse/ui-components/server';
+import Link from 'next/link';
+import Order from '../../../../../components/Order';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
-  const subscription = await firmhouseClient.subscriptions.get(token);
+  const subscription = await firmhouseClient.subscriptions.getWith(token, {
+    orders: { last: 3, includeRelations: { orderLines: true } },
+  });
   const orderedProducts = subscription.orderedProducts ?? [];
   const planProducts = orderedProducts.filter((op) => op.plan !== null);
   const additionalProducts = orderedProducts.filter((op) => op.plan === null);
+  const latestOrders = subscription.ordersV2?.nodes ?? [];
+
   return (
     <>
       <div className="bg-gray-900 text-center items-center text-white text-xs">
@@ -24,8 +34,8 @@ export default async function Subscription() {
           </div>
         </div>
       </div>
-      <div className="lg:grid grid-cols-5 gap-4 container max-w-5xl mx-auto p-4 -mt-20">
-        <div className="col-span-3 col-start-2">
+      <div className="lg:grid grid-cols-3 gap-4 container max-w-5xl mx-auto p-4 -mt-20">
+        <div className="col-span-2">
           <p className="text-white text-sm font-semibold -mt-5 leading-5">
             Your subscription (#{subscription.id})
           </p>
@@ -71,7 +81,9 @@ export default async function Subscription() {
                   {subscription.activePlan?.monthlyAmountIncludingTaxCents &&
                     `${formatCentsWithCurrency(
                       subscription.activePlan?.monthlyAmountIncludingTaxCents,
-                      subscription.activePlan?.currency || 'EUR'
+                      subscription.activePlan?.currency || 'EUR',
+                      undefined,
+                      0
                     )} / month`}
                 </div>
               </div>
@@ -175,6 +187,25 @@ export default async function Subscription() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="col-span-1">
+          {latestOrders.length > 0 && (
+            <div className="hidden lg:block border rounded-md mb-4 shadow-xl bg-white p-4">
+              <div className="text-sm">
+                <span>Latest order{latestOrders.length > 0 ? 's' : ''}</span>
+              </div>
+              {latestOrders.map((order) => (
+                <Order key={`order-${order?.id}`} order={order} inline />
+              ))}
+              <Link
+                href={`/self-service-center/orders`}
+                className="flex items-center text-gray-600 text-sm"
+              >
+                <span>View all your orders</span>
+                <Chevron className="w-4 h-4 ml-1" />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
