@@ -8,6 +8,7 @@ import {
   UpdateOrderedProductWithWriteAccessDocument,
 } from './subscriptions.generated';
 import { NotFoundError, ServerError } from '../../helpers/errors';
+import { filterNullsFromPaginatedResult } from '../../helpers/utils';
 import {
   _formatOrderedProduct,
   _formatSubscription,
@@ -90,9 +91,14 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
     if (response.getSubscription === null) {
       throw new NotFoundError('Subscription not found');
     }
-    return _formatSubscription<
-      NonNullable<GetSubscriptionWithQuery['getSubscription']>
-    >(response.getSubscription);
+    return {
+      ..._formatSubscription<
+        NonNullable<GetSubscriptionWithQuery['getSubscription']>
+      >(response.getSubscription),
+      ordersV2: filterNullsFromPaginatedResult(
+        response.getSubscription.ordersV2
+      ),
+    };
   }
 
   /**
