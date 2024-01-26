@@ -1,13 +1,20 @@
 import { SubscriptionsResource } from './index';
 import {
+  CancelSubcscriptionDocument,
   GetCompleteSubscriptionDocument,
   GetCompleteSubscriptionQuery,
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   GetSubscriptionWithDocument,
+  PauseSubscriptionDocument,
+  ResumeSubscriptionDocument,
   UpdateOrderedProductWithWriteAccessDocument,
 } from './subscriptions.generated';
-import { NotFoundError, ServerError } from '../../helpers/errors';
+import {
+  NotFoundError,
+  ServerError,
+  ValidationError,
+} from '../../helpers/errors';
 import {
   arrayFilterNulls,
   filterNullsFromPaginatedResult,
@@ -20,6 +27,11 @@ import {
   GetSubscriptionWithQuery,
   UpdateOrderedProductWithWriteAccessMutationVariables,
 } from './subscriptions.generated';
+import {
+  CancelSubscriptionInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
+} from '../../firmhouse';
 
 /**
  * @public
@@ -176,5 +188,92 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
         GetSubscriptionBySelfServiceCenterLoginTokenQuery['getSubscriptionBySelfServiceCenterLoginToken']
       >
     >(response.getSubscriptionBySelfServiceCenterLoginToken);
+  }
+
+  /**
+   * Cancel a subscription
+   * @param input - Payload for cancellation
+   * @returns Cancelled subscription
+   */
+  public async cancel(input: CancelSubscriptionInput) {
+    const response = await this.client.request(CancelSubcscriptionDocument, {
+      input,
+    });
+    const cancelSubscription = response.cancelSubscription ?? null;
+    if (cancelSubscription === null) {
+      throw new ServerError('Could not cancel subscription');
+    }
+
+    const { errors } = cancelSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = cancelSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not cancel subscription');
+    }
+
+    return {
+      subscription: _formatSubscription(subscription),
+    };
+  }
+
+  /**
+   * Pause a subscription
+   * @param input - Payload for pausing
+   * @returns Paused subscription
+   */
+  public async pause(input: PauseSubscriptionInput) {
+    const response = await this.client.request(PauseSubscriptionDocument, {
+      input,
+    });
+    const pauseSubscription = response.pauseSubscription ?? null;
+    if (pauseSubscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    const { errors } = pauseSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = pauseSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    return {
+      subscription: _formatSubscription(subscription),
+    };
+  }
+
+  /**
+   * Resume a subscription
+   * @param input - Payload for resuming
+   * @returns Resumed subscription
+   */
+  public async resume(input: ResumeSubscriptionInput) {
+    const response = await this.client.request(ResumeSubscriptionDocument, {
+      input,
+    });
+    const resumeSubscription = response.resumeSubscription ?? null;
+    if (resumeSubscription === null) {
+      throw new ServerError('Could not resume subscription');
+    }
+
+    const { errors } = resumeSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = resumeSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not resume subscription');
+    }
+
+    return {
+      subscription: _formatSubscription(subscription),
+    };
   }
 }

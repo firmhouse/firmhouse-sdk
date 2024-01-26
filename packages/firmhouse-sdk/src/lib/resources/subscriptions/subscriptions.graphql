@@ -292,3 +292,39 @@ query getSubscriptionBySelfServiceCenterLoginToken($token: ID!) {
     ...CompleteSubscriptionFields
   }
 }
+
+mutation cancelSubcscription($input: CancelSubscriptionInput!) {
+  cancelSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation pauseSubscription($input: PauseSubscriptionInput!) {
+  pauseSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation resumeSubscription($input: ResumeSubscriptionInput!) {
+  resumeSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
