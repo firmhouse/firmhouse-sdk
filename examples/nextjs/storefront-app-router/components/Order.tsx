@@ -1,5 +1,5 @@
 import { OrderType } from '@firmhouse/firmhouse-sdk';
-import { Pill, formatShortDate, Chevron } from '@firmhouse/ui-components';
+import { Pill, formatShortDate, ChevronIcon } from '@firmhouse/ui-components';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -55,7 +55,9 @@ export default function Order({ order, inline }: OrderProps) {
         {!inline && order?.status && (
           <Pill text={order?.status.toLowerCase()} color="green" />
         )}
-        <Chevron className={`h-7 ${inline ? 'text-gray-600' : 'text-gray'}`} />
+        <ChevronIcon
+          className={`h-7 ${inline ? 'text-gray-600' : 'text-gray'}`}
+        />
       </div>
     </Link>
   );

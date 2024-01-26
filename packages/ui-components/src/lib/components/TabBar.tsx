@@ -15,7 +15,7 @@ export function TabBar({ tabs }: TabBarProps) {
     <Link
       key={tab.href}
       href={tab.href}
-      className={`opacity-75 text-white border-transparent hover:border-white inline-flex items-center whitespace-nowrap px-1 pt-1 pb-5 -mb-5 border-b-2 hover:text-white font-medium hover:no-underline ${
+      className={`opacity-75 text-white border-transparent hover:border-white inline-flex items-center whitespace-nowrap px-1 pt-1 pb-5 -mb-5 border-b-2 hover:text-white font-normal hover:no-underline ${
         tab.href === activePath ? 'border-white opacity-100' : ''
       }`}
     >

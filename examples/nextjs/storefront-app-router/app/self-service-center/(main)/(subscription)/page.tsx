@@ -1,12 +1,20 @@
 import { getSSCSubscriptionToken } from '../../../../lib/actions/subscription';
 import { writeAccessFirmhouseClient } from '../../../../lib/firmhouse-write';
 import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
-import { formatCentsWithCurrency, Chevron } from '@firmhouse/ui-components';
+import {
+  formatCentsWithCurrency,
+  ChevronIcon,
+  FilesIcon,
+  ShoppingCartIcon,
+  UserIcon,
+  CrossIcon,
+} from '@firmhouse/ui-components';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
 import Order from '../../../../components/Order';
 import Invoice from '../../../../components/Invoice';
 import { Header } from '../Header';
+import { NavigationLink } from './NavigationLink';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
@@ -123,50 +131,6 @@ export default async function Subscription() {
                 )}
             </div>
 
-            {/* {subscription.status === SubscriptionStatus.Activated && (
-              <div
-                className="md:flex justify-between items-center mt-0 md:-mt-2 mb-4 pb-1 border-b border-gray-400"
-                id="pause_subscription_section"
-              >
-                <p
-                  className="text-sm text-gray-600"
-                  id="pause_subscription_hint"
-                >
-                  Going on a vacation or need a break? You can pause your
-                  subscription to temporarily stop receiving new orders.
-                </p>
-                <form></form>
-              </div>
-            )} */}
-
-            {/* {subscription.status === SubscriptionStatus.Paused && (
-              <div
-                className="md:flex justify-between items-center mt-0 md:-mt-2 mb-4 pb-1 border-b border-gray-400"
-                id="resume_subscription_section"
-              >
-                <p
-                  id="resume_subscription_hint"
-                  className="text-sm text-gray-600"
-                >
-                  Your subscription is paused. We will not charge or ship your
-                  next order until you resume your subscription.
-                </p>
-                <form action={resume}></form>
-              </div>
-            )} */}
-            {/* <div
-              className="md:flex justify-between items-center mt-0 md:-mt-2 mb-4 pb-1 border-b border-gray-400"
-              id="create_return_order_section"
-            >
-              <p
-                className="text-sm text-gray-600"
-                id="create_return_order_hint"
-              >
-                Want to exchange or return a product?
-              </p>
-              <Link href="/self-service-center/return-order">Create a new return</Link>
-            </div> */}
-
             {additionalProducts.length > 0 && (
               <div className="text-sm">
                 {planProducts.length === 0
@@ -195,7 +159,7 @@ export default async function Subscription() {
                 className="flex items-center text-gray-600 text-sm"
               >
                 <span>View all your orders</span>
-                <Chevron className="w-4 h-4 ml-1" />
+                <ChevronIcon className="w-4 h-4 ml-1" />
               </Link>
             </div>
           )}
@@ -216,9 +180,36 @@ export default async function Subscription() {
               className="flex items-center text-gray-600 text-sm"
             >
               <span>View all your invoices</span>
-              <Chevron className="w-4 h-4 ml-1" />
+              <ChevronIcon className="w-4 h-4 ml-1" />
             </Link>
           </div>
+
+          <div className="lg:hidden">
+            <NavigationLink
+              href="/self-service-center/orders"
+              label="Order history"
+              icon={<ShoppingCartIcon />}
+              iconContainerClassName="bg-indigo-100"
+            />
+            <NavigationLink
+              href="/self-service-center/invoices"
+              label="Invoices"
+              icon={<FilesIcon />}
+              iconContainerClassName="bg-yellow-100"
+            />
+            <NavigationLink
+              href="/self-service-center/account-details"
+              label="Account details"
+              icon={<UserIcon />}
+              iconContainerClassName="bg-purple-100"
+            />
+          </div>
+          <NavigationLink
+            href="/self-service-center/cancellation"
+            label="Cancel subscription"
+            icon={<CrossIcon />}
+            iconContainerClassName="bg-red-100"
+          />
         </div>
       </div>
     </>

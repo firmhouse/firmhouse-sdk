@@ -1,5 +1,5 @@
 import { InvoiceType } from '@firmhouse/firmhouse-sdk';
-import { Chevron } from '@firmhouse/ui-components';
+import { ChevronIcon } from '@firmhouse/ui-components';
 import {
   Pill,
   PillProps,
@@ -106,7 +106,7 @@ export default function Invoice({
         </div>
         <div className="ml-auto flex items-center">
           {!inline && pills}
-          <Chevron className="h-7 text-gray" />
+          <ChevronIcon className="h-7 text-gray" />
         </div>
       </a>
       {creditInvoice && creditInvoice.invoicedAt && (
