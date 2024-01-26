@@ -1,4 +1,5 @@
 import { TabBar } from '@firmhouse/ui-components';
+import { GoBackLink } from './GoBackLink';
 
 export default function SSCLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,20 +11,7 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
               <div className="text-left order-2 lg:w-1/3">
                 Self Service Center
               </div>
-              <div className="lg:hidden text-left order-1 w-1/3 lg:w-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  className="w-6 text-white"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
+              <GoBackLink className="lg:hidden text-left order-1 w-1/3 lg:w-0" />
               <div className="space-x-8 hidden lg:inline-flex order-3 whitespace-nowrap max-w-2xl mx-auto">
                 <TabBar
                   tabs={[
