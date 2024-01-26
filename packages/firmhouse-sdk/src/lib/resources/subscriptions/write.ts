@@ -8,7 +8,10 @@ import {
   UpdateOrderedProductWithWriteAccessDocument,
 } from './subscriptions.generated';
 import { NotFoundError, ServerError } from '../../helpers/errors';
-import { filterNullsFromPaginatedResult } from '../../helpers/utils';
+import {
+  arrayFilterNulls,
+  filterNullsFromPaginatedResult,
+} from '../../helpers/utils';
 import {
   _formatOrderedProduct,
   _formatSubscription,
@@ -66,6 +69,15 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
           invoice?: boolean;
         };
       };
+      invoices?: {
+        includeRelations?: {
+          collectionCase?: boolean;
+          invoiceReminders?: boolean;
+          invoiceLineItems?: boolean;
+          payment?: boolean;
+          originalInvoice?: boolean;
+        };
+      };
     }
   ) {
     const response = await this.client.request(
@@ -85,6 +97,20 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
         ordersBefore: includeRelations?.orders?.before,
         ordersFirst: includeRelations?.orders?.first,
         ordersLast: includeRelations?.orders?.last,
+        includeInvoices: !!includeRelations?.invoices,
+        invoicesIncludeCollectionCase:
+          includeRelations?.invoices?.includeRelations?.collectionCase ?? false,
+        invoicesIncludeInvoiceReminders:
+          includeRelations?.invoices?.includeRelations?.invoiceReminders ??
+          false,
+        invoicesIncludeInvoiceLineItems:
+          includeRelations?.invoices?.includeRelations?.invoiceLineItems ??
+          false,
+        invoicesIncludePayment:
+          includeRelations?.invoices?.includeRelations?.payment ?? false,
+        invoicesIncludeOriginalInvoice:
+          includeRelations?.invoices?.includeRelations?.originalInvoice ??
+          false,
       },
       this.getSubscriptionTokenHeader(token)
     );
@@ -98,6 +124,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
       ordersV2: filterNullsFromPaginatedResult(
         response.getSubscription.ordersV2
       ),
+      invoices: arrayFilterNulls(response.getSubscription.invoices),
     };
   }
 

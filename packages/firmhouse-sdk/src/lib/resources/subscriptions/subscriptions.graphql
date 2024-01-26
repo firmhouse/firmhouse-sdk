@@ -222,6 +222,12 @@ query getSubscriptionWith(
   $ordersIncludeOrderLines: Boolean!
   $ordersIncludePayment: Boolean!
   $ordersIncludeInvoice: Boolean!
+  $includeInvoices: Boolean!
+  $invoicesIncludeInvoiceLineItems: Boolean!
+  $invoicesIncludePayment: Boolean!
+  $invoicesIncludeOriginalInvoice: Boolean!
+  $invoicesIncludeInvoiceReminders: Boolean!
+  $invoicesIncludeCollectionCase: Boolean!
 ) {
   getSubscription(token: $token) {
     ...SubscriptionFragment
@@ -258,6 +264,24 @@ query getSubscriptionWith(
         ...PageInfoFragment
       }
       totalCount
+    }
+    invoices @include(if: $includeInvoices) {
+      ...InvoiceFields
+      invoiceLineItems @include(if: $invoicesIncludeInvoiceLineItems) {
+        ...InvoiceLineItemFields
+      }
+      payment @include(if: $invoicesIncludePayment) {
+        ...PaymentFields
+      }
+      originalInvoice @include(if: $invoicesIncludeOriginalInvoice) {
+        ...InvoiceFields
+      }
+      invoiceReminders @include(if: $invoicesIncludeInvoiceReminders) {
+        ...InvoiceReminderFields
+      }
+      collectionCase @include(if: $invoicesIncludeCollectionCase) {
+        ...CollectionCaseFields
+      }
     }
   }
 }
