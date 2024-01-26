@@ -9,14 +9,24 @@ import {
 import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
 import Order from '../../../../../components/Order';
+import Invoice from '../../../../../components/Invoice';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.getWith(token, {
-    orders: { last: 3, includeRelations: { orderLines: true } },
+    orders: { first: 3, includeRelations: { orderLines: true } },
   });
+  const { results: invoices } = await firmhouseClient.invoices.fetchAll(
+    {
+      subscriptionId: subscription.id,
+      first: 3,
+    },
+    {
+      originalInvoice: true,
+    }
+  );
   const orderedProducts = subscription.orderedProducts ?? [];
   const planProducts = orderedProducts.filter((op) => op.plan !== null);
   const additionalProducts = orderedProducts.filter((op) => op.plan === null);
@@ -192,7 +202,7 @@ export default async function Subscription() {
           {latestOrders.length > 0 && (
             <div className="hidden lg:block border rounded-md mb-4 shadow-xl bg-white p-4">
               <div className="text-sm">
-                <span>Latest order{latestOrders.length > 0 ? 's' : ''}</span>
+                <span>Latest order{latestOrders.length > 1 ? 's' : ''}</span>
               </div>
               {latestOrders.map((order) => (
                 <Order key={`order-${order?.id}`} order={order} inline />
@@ -206,6 +216,26 @@ export default async function Subscription() {
               </Link>
             </div>
           )}
+
+          <div className="hidden lg:block border rounded-md mb-4 shadow-xl bg-white p-4">
+            <div className="text-sm">
+              <span>{`Latest invoice${invoices.length > 1 ? 's' : ''}`}</span>
+            </div>
+            {invoices.map((invoice) => (
+              <Invoice
+                key={`invoice-${invoice?.id}`}
+                invoice={invoice}
+                inline
+              />
+            ))}
+            <Link
+              href={`/self-service-center/invoices`}
+              className="flex items-center text-gray-600 text-sm"
+            >
+              <span>View all your invoices</span>
+              <Chevron className="w-4 h-4 ml-1" />
+            </Link>
+          </div>
         </div>
       </div>
     </>

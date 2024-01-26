@@ -10,6 +10,7 @@ import {
 export interface InvoiceProps {
   invoice: InvoiceType;
   creditInvoice?: InvoiceType;
+  inline?: boolean;
 }
 
 function pillPropsForInvoice(
@@ -58,17 +59,34 @@ function pillPropsForInvoice(
       return { text: invoice.status ?? '', color: 'gray' };
   }
 }
-export default function Invoice({ invoice, creditInvoice }: InvoiceProps) {
+export default function Invoice({
+  invoice,
+  creditInvoice,
+  inline,
+}: InvoiceProps) {
+  const pills = (
+    <>
+      {creditInvoice && <Pill {...pillPropsForInvoice(invoice, undefined)} />}
+      {!(
+        invoice.originalInvoice &&
+        invoice.originalInvoice?.status !== 'refunded'
+      ) && <Pill {...pillPropsForInvoice(invoice, creditInvoice)} />}
+    </>
+  );
   return (
     <>
       <a
         href={invoice.detailsUrl ?? '#'}
         target="_blank"
-        className="flex justify-between flex-wrap items-center z-10 bg-white border p-4 mb-4 rounded-md shadow-md cursor-pointer text-gray-900 no-underline relative hover:border-gray-300 hover:shadow-lg hover:text-gray-900 focus:bg-gray-200 focus:border-gray-400 focus:shadow-none focus:no-underline"
+        className={`flex justify-between flex-wrap items-center z-10 bg-white border p-4 mb-4 rounded-md cursor-pointer text-gray-900 no-underline relative  hover:text-gray-900 focus:bg-gray-200 focus:border-gray-400 focus:shadow-none focus:no-underline ${
+          inline
+            ? 'hover:border-gray-500 my-2'
+            : 'shadow-md hover:border-gray-300 hover:shadow-lg'
+        }`}
       >
         <div>
           {invoice.invoicedAt && (
-            <p className="text-xs text-gray-600">
+            <p className={`text-xs ${inline ? '' : 'text-gray-600'}`}>
               {`#${invoice.invoiceNumber} on ${formatShortDate(
                 invoice.invoicedAt
               )}`}
@@ -78,19 +96,16 @@ export default function Invoice({ invoice, creditInvoice }: InvoiceProps) {
             <p className="font-semibold">
               {formatCentsWithCurrency(
                 invoice.totalAmountCents,
-                invoice.currency ?? 'EUR'
+                invoice.currency ?? 'EUR',
+                undefined,
+                0
               )}
             </p>
           </div>
+          {inline && <div className="mt-2">{pills}</div>}
         </div>
         <div className="ml-auto flex items-center">
-          {creditInvoice && (
-            <Pill {...pillPropsForInvoice(invoice, undefined)} />
-          )}
-          {!(
-            invoice.originalInvoice &&
-            invoice.originalInvoice?.status !== 'refunded'
-          ) && <Pill {...pillPropsForInvoice(invoice, creditInvoice)} />}
+          {!inline && pills}
           <Chevron className="h-7 text-gray" />
         </div>
       </a>
