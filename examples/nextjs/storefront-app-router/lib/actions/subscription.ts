@@ -184,3 +184,10 @@ export async function getSSCSubscriptionToken(): Promise<string> {
 export async function clearSSCSubscriptionToken(): Promise<void> {
   cookies().delete(SSC_SUBSCRIPTION_TOKEN_COOKIE);
 }
+
+export async function cancelSubscription(): Promise<void> {
+  const client = await writeAccessFirmhouseClient();
+  await client.subscriptions.cancel({ token: await getSSCSubscriptionToken() });
+  revalidatePath('/self-service-center');
+  redirect('/self-service-center');
+}
