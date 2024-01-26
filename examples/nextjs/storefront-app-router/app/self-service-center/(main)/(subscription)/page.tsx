@@ -1,15 +1,11 @@
-import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
-import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
+import { getSSCSubscriptionToken } from '../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../lib/firmhouse-write';
 import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
-import {
-  LinkButton,
-  formatCentsWithCurrency,
-  Chevron,
-} from '@firmhouse/ui-components';
+import { formatCentsWithCurrency, Chevron } from '@firmhouse/ui-components';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
-import Order from '../../../../../components/Order';
-import Invoice from '../../../../../components/Invoice';
+import Order from '../../../../components/Order';
+import Invoice from '../../../../components/Invoice';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
@@ -129,8 +125,8 @@ export default async function Subscription() {
                   </span>
                 )}
             </div>
-            {/* 
-            {subscription.status === SubscriptionStatus.Activated && (
+
+            {/* {subscription.status === SubscriptionStatus.Activated && (
               <div
                 className="md:flex justify-between items-center mt-0 md:-mt-2 mb-4 pb-1 border-b border-gray-400"
                 id="pause_subscription_section"
@@ -142,7 +138,7 @@ export default async function Subscription() {
                   Going on a vacation or need a break? You can pause your
                   subscription to temporarily stop receiving new orders.
                 </p>
-                <form action={pause}></form>
+                <form></form>
               </div>
             )} */}
 
@@ -179,21 +175,11 @@ export default async function Subscription() {
                 {planProducts.length === 0
                   ? 'Active Products'
                   : 'Additional Products'}
-                <p className="text-gray-600 leading-snug">
-                  To make changes to an order click on &quot;Adjust order&quot;
-                </p>
               </div>
             )}
             {additionalProducts.map((op) => (
               <div key={op.id} className="md:flex justify-between items-center">
                 <CartProduct {...op} />
-                <div className="ml-auto">
-                  <LinkButton
-                    href={`/self-service-center/ordered-product/${op.id}`}
-                  >
-                    Adjust order
-                  </LinkButton>
-                </div>
               </div>
             ))}
           </div>

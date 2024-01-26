@@ -1,5 +1,5 @@
-import { getSSCSubscriptionToken } from '../../../../../../lib/actions/subscription';
-import { writeAccessFirmhouseClient } from '../../../../../../lib/firmhouse-write';
+import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
 import {
   formatCentsWithCurrency,
   formatShortDate,

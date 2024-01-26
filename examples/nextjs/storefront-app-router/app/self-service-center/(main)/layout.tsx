@@ -35,7 +35,7 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
                     },
                     {
                       href: '/self-service-center/account-details',
-                      label: 'Account Details',
+                      label: 'Account details',
                     },
                   ]}
                 />
@@ -45,7 +45,7 @@ export default function SSCLayout({ children }: { children: React.ReactNode }) {
                   <input
                     type="submit"
                     value="Logout"
-                    className="text-white opacity-75 hover:underline hover:text-white hover:opacity-100"
+                    className="text-white opacity-75 cursor-pointer hover:underline hover:text-white hover:opacity-100"
                   />
                 </form>
               </div>

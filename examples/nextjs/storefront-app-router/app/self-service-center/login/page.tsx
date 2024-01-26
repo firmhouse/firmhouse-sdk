@@ -1,4 +1,4 @@
-import { firmhouseClient } from '../../../../lib/firmhouse';
+import { firmhouseClient } from '../../../lib/firmhouse';
 import { SelfServiceCenterLoginForm } from '@firmhouse/ui-components';
 import { RedirectType, redirect } from 'next/navigation';
 

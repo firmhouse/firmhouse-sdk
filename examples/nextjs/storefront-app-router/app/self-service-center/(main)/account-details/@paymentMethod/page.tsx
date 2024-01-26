@@ -1,6 +1,6 @@
 import { PaymentMethodIcon } from '@firmhouse/ui-components';
-import { getSSCSubscriptionToken } from '../../../../../../lib/actions/subscription';
-import { writeAccessFirmhouseClient } from '../../../../../../lib/firmhouse-write';
+import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
 
 export default async function PaymentMethod() {
   const token = await getSSCSubscriptionToken();

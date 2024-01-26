@@ -1,6 +1,6 @@
-import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
-import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
-import Order from '../../../../../components/Order';
+import { getSSCSubscriptionToken } from '../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../lib/firmhouse-write';
+import Order from '../../../../components/Order';
 
 export default async function Orders() {
   const token = await getSSCSubscriptionToken();

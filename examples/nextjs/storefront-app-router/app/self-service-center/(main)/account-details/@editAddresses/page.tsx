@@ -2,8 +2,8 @@ import { Input, Select } from '@firmhouse/ui-components';
 import {
   getSSCSubscriptionToken,
   updateSubscription,
-} from '../../../../../../lib/actions/subscription';
-import { writeAccessFirmhouseClient } from '../../../../../../lib/firmhouse-write';
+} from '../../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
 
 export default async function EditAddressesForm() {
   const token = await getSSCSubscriptionToken();

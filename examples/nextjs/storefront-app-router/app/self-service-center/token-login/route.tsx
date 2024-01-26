@@ -2,7 +2,7 @@ import { type NextRequest } from 'next/server';
 import {
   clearSSCSubscriptionToken,
   createSSCSubscriptionCookie,
-} from '../../../../lib/actions/subscription';
+} from '../../../lib/actions/subscription';
 import { redirect } from 'next/navigation';
 
 export async function GET(request: NextRequest) {

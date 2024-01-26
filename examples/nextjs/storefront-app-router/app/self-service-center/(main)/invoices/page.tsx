@@ -1,7 +1,7 @@
-import { writeAccessFirmhouseClient } from '../../../../../lib/firmhouse-write';
-import { getSSCSubscriptionToken } from '../../../../../lib/actions/subscription';
+import { writeAccessFirmhouseClient } from '../../../../lib/firmhouse-write';
+import { getSSCSubscriptionToken } from '../../../../lib/actions/subscription';
 
-import Invoice from '../../../../../components/Invoice';
+import Invoice from '../../../../components/Invoice';
 import { InvoiceType } from '@firmhouse/firmhouse-sdk';
 
 export default async function Invoices() {
