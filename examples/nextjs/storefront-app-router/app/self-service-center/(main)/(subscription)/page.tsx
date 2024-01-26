@@ -6,6 +6,7 @@ import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
 import Order from '../../../../components/Order';
 import Invoice from '../../../../components/Invoice';
+import { Header } from '../Header';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
@@ -30,16 +31,12 @@ export default async function Subscription() {
 
   return (
     <>
-      <div className="bg-gray-900 text-center items-center text-white text-xs">
-        <div className="container mx-auto max-w-2xl pb-24 pt-16">
-          <div className="mb-5 mt-12 px-4 lg:px-0">
-            <h1 className="text-2xl font-semibold">
-              Hello {subscription.name}
-            </h1>
-            <p className="text-sm opacity-75">Manage your subscription</p>
-          </div>
-        </div>
-      </div>
+      <Header
+        title={`Hello ${subscription.name}`}
+        byline="Manage your subscripition"
+        largePadding
+      />
+
       <div className="lg:grid grid-cols-3 gap-4 container max-w-5xl mx-auto p-4 -mt-20">
         <div className="col-span-2">
           <p className="text-white text-sm font-semibold -mt-5 leading-5">

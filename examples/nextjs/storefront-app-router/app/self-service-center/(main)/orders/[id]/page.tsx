@@ -6,6 +6,7 @@ import {
 } from '@firmhouse/ui-components';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { Header } from '../../Header';
 
 export default async function Order({ params }: { params: { id: string } }) {
   const token = await getSSCSubscriptionToken();
@@ -23,18 +24,14 @@ export default async function Order({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className="bg-gray-900 text-center items-center text-white text-xs">
-        <div className="container mx-auto max-w-2xl pt-16 pb-13 -mb-12">
-          <div className="mb-5 mt-12">
-            <h1 className="text-2xl font-semibold">{`Order #${order.id}`}</h1>
-            {order.createdAt && (
-              <p className="text-sm opacity-75">{`Shipped on ${formatShortDate(
-                order.createdAt
-              )}`}</p>
-            )}
-          </div>
-        </div>
-      </div>
+      <Header
+        title={`Order #${order.id}`}
+        byline={
+          order.createdAt
+            ? `Shipped on ${formatShortDate(order.createdAt)}`
+            : undefined
+        }
+      />
 
       <div className="container max-w-2xl mx-auto p-4">
         <div className="border rounded-md my-4 shadow-xl bg-white p-4">
