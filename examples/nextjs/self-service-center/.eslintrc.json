@@ -18,7 +18,7 @@
       "rules": {
         "@next/next/no-html-link-for-pages": [
           "error",
-          "examples/nextjs/self-service-cetner/pages"
+          "examples/nextjs/self-service-center/pages"
         ]
       }
     },

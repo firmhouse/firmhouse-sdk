@@ -7,7 +7,7 @@ import { writeAccessFirmhouseClient } from '../../../../lib/firmhouse-write';
 
 export default async function EditDetailsForm() {
   const token = await getSSCSubscriptionToken();
-  const updateAction = updateSubscription.bind(null, '/self-service-center');
+  const updateAction = updateSubscription.bind(null, '/');
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
   return (

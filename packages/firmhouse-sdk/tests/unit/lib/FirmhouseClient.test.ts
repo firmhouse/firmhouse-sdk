@@ -2,7 +2,6 @@ import {
   Access,
   FirmhouseClient,
 } from '@firmhouse/firmhouse-sdk/lib/FirmhouseClient';
-import { WriteAccessSubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/write';
 
 describe('lib/FirmhouseClient.ts', () => {
   describe('FirmhouseClient', () => {

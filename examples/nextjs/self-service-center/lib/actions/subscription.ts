@@ -21,7 +21,7 @@ export async function createSSCSubscriptionCookie(
     cookies().set(SSC_SUBSCRIPTION_TOKEN_COOKIE, subscription.token);
   } catch (e) {
     console.error(e);
-    return redirect('/self-service-center/login');
+    return redirect('/login');
   }
   redirect(redirectURL);
 }

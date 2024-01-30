@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const token = searchParams.get('token');
   if (!token) {
-    redirect('/self-service-center/login');
+    redirect('/login');
   }
   return createSSCSubscriptionCookie(token, '/');
 }
