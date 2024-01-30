@@ -1,0 +1,59 @@
+{
+  "name": "nextjs-self-service-center",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "examples/nextjs/self-service-center",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/examples/nextjs/self-service-center",
+        "postcssConfig": "examples/nextjs/self-service-center/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "examples/nextjs/self-service-center"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nextjs-self-service-center:build",
+        "dev": true,
+        "postcssConfig": "examples/nextjs/self-service-center/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nextjs-self-service-center:build:development",
+          "dev": true,
+          "port": 4202
+        },
+        "production": {
+          "buildTarget": "nextjs-self-service-center:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "nextjs-self-service-center:build:production"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "examples/nextjs/self-service-center/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

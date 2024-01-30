@@ -6,7 +6,7 @@ import type { Metadata, Viewport } from 'next';
 export const runtime = 'edge';
 
 export const metadata: Metadata = {
-  title: 'Firmhouse Storefront Next.js App / App Router',
+  title: 'Firmhouse Self Service Center Example App',
 };
 
 export const viewport: Viewport = {
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex-row bg-slate-50">
-        <NavBar title="Firmhouse Storefront Next.js App / App Router" />
+        <NavBar title="Firmhouse Self Service Center Example App" />
         {children}
       </body>
     </html>
