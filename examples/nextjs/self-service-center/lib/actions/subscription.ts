@@ -5,8 +5,13 @@ import { writeAccessFirmhouseClient } from '../firmhouse-write';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
+import { getActiveProjectType } from './projects';
 
 const SSC_SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:ssc';
+
+async function getSSCSubscriptionTokenCookieKey() {
+  return `${SSC_SUBSCRIPTION_TOKEN_COOKIE}:${await getActiveProjectType()}`;
+}
 
 export async function createSSCSubscriptionCookie(
   selfServiceCenterLoginToken: string,
@@ -18,7 +23,7 @@ export async function createSSCSubscriptionCookie(
       await client.subscriptions.getBySelfServiceCenterLoginToken(
         selfServiceCenterLoginToken
       );
-    cookies().set(SSC_SUBSCRIPTION_TOKEN_COOKIE, subscription.token);
+    cookies().set(await getSSCSubscriptionTokenCookieKey(), subscription.token);
   } catch (e) {
     console.error(e);
     return redirect('/login');
@@ -51,11 +56,11 @@ export async function updateSubscription(path: string, data: FormData) {
 }
 
 export async function getSSCSubscriptionToken(): Promise<string> {
-  return cookies().get(SSC_SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
+  return cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
 }
 
 export async function clearSSCSubscriptionToken(): Promise<void> {
-  cookies().delete(SSC_SUBSCRIPTION_TOKEN_COOKIE);
+  cookies().delete(await getSSCSubscriptionTokenCookieKey());
 }
 
 export async function cancelSubscription(): Promise<void> {

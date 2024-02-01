@@ -2,6 +2,8 @@ import { Inter } from 'next/font/google';
 import './global.css';
 import { NavBar } from '@firmhouse/ui-components';
 import type { Metadata, Viewport } from 'next';
+import { ProjectPicker } from './ProjectPicker';
+import { getActiveProjectType } from '../lib/actions/projects';
 
 export const runtime = 'edge';
 
@@ -25,15 +27,18 @@ const inter = Inter({
   preload: true,
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const activeProject = await getActiveProjectType();
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex-row bg-slate-50">
-        <NavBar title="Firmhouse Self Service Center Example App" />
+        <NavBar title="Firmhouse Self Service Center Example App">
+          <ProjectPicker activeProject={activeProject} />
+        </NavBar>
         {children}
       </body>
     </html>

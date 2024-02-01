@@ -1,4 +1,4 @@
-import { firmhouseClient } from '../../lib/firmhouse';
+import { writeAccessFirmhouseClient } from '../../lib/firmhouse-write';
 import { SelfServiceCenterLoginForm } from '@firmhouse/ui-components';
 import { RedirectType, redirect } from 'next/navigation';
 
@@ -7,7 +7,8 @@ export default async function Login() {
     'use server';
 
     try {
-      await firmhouseClient.selfServiceCenterToken.create(
+      const client = await writeAccessFirmhouseClient();
+      await client.selfServiceCenterToken.create(
         email,
         `${process.env.NEXT_PUBLIC_SITE_URL}/token-login`
       );
