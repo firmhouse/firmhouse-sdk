@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getSSCSubscriptionToken } from './lib/actions/subscription';
+import { hasValidSSCAuthToken } from './lib/actions/subscription';
 
 export async function middleware(request: NextRequest) {
   const sscResponse = selfServiceCenterMiddleware(request);
@@ -11,17 +11,17 @@ export async function middleware(request: NextRequest) {
 }
 
 async function selfServiceCenterMiddleware(request: NextRequest) {
-  const token = await getSSCSubscriptionToken();
+  const hasValidToken = await hasValidSSCAuthToken();
   if (
     ['login', 'status', 'token-login'].every(
       (path) => `/${path}` !== request.nextUrl.pathname
     )
   ) {
-    if (token === '') {
+    if (!hasValidToken) {
       return redirect(request, '/login');
     }
   } else {
-    if (token !== '') {
+    if (hasValidToken) {
       return redirect(request, '/');
     }
   }

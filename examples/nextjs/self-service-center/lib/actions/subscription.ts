@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
 import { getActiveProjectType } from './projects';
+import { createAuthToken, verifyAndDecodeAuthToken } from '../auth';
 
 const SSC_SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:ssc';
 
@@ -23,7 +24,10 @@ export async function createSSCSubscriptionCookie(
       await client.subscriptions.getBySelfServiceCenterLoginToken(
         selfServiceCenterLoginToken
       );
-    cookies().set(await getSSCSubscriptionTokenCookieKey(), subscription.token);
+    cookies().set(
+      await getSSCSubscriptionTokenCookieKey(),
+      await createAuthToken(subscription.token)
+    );
   } catch (e) {
     console.error(e);
     return redirect('/login');
@@ -55,8 +59,28 @@ export async function updateSubscription(path: string, data: FormData) {
   }
 }
 
+export async function hasValidSSCAuthToken() {
+  const jwtToken =
+    cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+  if (!jwtToken) {
+    return false;
+  }
+  try {
+    return !!(await verifyAndDecodeAuthToken(jwtToken));
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function getSSCSubscriptionToken(): Promise<string> {
-  return cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+  try {
+    const jwtToken =
+      cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+    return verifyAndDecodeAuthToken(jwtToken);
+  } catch (e) {
+    clearSSCSubscriptionToken();
+    throw new Error('SSC token is missing');
+  }
 }
 
 export async function clearSSCSubscriptionToken(): Promise<void> {
