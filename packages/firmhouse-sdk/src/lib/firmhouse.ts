@@ -4,6 +4,7 @@ export type * from './resources/products';
 export type * from './resources/plans';
 export type * from './resources/subscriptions';
 export type * from './resources/invoices';
+export type * from './resources/projects';
 export * from './graphql/generated';
 export * from './helpers/errors';
 export * from './helpers/types';

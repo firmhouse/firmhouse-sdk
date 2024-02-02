@@ -1,0 +1,11 @@
+fragment PromotionFields on Promotion {
+  activated
+  autoApply
+  deactivateAfterAmountIncludingTaxCents
+  deactivateAfterTimes
+  deactivationStrategy
+  id
+  percentDiscount
+  publicName
+  title
+}

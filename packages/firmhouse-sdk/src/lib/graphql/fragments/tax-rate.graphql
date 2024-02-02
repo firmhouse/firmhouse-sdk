@@ -1,0 +1,6 @@
+fragment TaxRateFields on TaxRate {
+  description
+  excludingTax
+  id
+  percentage
+}
