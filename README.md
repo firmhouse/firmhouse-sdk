@@ -40,7 +40,17 @@ You can find the SDK documentation [here](./packages/firmhouse-sdk/README.md).
 
 - A custom self service center example can be found [here](./examples/nextjs/self-service-center).
 
-- It can be used with both plan based and order based projects. It needs write access token for both those project types. You can configure those through `NEXT_ORDER_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN` and `NEXT_PLAN_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN` environment variables. It also needs `NEXT_SSC_JWT_SIGNING_KEY` environment variable to be configured. That is used as JWT signing secret for the Self service center login tokens.
+- It can be used with both plan based and order based projects. It needs write access token for both those project types.
+
+- The following environment variables should be configured:
+
+`NEXT_ORDER_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN`: Write access token for smart order based example
+
+`NEXT_PLAN_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN`: Write access token for product as a service example
+
+`NEXT_SSC_JWT_SIGNING_KEY`: JWT signing secret for the Self service center login tokens.
+
+`NEXT_PUBLIC_SITE_URL`: Base URL for the self service center. It will be used for the email link.
 
 - You can start the example app by running:
 
