@@ -2,7 +2,6 @@ import { BaseResource } from '../BaseResource';
 import {
   CreateOrderedProductInput,
   SubscriptionStatus,
-  UpdateOrderedProductInput,
 } from '../../graphql/generated';
 
 import {

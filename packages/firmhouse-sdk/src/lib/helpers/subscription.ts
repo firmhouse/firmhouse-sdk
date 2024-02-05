@@ -28,9 +28,7 @@ export type ContainsSubscription = { subscription: BaseSubscriptionType };
  * Ordered Product
  */
 export type OrderedProductType = ResolveObject<
-  BaseOrderedProductType & {
-    intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure | null;
-  }
+  ReturnType<typeof _formatOrderedProduct>
 >;
 
 /**
@@ -55,18 +53,35 @@ export type ExtraFieldAnswerType =
  * @internal
  */
 export function _formatOrderedProduct(
-  orderedProduct: BaseOrderedProductType
-): OrderedProductType {
+  orderedProduct: BaseOrderedProductType,
+  subscription: BaseSubscriptionType
+) {
   const { intervalUnitOfMeasure } = orderedProduct;
   const unit = capitalize(intervalUnitOfMeasure ?? '');
-  const formattedOrderedProduct = orderedProduct as OrderedProductType;
-  formattedOrderedProduct.intervalUnitOfMeasureType =
-    unit in OrderedProductIntervalUnitOfMeasure
-      ? OrderedProductIntervalUnitOfMeasure[
-          unit as keyof typeof OrderedProductIntervalUnitOfMeasure
-        ]
-      : null;
-  return formattedOrderedProduct;
+  return {
+    ...orderedProduct,
+    intervalUnitOfMeasureType:
+      unit in OrderedProductIntervalUnitOfMeasure
+        ? OrderedProductIntervalUnitOfMeasure[
+            unit as keyof typeof OrderedProductIntervalUnitOfMeasure
+          ]
+        : null,
+    followsPlanSchedule: followsPlanSchedule.bind(
+      null,
+      orderedProduct,
+      subscription
+    ),
+  };
+}
+
+export function followsPlanSchedule(
+  orderedProduct: BaseOrderedProductType,
+  subscription: BaseSubscriptionType
+) {
+  return (
+    orderedProduct.product.intervalUnitOfMeasure === 'ON_BILLING_CYCLE' &&
+    subscription.subscribedPlan !== null
+  );
 }
 
 /**
@@ -74,7 +89,7 @@ export function _formatOrderedProduct(
  */
 export function _formatSubscription<
   T extends BaseSubscriptionType = BaseSubscriptionType
->(subscription: T): SubscriptionType<T> {
+>(subscription: T) {
   const { orderedProducts, token, ...rest } = subscription;
   if (!token) {
     throw new ServerError('No token returned from API');
@@ -85,9 +100,10 @@ export function _formatSubscription<
     orderedProducts:
       orderedProducts === null
         ? null
-        : orderedProducts.map(_formatOrderedProduct),
+        : orderedProducts.map((op) => _formatOrderedProduct(op, subscription)),
   };
-  return response;
+
+  return assignSubscriptionUtils(response);
 }
 
 /**
@@ -102,4 +118,45 @@ export function _formatSubscriptionInResponse<T extends ContainsSubscription>(
       subscription: _formatSubscription(response.subscription),
     }
   );
+}
+
+function getClosestUpcomingOrderDate<
+  T extends { orderedProducts: OrderedProductType[] | null }
+>(subscription: T) {
+  if (subscription.orderedProducts === null) {
+    return null;
+  }
+  const sortedOrderDates = subscription.orderedProducts
+    .map((op) => op.shipmentDate)
+    .sort((a, b) => new Date(a ?? 0).getTime() - new Date(b ?? 0).getTime());
+  return sortedOrderDates.length > 0
+    ? sortedOrderDates[sortedOrderDates.length - 1]
+    : null;
+}
+
+function getClosestUpcomingOrderOrderedProducts<
+  T extends { orderedProducts: OrderedProductType[] | null }
+>(subscription: T) {
+  if (subscription.orderedProducts === null) {
+    return [];
+  }
+  const closestUpcomingOrderDate = getClosestUpcomingOrderDate(subscription);
+  if (closestUpcomingOrderDate === null) return [];
+  return subscription.orderedProducts.filter(
+    (op) => op.shipmentDate === closestUpcomingOrderDate
+  );
+}
+
+export function assignSubscriptionUtils<T extends SubscriptionType>(
+  subscription: T
+) {
+  return {
+    ...subscription,
+    getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
+      null,
+      subscription
+    ),
+    getClosestUpcomingOrderOrderedProducts:
+      getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
+  };
 }
