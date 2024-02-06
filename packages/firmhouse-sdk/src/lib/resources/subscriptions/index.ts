@@ -127,7 +127,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
@@ -158,7 +158,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
@@ -192,13 +192,13 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
 
   /**
-   * Update a product in the cart
+   * Update an ordered product
    * @param input - Payload for fields to update
    * @param subscriptionToken - Subscription token
    * @returns Updated subscription
@@ -221,8 +221,14 @@ export class SubscriptionsResource extends BaseResource {
       throw new ServerError('Could not update ordered product');
     }
 
+    const { subscription, ...fields } = orderedProduct;
+    if (subscription === null) {
+      throw new ServerError('Could not update ordered product');
+    }
+
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(fields, subscription),
+      subscription: _formatSubscription(subscription),
     };
   }
 
@@ -232,7 +238,7 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionToken - Subscription token
    * @returns Updated subscription and validation errors
    * @remarks
-   * Will save changes to certain fields even when other fields given are invalid.
+   * Will save changes to certain fields evesn when other fields given are invalid.
    * Will return validation error messages for invalid fields.
    */
   public async updateAddressDetails(
