@@ -69,6 +69,9 @@ mutation updateOrderedProduct(
   ) {
     orderedProduct {
       ...OrderedProductFragment
+      subscription {
+        ...SubscriptionFragment
+      }
     }
   }
 }
@@ -97,6 +100,10 @@ mutation updateOrderedProductWithWriteAccess(
   ) {
     orderedProduct {
       ...OrderedProductFragment
+      subscription {
+        ...SubscriptionFragment
+        ...CompleteSubscriptionFields
+      }
     }
   }
 }

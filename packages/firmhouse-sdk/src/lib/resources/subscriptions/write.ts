@@ -163,9 +163,13 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
     if (orderedProduct === null) {
       throw new ServerError('Could not update ordered product');
     }
-
+    const { subscription, ...fields } = orderedProduct;
+    if (subscription === null) {
+      throw new ServerError('Could not update ordered product');
+    }
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
+      orderedProduct: _formatOrderedProduct(fields, subscription),
+      subscription: _formatSubscription(subscription),
     };
   }
 
