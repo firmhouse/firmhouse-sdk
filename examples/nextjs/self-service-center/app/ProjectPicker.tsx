@@ -32,7 +32,7 @@ export function ProjectPicker({ activeProject }: ProjectPickerProps) {
   };
 
   return (
-    <div className="[&>div]:flex [&>div]:items-center">
+    <div className="[&>div]:flex [&>div]:items-center [&>div>select]:pr-5">
       <Select
         defaultValue={activeProject}
         label="Project"
