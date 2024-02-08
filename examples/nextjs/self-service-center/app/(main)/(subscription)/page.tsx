@@ -8,18 +8,22 @@ import {
   ShoppingCartIcon,
   UserIcon,
   CrossIcon,
+  formatLongDate,
 } from '@firmhouse/ui-components';
-import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
 import Order from '../../../components/Order';
 import Invoice from '../../../components/Invoice';
 import { Header } from '../Header';
 import { NavigationLink } from './NavigationLink';
+import { SSCOrderedProduct } from '../SSCOrderedProduct';
 
 export default async function Subscription() {
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
+  const project = await firmhouseClient.projects.getCurrent();
+  const isPlanBasedProject = project.projectType === 'plan_based';
+  const minimumOrderAmount = 10000;
   const subscription = await firmhouseClient.subscriptions.getWith(token, {
     orders: { first: 3, includeRelations: { orderLines: true } },
   });
@@ -36,6 +40,23 @@ export default async function Subscription() {
   const planProducts = orderedProducts.filter((op) => op.plan !== null);
   const additionalProducts = orderedProducts.filter((op) => op.plan === null);
   const latestOrders = subscription.ordersV2?.nodes ?? [];
+  const canAdjustOrder =
+    !isPlanBasedProject &&
+    orderedProducts.some(
+      (op) =>
+        op.status === 'ACTIVE' &&
+        op.intervalUnitOfMeasure !== 'only_once' &&
+        !(
+          op.intervalUnitOfMeasure === 'default' &&
+          op.product.intervalUnitOfMeasure === 'only_once'
+        )
+    );
+  const closestUpcomingOrderDate = subscription.getClosestUpcomingOrderDate();
+  const upcomingOrderTotal = subscription
+    .getClosestUpcomingOrderOrderedProducts()
+    .reduce((sum, op) => {
+      return (op.priceIncludingTaxCents ?? 0) + sum;
+    }, 0);
 
   return (
     <>
@@ -80,7 +101,9 @@ export default async function Subscription() {
             <div className="border-b border-gray-400 last:border-b-0 pb-2 mb-2">
               <div className="flex items-center justify-between">
                 <div className="w-2/3 text-sm leading-snug">
-                  <p>Your plan</p>
+                  <p>
+                    {isPlanBasedProject ? 'Your plan' : 'Your subscription'}
+                  </p>
                   <p className="font-semibold">
                     {subscription.subscribedPlan?.name}
                     {subscription.subscribedPlan?.minimumCommitmentEndsAt &&
@@ -104,11 +127,11 @@ export default async function Subscription() {
                   <p className="text-sm my-3">Includes:</p>
                   <div className="grid lg:grid-cols-2 gap-4 pb-2">
                     {planProducts.map((op) => (
-                      <CartProduct
-                        key={op.id}
-                        {...op}
-                        plan={null}
-                        priceIncludingTaxCents={null}
+                      <SSCOrderedProduct
+                        key={`op-${op.id}`}
+                        orderedProduct={op}
+                        subscription={subscription}
+                        isPlanBasedProject
                       />
                     ))}
                   </div>
@@ -133,14 +156,42 @@ export default async function Subscription() {
 
             {additionalProducts.length > 0 && (
               <div className="text-sm">
-                {planProducts.length === 0
-                  ? 'Active Products'
-                  : 'Additional Products'}
+                {isPlanBasedProject
+                  ? planProducts.length === 0
+                    ? 'Products'
+                    : 'Additional Products'
+                  : subscription.status === SubscriptionStatus.OneTimePurchase
+                  ? 'Ordered Items'
+                  : 'Active Products'}
               </div>
+            )}
+
+            {!isPlanBasedProject &&
+              subscription.status === SubscriptionStatus.Activated &&
+              closestUpcomingOrderDate !== null &&
+              upcomingOrderTotal < minimumOrderAmount && (
+                <div className="mt-3 bg-red-100 text-red-800 border-red-400 text-sm rounded-lg px-3 py-2 mb-4">
+                  <div className="mt-1">
+                    Please add more items to your order before{' '}
+                    <span className="font-bold">
+                      {formatLongDate(closestUpcomingOrderDate)}
+                    </span>{' '}
+                    or your order will be skipped.
+                  </div>
+                </div>
+              )}
+            {canAdjustOrder && (
+              <p className="text-gray-600 leading-snug">
+                To make changes to an order click on &quot;Adjust order&quot;
+              </p>
             )}
             {additionalProducts.map((op) => (
               <div key={op.id} className="md:flex justify-between items-center">
-                <CartProduct {...op} />
+                <SSCOrderedProduct
+                  orderedProduct={op}
+                  subscription={subscription}
+                  isPlanBasedProject={isPlanBasedProject}
+                />
               </div>
             ))}
           </div>

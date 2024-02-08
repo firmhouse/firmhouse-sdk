@@ -71,16 +71,24 @@ export function _formatOrderedProduct(
       orderedProduct,
       subscription
     ),
+    shipsOnlyOnce: shipsOnlyOnce.bind(null, orderedProduct),
   };
 }
 
-export function followsPlanSchedule(
+function followsPlanSchedule(
   orderedProduct: BaseOrderedProductType,
   subscription: BaseSubscriptionType
 ) {
   return (
-    orderedProduct.product.intervalUnitOfMeasure === 'ON_BILLING_CYCLE' &&
+    orderedProduct.product.intervalUnitOfMeasure === 'on_billing_cycle' &&
     subscription.subscribedPlan !== null
+  );
+}
+
+function shipsOnlyOnce(orderedProduct: BaseOrderedProductType): boolean {
+  return (
+    orderedProduct.intervalUnitOfMeasure === 'default' &&
+    orderedProduct.product.intervalUnitOfMeasure === 'only_once'
   );
 }
 

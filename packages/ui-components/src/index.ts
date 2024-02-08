@@ -11,6 +11,7 @@ export * from './lib/components/LinkButton';
 export * from './lib/components/TabBar';
 export * from './lib/components/Pill';
 export * from './lib/components/PaymentMethodIcon';
+export * from './lib/components/FHButton';
 export * from './lib/utils/price';
 export * from './lib/utils/date';
 export * from './assets';

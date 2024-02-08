@@ -57,13 +57,19 @@ export default async function Cancellation() {
                 </span>
               </div>
             )}
+          {notAllowedToCancelProducts.length > 0 && (
+            <div className="bg-gray-100 p-4 rounded mt-4">
+              {notAllowedToCancelProducts.map((orderedProduct) => (
+                <SSCOrderedProduct
+                  key={orderedProduct.id}
+                  orderedProduct={orderedProduct}
+                  subscription={subscription}
+                  isPlanBasedProject
+                />
+              ))}
+            </div>
+          )}
 
-          {notAllowedToCancelProducts.map((orderedProduct) => (
-            <SSCOrderedProduct
-              key={orderedProduct.id}
-              orderedProduct={orderedProduct}
-            />
-          ))}
           {subscription.subscribedPlan?.allowedToCancel && (
             <>
               <div>

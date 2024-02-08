@@ -40,11 +40,39 @@ export function getOrderedProductInfo(
   const billingAndShipping = isPlanBased
     ? shippingText
     : `${shippingText ? `Bills & ` : ''}${shippingText}`;
-
+  const {
+    intervalUnitOfMeasure: activeIntervalUnitOfMeasure,
+    interval: activeInterval,
+  } =
+    orderedProduct.intervalUnitOfMeasure === 'default'
+      ? orderedProduct.product
+      : orderedProduct;
   return {
     billingAndShipping,
     totalPrice: formattedPrice,
+    frequency: getFrequency(activeIntervalUnitOfMeasure, activeInterval),
   };
+}
+
+export function getFrequency(
+  intervalUnitOfMeasure: string | null,
+  interval: number | null
+) {
+  if (
+    intervalUnitOfMeasure === null ||
+    interval === null ||
+    intervalUnitOfMeasure === 'only_once' ||
+    typeof intervalUnitOfMeasure !== 'string' ||
+    typeof interval !== 'number'
+  ) {
+    return '';
+  }
+  if (interval === 1) {
+    // interval units are always plural, so we remove the last character
+    return `${intervalUnitOfMeasure.slice(0, -1)}`;
+  }
+
+  return `${interval} ${intervalUnitOfMeasure}`;
 }
 
 function getShippingInterval(orderedProduct: OrderedProductType) {

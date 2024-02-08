@@ -156,4 +156,5 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     ...createGlobPatternsForDependencies(__dirname),
   ],
+  plugins: [require('@tailwindcss/forms')],
 };
