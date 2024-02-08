@@ -95,9 +95,7 @@ export default async function OrderedProduct({
                     <>
                       <CalendarIcon className="w-5 h-5 text-gray-700 mr-1" />
                       {`Next shipment on ${formatLongDate(
-                        calculateExpectedDeliveryDate(
-                          orderedProduct.shipmentDate
-                        )
+                        orderedProduct.shipmentDate
                       )}`}
                     </>
                   )}

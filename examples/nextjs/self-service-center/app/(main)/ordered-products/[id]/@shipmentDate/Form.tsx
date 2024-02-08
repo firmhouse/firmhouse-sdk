@@ -29,6 +29,7 @@ export default function ShipmentDateForm({
         <input
           type="date"
           name="shipmentDate"
+          defaultValue={shipmentDate ?? undefined}
           onChange={(e) => setNewShipmentDate(e.target.value)}
           min={dayjs().add(1, 'day').format('YYYY-MM-DD')}
           required
