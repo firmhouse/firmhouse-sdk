@@ -15,7 +15,6 @@ import {
   getOrderedProductInfo,
 } from '@firmhouse/ui-components';
 import dayjs from 'dayjs';
-import { calculateExpectedDeliveryDate } from '../../../../lib/projects';
 
 export default async function OrderedProduct({
   params,

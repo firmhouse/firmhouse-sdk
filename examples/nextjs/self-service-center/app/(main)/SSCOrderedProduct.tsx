@@ -104,7 +104,9 @@ export function SSCOrderedProduct({
             <p className="text-lg font-semibold">{`${quantity}x ${title}`}</p>
             <div className="leading-snug text-base">
               <p>
-                <span>{`${totalPrice} / ${frequency}`}</span>
+                <span>{`${totalPrice}${
+                  frequency ? ` / ${frequency}` : ''
+                }`}</span>
                 {(quantity ?? 0) > 1 && (
                   <span className="text-sm text-gray-600">
                     {`${formatCentsWithCurrency(

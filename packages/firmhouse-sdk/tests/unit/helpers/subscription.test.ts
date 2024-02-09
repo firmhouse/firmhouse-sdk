@@ -4,16 +4,17 @@ import {
   SubscriptionStatus,
 } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
 import {
+  BaseOrderedProductType,
   BaseSubscriptionType,
-  OrderedProductType,
   SubscriptionType,
   _formatOrderedProduct,
   _formatSubscription,
   _formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
+import exp from 'constants';
 
 //Base ordered product example with all properties
-const orderedProduct: OrderedProductType = {
+const orderedProduct: BaseOrderedProductType = {
   id: '1',
   intervalUnitOfMeasure: 'months',
   product: {
@@ -67,11 +68,12 @@ const orderedProduct: OrderedProductType = {
   totalOrdered: null,
   updatedAt: null,
   plan: null,
-  intervalUnitOfMeasureType: null,
 };
 const formattedOrderedProduct = {
   ...orderedProduct,
   intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
+  followsPlanSchedule: expect.any(Function),
+  shipsOnlyOnce: expect.any(Function),
 };
 
 const subscription: SubscriptionType<BaseSubscriptionType> = {
@@ -80,7 +82,14 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   status: SubscriptionStatus.Draft,
   termsAccepted: false,
   extraFields: [],
-  orderedProducts: [orderedProduct],
+  orderedProducts: [
+    {
+      ...orderedProduct,
+      shipsOnlyOnce: expect.any(Function),
+      followsPlanSchedule: expect.any(Function),
+      intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
+    },
+  ],
   createdAt: null,
   id: null,
   metadata: undefined,
@@ -130,18 +139,21 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   vatNumber: null,
   zipcode: null,
   activePlan: null,
+  subscribedPlan: null,
 };
 
 const formattedSubscription = {
   ...subscription,
   orderedProducts: [formattedOrderedProduct],
+  getClosestUpcomingOrderDate: expect.any(Function),
+  getClosestUpcomingOrderOrderedProducts: expect.any(Function),
 };
 
 describe('helpers/subscription', () => {
   describe('formatOrderedProduct', () => {
     it('should format ordered products correctly', () => {
       const input = orderedProduct;
-      const output = _formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input, subscription);
       expect(output).toEqual(formattedOrderedProduct);
     });
 
@@ -150,10 +162,12 @@ describe('helpers/subscription', () => {
         ...orderedProduct,
         intervalUnitOfMeasure: 'only_once',
       };
-      const output = _formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input, subscription);
       expect(output).toEqual({
         ...input,
         intervalUnitOfMeasureType: null,
+        followsPlanSchedule: expect.any(Function),
+        shipsOnlyOnce: expect.any(Function),
       });
     });
   });

@@ -19,6 +19,8 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
         expect(client.subscriptions).toBeDefined();
+        expect(client.invoices).toBeFalsy();
+        expect(client.projects).toBeFalsy();
       });
     });
 
@@ -38,6 +40,10 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.selfServiceCenterToken).toBeDefined();
         expect(client.subscriptions).toBeDefined();
         expect(client.subscriptions.getWith).toBeDefined();
+        expect(client.invoices).toBeDefined();
+        expect(client.projects).toBeDefined();
+        expect(client.projects.getCurrent).toBeDefined();
+        expect(client.invoices.fetchAll).toBeDefined();
       });
     });
   });

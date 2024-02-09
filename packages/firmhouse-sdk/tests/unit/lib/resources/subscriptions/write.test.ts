@@ -67,6 +67,7 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   vatNumber: null,
   zipcode: null,
   activePlan: null,
+  subscribedPlan: null,
 };
 
 describe('lib/resources/subscriptions/write.ts', () => {
@@ -108,9 +109,10 @@ describe('lib/resources/subscriptions/write.ts', () => {
       const testResource = new WriteAccessSubscriptionsResource(
         mockGraphQLClient
       );
-      expect(testResource.get(token)).resolves.toStrictEqual(
-        activeSubscription
-      );
+      const result = await testResource.get(token);
+      expect(result).toMatchObject(activeSubscription);
+      expect(result.getClosestUpcomingOrderDate).toBeTruthy();
+      expect(result.getClosestUpcomingOrderOrderedProducts).toBeTruthy();
     });
 
     it('should throw error if no subscription found matching the given token', async () => {
@@ -137,10 +139,48 @@ describe('lib/resources/subscriptions/write.ts', () => {
       await testResource.getWith(token, {
         collectionCases: true,
         verifiedIdentity: true,
+        orders: {
+          after: 'x',
+          before: 'y',
+          first: 10,
+          last: 10,
+          includeRelations: {
+            orderLines: true,
+            payment: true,
+            invoice: true,
+          },
+        },
+        invoices: {
+          includeRelations: {
+            collectionCase: true,
+            invoiceReminders: true,
+            invoiceLineItems: true,
+            payment: true,
+            originalInvoice: true,
+          },
+        },
       });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         GetSubscriptionWithDocument,
-        { token, includeCollectionCases: true, includeVerifiedIdentity: true },
+        {
+          token,
+          includeCollectionCases: true,
+          includeVerifiedIdentity: true,
+          includeOrders: true,
+          ordersIncludeOrderLines: true,
+          ordersIncludeInvoice: true,
+          ordersIncludePayment: true,
+          includeInvoices: true,
+          ordersAfter: 'x',
+          ordersBefore: 'y',
+          ordersFirst: 10,
+          ordersLast: 10,
+          invoicesIncludeInvoiceLineItems: true,
+          invoicesIncludePayment: true,
+          invoicesIncludeOriginalInvoice: true,
+          invoicesIncludeInvoiceReminders: true,
+          invoicesIncludeCollectionCase: true,
+        },
         { 'X-Subscription-Token': token }
       );
     });
@@ -154,7 +194,7 @@ describe('lib/resources/subscriptions/write.ts', () => {
       const testResource = new WriteAccessSubscriptionsResource(
         mockGraphQLClient
       );
-      expect(testResource.get(token)).resolves.toStrictEqual(
+      expect(testResource.get(token)).resolves.toMatchObject(
         activeSubscription
       );
     });
@@ -175,7 +215,9 @@ describe('lib/resources/subscriptions/write.ts', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         updateOrderedProduct: {
-          orderedProduct: {},
+          orderedProduct: {
+            subscription: { token: 'testToken', orderedProducts: [] },
+          },
         },
       });
       const input = { id: 'test', shipmentDate: '20-01-2024' };
@@ -196,7 +238,7 @@ describe('lib/resources/subscriptions/write.ts', () => {
         shipmentDate: '20-01-2024',
       };
       const response = {
-        orderedProduct: input,
+        orderedProduct: { ...input, subscription },
       };
       mockGraphQLClient.request = jest
         .fn()
@@ -206,7 +248,10 @@ describe('lib/resources/subscriptions/write.ts', () => {
       );
       expect(
         testResource.updateOrderedProduct(input, 'testToken')
-      ).resolves.toStrictEqual(response);
+      ).resolves.toMatchObject({
+        orderedProduct: input,
+        subscription,
+      });
     });
 
     it('should throw an error if response is null', async () => {
@@ -277,7 +322,7 @@ describe('lib/resources/subscriptions/write.ts', () => {
       );
       expect(
         testResource.getBySelfServiceCenterLoginToken(token)
-      ).resolves.toStrictEqual(activeSubscription);
+      ).resolves.toMatchObject(activeSubscription);
     });
 
     it('should throw error if no subscription found matching the given token', async () => {
