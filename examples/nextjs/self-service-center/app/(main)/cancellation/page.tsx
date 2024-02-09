@@ -11,10 +11,13 @@ import {
 } from '@firmhouse/ui-components';
 import { SSCOrderedProduct } from '../SSCOrderedProduct';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function Cancellation() {
   const token = await getSSCSubscriptionToken();
   const firmhouseClient = await writeAccessFirmhouseClient();
+  const project = await firmhouseClient.projects.getCurrent();
+  const isPlanBasedProject = project.projectType === 'plan_based';
   const subscription = await firmhouseClient.subscriptions.get(token);
   const notAllowedToCancelProducts =
     subscription.orderedProducts?.filter(
@@ -22,6 +25,7 @@ export default async function Cancellation() {
         orderedProduct.minimumCommitmentEndsAt &&
         isPastDate(orderedProduct.minimumCommitmentEndsAt)
     ) ?? [];
+
   return (
     <>
       <Header title="Cancel subscription" />
@@ -70,7 +74,8 @@ export default async function Cancellation() {
             </div>
           )}
 
-          {subscription.subscribedPlan?.allowedToCancel && (
+          {(subscription.subscribedPlan?.allowedToCancel ||
+            !isPlanBasedProject) && (
             <>
               <div>
                 <p className="text-base">
