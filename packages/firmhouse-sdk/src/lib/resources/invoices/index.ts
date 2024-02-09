@@ -28,7 +28,7 @@ export class InvoicesResource extends BaseResource {
    * @returns List of invoices with pagination info
    */
   public async fetchAll(
-    params: Omit<
+    params?: Omit<
       AllInvoicesQueryVariables,
       | 'includeCollectionCases'
       | 'includeInvoiceReminders'
@@ -45,7 +45,7 @@ export class InvoicesResource extends BaseResource {
     }
   ) {
     const response = await this.client.request(AllInvoicesDocument, {
-      ...params,
+      ...(params ?? {}),
       includeCollectionCases: includeRelations?.collectionCases ?? false,
       includeInvoiceReminders: includeRelations?.invoiceReminders ?? false,
       includeInvoiceLineItems: includeRelations?.invoiceLineItems ?? false,
