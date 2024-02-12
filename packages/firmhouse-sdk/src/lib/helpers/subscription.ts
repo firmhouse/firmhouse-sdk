@@ -134,9 +134,11 @@ function getClosestUpcomingOrderDate<
   if (subscription.orderedProducts === null) {
     return null;
   }
+  const today = new Date();
   const sortedOrderDates = subscription.orderedProducts
     .map((op) => op.shipmentDate)
-    .sort((a, b) => new Date(a ?? 0).getTime() - new Date(b ?? 0).getTime());
+    .filter((date) => new Date(date ?? 0) > today)
+    .sort((a, b) => -new Date(a ?? 0).getTime() + new Date(b ?? 0).getTime());
   return sortedOrderDates.length > 0
     ? sortedOrderDates[sortedOrderDates.length - 1]
     : null;
