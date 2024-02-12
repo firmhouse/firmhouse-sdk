@@ -3,12 +3,22 @@ import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClien
 
 import { BaseSubscriptionType } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
 import {
+  CancelSubcscriptionDocument,
   GetCompleteSubscriptionDocument,
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionWithDocument,
   UpdateOrderedProductWithWriteAccessDocument,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 import { WriteAccessSubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/write';
+import {
+  CancelSubscriptionInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
+} from '../../../../../src/lib/graphql/generated';
+import {
+  PauseSubscriptionDocument,
+  ResumeSubscriptionDocument,
+} from '../../../../../src/lib/resources/subscriptions/subscriptions.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 
 const subscription: SubscriptionType<BaseSubscriptionType> = {
@@ -336,6 +346,182 @@ describe('lib/resources/subscriptions/write.ts', () => {
       expect(
         testResource.getBySelfServiceCenterLoginToken(token)
       ).rejects.toThrow('Subscription not found');
+    });
+  });
+
+  describe('cancel', () => {
+    let testResource: WriteAccessSubscriptionsResource;
+    let input: CancelSubscriptionInput;
+
+    beforeEach(() => {
+      testResource = new WriteAccessSubscriptionsResource(mockGraphQLClient);
+      input = { token: 'testToken' };
+    });
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: { subscription },
+      });
+      await testResource.cancel(input);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        CancelSubcscriptionDocument,
+        { input }
+      );
+    });
+
+    it('should return cancelled subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: response,
+      });
+      expect(testResource.cancel(input)).resolves.toMatchObject(response);
+    });
+
+    it('should throw validation error if an error is returned', async () => {
+      const response = {
+        errors: [{ messsage: 'Subscription is already cancelled' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: response,
+      });
+      expect(testResource.cancel(input)).rejects.toThrow('Validation error');
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: null,
+      });
+      expect(testResource.cancel(input)).rejects.toThrow(
+        'Could not cancel subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.cancel(input)).rejects.toThrow(
+        'Could not cancel subscription'
+      );
+    });
+  });
+
+  describe('pause', () => {
+    let testResource: WriteAccessSubscriptionsResource;
+    let input: PauseSubscriptionInput;
+
+    beforeEach(() => {
+      testResource = new WriteAccessSubscriptionsResource(mockGraphQLClient);
+      input = { id: '1' };
+    });
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: { subscription },
+      });
+      await testResource.pause(input);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        PauseSubscriptionDocument,
+        { input }
+      );
+    });
+
+    it('should return paused subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: response,
+      });
+      expect(testResource.pause(input)).resolves.toMatchObject(response);
+    });
+
+    it('should throw validation error if an error is returned', async () => {
+      const response = {
+        errors: [{ messsage: 'Subscription is already paused' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: response,
+      });
+      expect(testResource.pause(input)).rejects.toThrow('Validation error');
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: null,
+      });
+      expect(testResource.pause(input)).rejects.toThrow(
+        'Could not pause subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.pause(input)).rejects.toThrow(
+        'Could not pause subscription'
+      );
+    });
+  });
+  describe('resume', () => {
+    let testResource: WriteAccessSubscriptionsResource;
+    let input: ResumeSubscriptionInput;
+
+    beforeEach(() => {
+      testResource = new WriteAccessSubscriptionsResource(mockGraphQLClient);
+      input = { id: '1' };
+    });
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: { subscription },
+      });
+      await testResource.resume(input);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        ResumeSubscriptionDocument,
+        { input }
+      );
+    });
+
+    it('should return resumed subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: response,
+      });
+      expect(testResource.resume(input)).resolves.toMatchObject(response);
+    });
+
+    it('should throw validation error if an error is returned', async () => {
+      const response = {
+        errors: [{ messsage: 'Subscription is already resumed' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: response,
+      });
+      expect(testResource.resume(input)).rejects.toThrow('Validation error');
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: null,
+      });
+      expect(testResource.resume(input)).rejects.toThrow(
+        'Could not resume subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.resume(input)).rejects.toThrow(
+        'Could not resume subscription'
+      );
     });
   });
 });
