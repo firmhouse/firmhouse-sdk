@@ -324,6 +324,7 @@ describe('helpers/subscription', () => {
         { ...formattedOrderedProduct, shipmentDate: '2024-01-06' },
         { ...formattedOrderedProduct, shipmentDate: '2024-01-04' },
         { ...formattedOrderedProduct, shipmentDate: '2024-01-08' },
+        { ...formattedOrderedProduct, shipmentDate: null },
       ];
       const subscriptionWithUtils = assignSubscriptionUtils({
         ...subscription,
@@ -361,6 +362,8 @@ describe('helpers/subscription', () => {
         { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '4' },
         { ...formattedOrderedProduct, shipmentDate: '2024-01-04', id: '2' },
         { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '3' },
+        { ...formattedOrderedProduct, shipmentDate: null },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-05' },
       ];
       const subscriptionWithUtils = assignSubscriptionUtils({
         ...subscription,
