@@ -175,6 +175,91 @@ describe('helpers/subscription', () => {
     });
   });
 
+  describe('followsPlanSchedule', () => {
+    it('should return true if the interval unit is "on_billing_cycle" and subscription is for plan based project', () => {
+      const input = {
+        ...orderedProduct,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      };
+      const output = _formatOrderedProduct(input, {
+        ...subscription,
+        subscribedPlan: { id: '1' } as SubscriptionType['subscribedPlan'],
+      });
+      expect(output.followsPlanSchedule()).toBe(true);
+    });
+
+    it('should return false if subscription is not for plan based project', () => {
+      const input = {
+        ...orderedProduct,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      };
+      const output = _formatOrderedProduct(input, {
+        ...subscription,
+        subscribedPlan: null,
+      });
+      expect(output.followsPlanSchedule()).toBe(false);
+    });
+
+    it('should return false if interval unit is not "on_billing_cycle"', () => {
+      const input = {
+        ...orderedProduct,
+        product: { ...orderedProduct.product, intervalUnitOfMeasure: 'months' },
+      };
+      const output = _formatOrderedProduct(input, {
+        ...subscription,
+        subscribedPlan: { id: '1' } as SubscriptionType['subscribedPlan'],
+      });
+      expect(output.followsPlanSchedule()).toBe(false);
+    });
+  });
+
+  describe('shipsOnlyOnce', () => {
+    it('should return true if the product interval unit is only_once and it is not overriden', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Default,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'only_once',
+        },
+      };
+      const output = _formatOrderedProduct(input, subscription);
+      expect(output.shipsOnlyOnce()).toBe(true);
+    });
+
+    it('should return false if the product interval unit is not only_once', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Default,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      };
+      const output = _formatOrderedProduct(input, subscription);
+      expect(output.shipsOnlyOnce()).toBe(false);
+    });
+
+    it('should return false if the product interval unit is overriden', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Months,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'only_once',
+        },
+      };
+      const output = _formatOrderedProduct(input, subscription);
+      expect(output.shipsOnlyOnce()).toBe(false);
+    });
+  });
+
   describe('formatSubscription', () => {
     it('should format subscription correctly', () => {
       const input = subscription;

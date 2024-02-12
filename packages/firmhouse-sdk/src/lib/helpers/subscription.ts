@@ -87,7 +87,8 @@ function followsPlanSchedule(
 
 function shipsOnlyOnce(orderedProduct: BaseOrderedProductType): boolean {
   return (
-    orderedProduct.intervalUnitOfMeasure === 'default' &&
+    orderedProduct.intervalUnitOfMeasure ===
+      OrderedProductIntervalUnitOfMeasure.Default &&
     orderedProduct.product.intervalUnitOfMeasure === 'only_once'
   );
 }
