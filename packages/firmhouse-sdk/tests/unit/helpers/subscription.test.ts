@@ -1,4 +1,8 @@
 import {
+  OrderedProductType,
+  assignSubscriptionUtils,
+} from '../../../src/lib/helpers/subscription';
+import {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
   SubscriptionStatus,
@@ -11,7 +15,6 @@ import {
   _formatSubscription,
   _formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
-import exp from 'constants';
 
 //Base ordered product example with all properties
 const orderedProduct: BaseOrderedProductType = {
@@ -215,6 +218,96 @@ describe('helpers/subscription', () => {
         ...input,
         subscription: formattedSubscription,
       });
+    });
+  });
+
+  describe('assignSubscriptionUtils', () => {
+    it('should add the utility methods to subscription object correctly', () => {
+      const result = assignSubscriptionUtils(subscription);
+      expect(result).toEqual({
+        ...subscription,
+        getClosestUpcomingOrderDate: expect.any(Function),
+        getClosestUpcomingOrderOrderedProducts: expect.any(Function),
+      });
+    });
+  });
+
+  describe('getClosestUpcomingOrderDate', () => {
+    it('should return the closest upcoming order date', () => {
+      jest.useFakeTimers({ now: new Date('2024-01-05') });
+      const orderedProducts = [
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-04' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-08' },
+      ];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBe(
+        '2024-01-06'
+      );
+    });
+
+    it('should return null if ordered products list is empty', () => {
+      const orderedProducts: OrderedProductType[] = [];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBeNull();
+    });
+
+    it('should return null if ordered products list is null', () => {
+      const orderedProducts = null;
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBeNull();
+    });
+  });
+
+  describe('getClosestUpcomingOrderOrderedProducts', () => {
+    it('should return the products for the closest upcoming order', () => {
+      jest.useFakeTimers({ now: new Date('2024-01-05') });
+      const orderedProducts = [
+        { ...formattedOrderedProduct, id: '1', shipmentDate: '2024-01-07' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '4' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-04', id: '2' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '3' },
+      ];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(
+        subscriptionWithUtils
+          .getClosestUpcomingOrderOrderedProducts()
+          .map((op) => op.id)
+      ).toStrictEqual(['4', '3']);
+    });
+
+    it('should return empty array if ordered products list is empty', () => {
+      const orderedProducts: OrderedProductType[] = [];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(
+        subscriptionWithUtils.getClosestUpcomingOrderOrderedProducts()
+      ).toStrictEqual([]);
+    });
+
+    it('should return empty array if ordered products list is null', () => {
+      const orderedProducts = null;
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      });
+      expect(
+        subscriptionWithUtils.getClosestUpcomingOrderOrderedProducts()
+      ).toStrictEqual([]);
     });
   });
 });
