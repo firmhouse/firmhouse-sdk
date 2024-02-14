@@ -2,8 +2,10 @@
 import {
   GraphQLClient as GraphQLClientBase,
   ClientError,
+  type ResponseMiddleware,
 } from 'graphql-request';
 import { _mapToLibraryErrorTypes } from './errors';
+type GraphQLClientResponse = Parameters<ResponseMiddleware>[0];
 // Wraps the graphql-request client to provide a typed interface
 export class GraphQLClient {
   private readonly API_TOKEN: string;
@@ -24,12 +26,13 @@ export class GraphQLClient {
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },
-      responseMiddleware: async (res) => {
-        if (res instanceof ClientError) {
-          return _mapToLibraryErrorTypes(res as ClientError);
-        }
-      },
+      responseMiddleware: this._responseMiddleware,
     });
     this.request = this.client.request.bind(this.client);
+  }
+  async _responseMiddleware(res: GraphQLClientResponse) {
+    if (res instanceof ClientError) {
+      return _mapToLibraryErrorTypes(res as ClientError);
+    }
   }
 }
