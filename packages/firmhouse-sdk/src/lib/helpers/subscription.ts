@@ -3,6 +3,12 @@ import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.g
 import { ResolveObject } from './types';
 import { capitalize } from './utils';
 import { OrderedProductIntervalUnitOfMeasure } from '../graphql/generated';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as utc from 'dayjs/plugin/utc';
+import * as dayjs from 'dayjs';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Europe/Amsterdam');
 
 /**
  * @public
@@ -135,11 +141,11 @@ function getClosestUpcomingOrderDate<
   if (subscription.orderedProducts === null) {
     return null;
   }
-  const today = new Date();
+  const today = dayjs.tz();
   const sortedOrderDates = subscription.orderedProducts
     .map((op) => op.shipmentDate)
-    .filter((date) => new Date(date ?? 0) > today)
-    .sort((a, b) => -new Date(a ?? 0).getTime() + new Date(b ?? 0).getTime());
+    .filter((date) => dayjs.tz(date) > today)
+    .sort((a, b) => dayjs.tz(b).diff(dayjs.tz(a)));
   return sortedOrderDates.length > 0
     ? sortedOrderDates[sortedOrderDates.length - 1]
     : null;
