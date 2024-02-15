@@ -3,9 +3,9 @@ import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.g
 import { ResolveObject } from './types';
 import { capitalize } from './utils';
 import { OrderedProductIntervalUnitOfMeasure } from '../graphql/generated';
-import * as timezone from 'dayjs/plugin/timezone';
-import * as utc from 'dayjs/plugin/utc';
-import * as dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Amsterdam');

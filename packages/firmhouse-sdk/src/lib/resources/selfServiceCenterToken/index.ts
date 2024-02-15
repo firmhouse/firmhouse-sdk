@@ -1,4 +1,4 @@
-import { ServerError } from '../../firmhouse';
+import { ServerError } from '../../helpers/errors';
 import { BaseResource } from '../BaseResource';
 import { CreateSelfServiceCenterLoginTokenDocument } from './selfServiceCenterToken.generated';
 

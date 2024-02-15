@@ -23,6 +23,7 @@
         "generateExportsField": true,
         "deleteOutputPath": true,
         "compiler": "tsc",
+        "external": "none",
         "project": "packages/firmhouse-sdk/package.json",
         "format": ["esm", "cjs"],
         "additionalEntryPoints": ["packages/firmhouse-sdk/src/utils.ts"],
@@ -40,7 +41,7 @@
           "sourceMap": false,
           "namedChunks": true,
           "extractLicenses": true,
-          "vendorChunk": false,
+          "vendorChunk": true,
           "minify": true
         }
       }
