@@ -5,6 +5,7 @@ import {
 } from './projects.generated';
 import { NotFoundError } from '../../helpers/errors';
 
+export type { GetCurrentProjectQuery };
 /**
  * @public
  * Project
@@ -28,7 +29,7 @@ export class ProjectsResource extends BaseResource {
     extraFields?: boolean;
     promotions?: boolean;
   }) {
-    const response = await this.client.request(GetCurrentProjectDocument, {
+    const response = await this._client.request(GetCurrentProjectDocument, {
       includeTaxRates: includeRelations?.taxRates ?? false,
       includeExtraFields: includeRelations?.extraFields ?? false,
       includePromotions: includeRelations?.promotions ?? false,

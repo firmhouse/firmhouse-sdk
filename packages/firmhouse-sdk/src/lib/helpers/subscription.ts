@@ -13,6 +13,11 @@ dayjs.tz.setDefault('Europe/Amsterdam');
 /**
  * @public
  */
+export type { GetSubscriptionQuery };
+
+/**
+ * @public
+ */
 export type BaseSubscriptionType = NonNullable<
   GetSubscriptionQuery['getSubscription']
 >;
@@ -27,14 +32,18 @@ export type BaseOrderedProductType = NonNullable<
 /**
  * @internal
  */
-export type ContainsSubscription = { subscription: BaseSubscriptionType };
+export type _ContainsSubscription = { subscription: BaseSubscriptionType };
 
 /**
  * @public
  * Ordered Product
  */
 export type OrderedProductType = ResolveObject<
-  ReturnType<typeof _formatOrderedProduct>
+  NonNullable<BaseSubscriptionType['orderedProducts']>[0] & {
+    intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure | null;
+    followsPlanSchedule: () => boolean;
+    shipsOnlyOnce: () => boolean;
+  }
 >;
 
 /**
@@ -61,7 +70,7 @@ export type ExtraFieldAnswerType =
 export function _formatOrderedProduct(
   orderedProduct: BaseOrderedProductType,
   subscription: BaseSubscriptionType
-) {
+): OrderedProductType {
   const { intervalUnitOfMeasure } = orderedProduct;
   const unit = capitalize(intervalUnitOfMeasure ?? '');
   return {
@@ -81,6 +90,12 @@ export function _formatOrderedProduct(
   };
 }
 
+/**
+ * Checks if the ordered product follows the plan schedule
+ * @param orderedProduct - Ordered product
+ * @param subscription - Subscription
+ * @returns Whether the ordered product follows the plan schedule
+ */
 function followsPlanSchedule(
   orderedProduct: BaseOrderedProductType,
   subscription: BaseSubscriptionType
@@ -91,6 +106,11 @@ function followsPlanSchedule(
   );
 }
 
+/**
+ * Checks if the ordered product ships only once
+ * @param orderedProduct - Ordered product
+ * @returns Whether the ordered product ships only once
+ */
 function shipsOnlyOnce(orderedProduct: BaseOrderedProductType): boolean {
   return (
     orderedProduct.intervalUnitOfMeasure ===
@@ -101,6 +121,10 @@ function shipsOnlyOnce(orderedProduct: BaseOrderedProductType): boolean {
 
 /**
  * @internal
+ * Formats fields of a subscription and assigns utils
+ * @param subscription - Subscription to format
+ * @returns Formatted subscription
+ * @typeParam T - Subscription type
  */
 export function _formatSubscription<
   T extends BaseSubscriptionType = BaseSubscriptionType
@@ -123,8 +147,12 @@ export function _formatSubscription<
 
 /**
  * @internal
+ * Formats fields of a subscription in a response
+ * @param response - Response with a subscription
+ * @returns Response with formatted subscription
+ * @typeParam T - Response type
  */
-export function _formatSubscriptionInResponse<T extends ContainsSubscription>(
+export function _formatSubscriptionInResponse<T extends _ContainsSubscription>(
   response: T
 ) {
   return (
@@ -135,6 +163,12 @@ export function _formatSubscriptionInResponse<T extends ContainsSubscription>(
   );
 }
 
+/**
+ * Finds the date of the closest upcoming order
+ * @param subscription - Subscription with ordered products
+ * @returns the date of the closest upcoming order
+ * @typeParam T - Subscription type
+ */
 function getClosestUpcomingOrderDate<
   T extends { orderedProducts: OrderedProductType[] | null }
 >(subscription: T) {
@@ -151,6 +185,12 @@ function getClosestUpcomingOrderDate<
     : null;
 }
 
+/**
+ * Finds the products that are in the closest upcoming order
+ * @param subscription - Subscription with  ordered products
+ * @returns the products that are in the closest upcoming order
+ * @typeParam T - Subscription type
+ */
 function getClosestUpcomingOrderOrderedProducts<
   T extends { orderedProducts: OrderedProductType[] | null }
 >(subscription: T) {
@@ -164,6 +204,13 @@ function getClosestUpcomingOrderOrderedProducts<
   );
 }
 
+/**
+ * @public
+ * Assigns utils to a subscription
+ * @param subscription - subscription to asssign utils to
+ * @returns subscription with utils
+ * @typeParam T - Subscription type
+ */
 export function assignSubscriptionUtils<T extends SubscriptionType>(
   subscription: T
 ) {

@@ -1,4 +1,4 @@
-import { GraphQLClient } from './helpers/GraphQLClient';
+import { _GraphQLClient } from './helpers/GraphQLClient';
 import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';
@@ -12,16 +12,12 @@ export enum Access {
   storefront,
 }
 
-type WriteAccess = Access.write;
-type StorefrontAccess = Access.storefront;
-
-export type AccessType = WriteAccess | StorefrontAccess;
-
 /**
- * @public
  * Configuration for firmhouse client
+ * @typeParam T - Access type
+ * @public
  */
-export type FirmhouseConfig<T extends AccessType> = {
+export type FirmhouseConfig<T extends Access> = {
   readonly apiToken: string;
   readonly baseUrl?: string;
   readonly accessType?: T;
@@ -30,34 +26,35 @@ export type FirmhouseConfig<T extends AccessType> = {
 /**
  * @public
  * Client for accessing Firmhouse GraphQL api
+ * @typeParam TAccess - Access type
  */
-export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
+export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   private readonly API_TOKEN: string;
   private readonly BASE_URL: string;
   private readonly ACCESS_TYPE: Access;
-  private client: GraphQLClient;
+  private client: _GraphQLClient;
   private _products: ProductsResource;
   private _subscriptions:
     | SubscriptionsResource
     | WriteAccessSubscriptionsResource;
   private _plans: PlansResource;
   private _selfServiceCenterToken: SelfServiceCenterTokenResource;
-  private _invoices: InvoicesResource | null = null;
-  private _projects: ProjectsResource | null = null;
+  private _invoices: InvoicesResource;
+  private _projects: ProjectsResource;
 
   constructor(readonly config: FirmhouseConfig<TAccess>) {
     this.API_TOKEN = config.apiToken;
     this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
-    this.client = new GraphQLClient(this.API_TOKEN, this.BASE_URL);
+    this.client = new _GraphQLClient(this.API_TOKEN, this.BASE_URL);
     this.ACCESS_TYPE = config?.accessType ?? Access.storefront;
 
     if (this.ACCESS_TYPE === Access.write) {
       this._subscriptions = new WriteAccessSubscriptionsResource(this.client);
-      this._invoices = new InvoicesResource(this.client);
-      this._projects = new ProjectsResource(this.client);
     } else {
       this._subscriptions = new SubscriptionsResource(this.client);
     }
+    this._invoices = new InvoicesResource(this.client);
+    this._projects = new ProjectsResource(this.client);
     this._products = new ProductsResource(this.client);
     this._plans = new PlansResource(this.client);
     this._selfServiceCenterToken = new SelfServiceCenterTokenResource(
@@ -85,10 +82,10 @@ export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
    * @public
    * Subscription methods
    */
-  public get subscriptions(): TAccess extends WriteAccess
+  public get subscriptions(): TAccess extends Access.write
     ? WriteAccessSubscriptionsResource
     : SubscriptionsResource {
-    return this._subscriptions as TAccess extends WriteAccess
+    return this._subscriptions as TAccess extends Access.write
       ? WriteAccessSubscriptionsResource
       : SubscriptionsResource;
   }
@@ -105,22 +102,28 @@ export class FirmhouseClient<TAccess extends AccessType = StorefrontAccess> {
    * @public
    * Invoice methods
    */
-  public get invoices(): TAccess extends WriteAccess
+  public get invoices(): TAccess extends Access.write
     ? InvoicesResource
     : never {
-    return this._invoices as TAccess extends WriteAccess
+    if (this.ACCESS_TYPE === Access.storefront) {
+      throw new Error('Cannot access projects resource with Storefront acess');
+    }
+    return this._invoices as TAccess extends Access.write
       ? InvoicesResource
       : never;
   }
 
   /**
    * @public
-   * Invoice methods
+   * Project methods
    */
-  public get projects(): TAccess extends WriteAccess
+  public get projects(): TAccess extends Access.write
     ? ProjectsResource
     : never {
-    return this._projects as TAccess extends WriteAccess
+    if (this.ACCESS_TYPE === Access.write) {
+      throw new Error('Cannot access projects resource with Storefront acess');
+    }
+    return this._projects as TAccess extends Access.write
       ? ProjectsResource
       : never;
   }

@@ -9,6 +9,8 @@ import {
   PauseSubscriptionDocument,
   ResumeSubscriptionDocument,
   UpdateOrderedProductWithWriteAccessDocument,
+  GetSubscriptionWithQuery,
+  UpdateOrderedProductWithWriteAccessMutationVariables,
 } from './subscriptions.generated';
 import {
   NotFoundError,
@@ -24,14 +26,10 @@ import {
   _formatSubscription,
 } from '../../helpers/subscription';
 import {
-  GetSubscriptionWithQuery,
-  UpdateOrderedProductWithWriteAccessMutationVariables,
-} from './subscriptions.generated';
-import {
   CancelSubscriptionInput,
   PauseSubscriptionInput,
   ResumeSubscriptionInput,
-} from '../../firmhouse';
+} from '../../graphql/generated';
 
 /**
  * @public
@@ -44,7 +42,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * @returns Subscription
    */
   public async get(token: string) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       GetCompleteSubscriptionDocument,
       { token },
       this.getSubscriptionTokenHeader(token)
@@ -61,8 +59,6 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * Get a subscription by subscription token including relations
    * @param token - Subscription token
    * @param includeRelations - Relations to include
-   * @param includeRelations.collectionCases - Include collection cases
-   * @param includeRelations.verifiedIdentity - Include verified identity
    * @returns Subscription
    */
   public async getWith(
@@ -92,7 +88,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
       };
     }
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       GetSubscriptionWithDocument,
       {
         token,
@@ -150,7 +146,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
     input: UpdateOrderedProductWithWriteAccessMutationVariables,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdateOrderedProductWithWriteAccessDocument,
       input,
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -179,7 +175,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * @returns Subscription
    */
   public async getBySelfServiceCenterLoginToken(token: string) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       GetSubscriptionBySelfServiceCenterLoginTokenDocument,
       { token },
       this.getSubscriptionTokenHeader(token)
@@ -200,7 +196,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * @returns Cancelled subscription
    */
   public async cancel(input: CancelSubscriptionInput) {
-    const response = await this.client.request(CancelSubcscriptionDocument, {
+    const response = await this._client.request(CancelSubcscriptionDocument, {
       input,
     });
     const cancelSubscription = response.cancelSubscription ?? null;
@@ -229,7 +225,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * @returns Paused subscription
    */
   public async pause(input: PauseSubscriptionInput) {
-    const response = await this.client.request(PauseSubscriptionDocument, {
+    const response = await this._client.request(PauseSubscriptionDocument, {
       input,
     });
     const pauseSubscription = response.pauseSubscription ?? null;
@@ -258,7 +254,7 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
    * @returns Resumed subscription
    */
   public async resume(input: ResumeSubscriptionInput) {
-    const response = await this.client.request(ResumeSubscriptionDocument, {
+    const response = await this._client.request(ResumeSubscriptionDocument, {
       input,
     });
     const resumeSubscription = response.resumeSubscription ?? null;
@@ -281,3 +277,12 @@ export class WriteAccessSubscriptionsResource extends SubscriptionsResource {
     };
   }
 }
+
+export type {
+  CancelSubscriptionInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
+  GetSubscriptionWithQuery,
+  UpdateOrderedProductWithWriteAccessMutationVariables,
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
+};

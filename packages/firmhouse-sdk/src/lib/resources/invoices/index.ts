@@ -44,7 +44,7 @@ export class InvoicesResource extends BaseResource {
       originalInvoice?: boolean;
     }
   ) {
-    const response = await this.client.request(AllInvoicesDocument, {
+    const response = await this._client.request(AllInvoicesDocument, {
       ...(params ?? {}),
       includeCollectionCases: includeRelations?.collectionCases ?? false,
       includeInvoiceReminders: includeRelations?.invoiceReminders ?? false,

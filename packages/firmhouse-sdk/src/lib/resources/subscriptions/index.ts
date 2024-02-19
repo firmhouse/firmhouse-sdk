@@ -36,7 +36,7 @@ import {
  */
 export class SubscriptionsResource extends BaseResource {
   async createCart(clientMutationId?: string) {
-    const response = await this.client.request(CreateCartDocument, {
+    const response = await this._client.request(CreateCartDocument, {
       input: { clientMutationId },
     });
     if (response.createCart === null || response.createCart === undefined) {
@@ -65,7 +65,7 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Subscription
    */
   public async get(token: string) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       GetSubscriptionDocument,
       { token },
       this.getSubscriptionTokenHeader(token)
@@ -111,7 +111,7 @@ export class SubscriptionsResource extends BaseResource {
     input: CreateOrderedProductInput,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       AddToCartDocument,
       { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -142,7 +142,7 @@ export class SubscriptionsResource extends BaseResource {
     orderedProductId: string,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       RemoveFromCartDocument,
       { input: { id: orderedProductId } },
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -175,7 +175,7 @@ export class SubscriptionsResource extends BaseResource {
     quantity: number,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdateOrderedProductQuantityDocument,
       { id: orderedProductId, quantity },
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -207,7 +207,7 @@ export class SubscriptionsResource extends BaseResource {
     input: UpdateOrderedProductMutationVariables,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdateOrderedProductDocument,
       input,
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -245,7 +245,7 @@ export class SubscriptionsResource extends BaseResource {
     input: UpdateAddressDetailsMutationVariables,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdateAddressDetailsDocument,
       input,
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -277,7 +277,7 @@ export class SubscriptionsResource extends BaseResource {
    * @param returnUrl - The URL the user gets redirected to after completing payment
    * @param subscriptionToken - subscriptionToken Subscription token
    * @returns Payment details and validation errors if any
-   * @throws {@link helpers/errors#ValidationError}
+   * @throws {@link @firmhouse/firmhouse-sdk#ValidationError}
    * Thrown if required fields for payment is missing.
    */
   public async createSubscriptionFromCart(
@@ -285,7 +285,7 @@ export class SubscriptionsResource extends BaseResource {
     returnUrl: string,
     subscriptionToken: string
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       CreateSubscriptionFromCartDocument,
       { input: { paymentPageUrl, returnUrl } },
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -319,7 +319,7 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Updated subscription
    */
   public async updatePlan(planSlug: string, subscriptionToken: string) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdatePlanDocument,
       { input: { planSlug } },
       this.getSubscriptionTokenHeader(subscriptionToken)
@@ -346,4 +346,7 @@ export type {
   ExtraFieldAnswerType,
 } from '../../helpers/subscription';
 
-export type { GetSubscriptionQuery } from './subscriptions.generated';
+export type {
+  UpdateAddressDetailsMutationVariables,
+  UpdateOrderedProductMutationVariables,
+} from './subscriptions.generated';

@@ -23,3 +23,18 @@ export type OrderType = ResolveObject<
     >[0]
   >
 >;
+
+/**
+ * @public
+ * Paginated Response
+ */
+export type PaginatedResponse<T> = {
+  total: number;
+  pageInfo: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor: string | null;
+    endCursor: string | null;
+  };
+  results: T[];
+};

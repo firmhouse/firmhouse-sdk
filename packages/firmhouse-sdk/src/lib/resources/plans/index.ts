@@ -5,6 +5,8 @@ import {
   AllPlansDocument,
 } from './allPlans.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
+import { PaginatedResponse } from '../../firmhouse';
+import { ResolveObject } from '../../helpers/types';
 
 export type { AllPlansQuery, AllPlansQueryVariables };
 
@@ -12,8 +14,8 @@ export type { AllPlansQuery, AllPlansQueryVariables };
  * @public
  * Plan
  */
-export type PlanType = NonNullable<
-  NonNullable<NonNullable<AllPlansQuery['plans']>['nodes']>[0]
+export type PlanType = ResolveObject<
+  NonNullable<NonNullable<NonNullable<AllPlansQuery['plans']>['nodes']>[0]>
 >;
 
 /**
@@ -26,11 +28,18 @@ export class PlansResource extends BaseResource {
    * @param params - Parameters to filter products by
    * @returns List of products with pagination info
    */
-  public async fetchAll(params: AllPlansQueryVariables = {}) {
-    const response = await this.client.request(AllPlansDocument, params);
+  public async fetchAll(
+    params: AllPlansQueryVariables = {}
+  ): Promise<PaginatedResponse<PlanType>> {
+    const response = await this._client.request(AllPlansDocument, params);
     return {
       total: response.plans?.totalCount ?? 0,
-      pageInfo: response.plans?.pageInfo,
+      pageInfo: response.plans?.pageInfo ?? {
+        endCursor: null,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+      },
       results: arrayFilterNulls(response.plans?.nodes) as PlanType[],
     };
   }

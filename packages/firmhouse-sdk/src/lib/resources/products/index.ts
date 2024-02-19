@@ -36,7 +36,7 @@ export class ProductsResource extends BaseResource {
    * @returns List of products with pagination info
    */
   public async fetchAll(params: AllProductsQueryVariables = {}) {
-    const response = await this.client.request(AllProductsDocument, params);
+    const response = await this._client.request(AllProductsDocument, params);
     return {
       total: response.products?.totalCount ?? 0,
       pageInfo: response.products?.pageInfo,

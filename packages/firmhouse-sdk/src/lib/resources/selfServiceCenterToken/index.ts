@@ -6,14 +6,14 @@ export class SelfServiceCenterTokenResource extends BaseResource {
   /**
    * @public
    * Create self service center token
-   * @param email Customer's email address
-   * @param returnUrl Self service center url to use in the email
+   * @param email - Customer's email address
+   * @param returnUrl - Self service center url to use in the email
    * @returns The status of the request
-   * @throws {@link helpers/errors#ServerError}
+   * @throws {@link @firmhouse/firmhouse-sdk#ServerError}
    * Thrown if the request fails
    */
   public async create(email: string, returnUrl?: string) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       CreateSelfServiceCenterLoginTokenDocument,
       { email, returnUrl: returnUrl ?? '' }
     );
