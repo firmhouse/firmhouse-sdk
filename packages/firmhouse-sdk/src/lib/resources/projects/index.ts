@@ -4,6 +4,7 @@ import {
   GetCurrentProjectDocument,
 } from './projects.generated';
 import { NotFoundError } from '../../helpers/errors';
+import { FirmhouseProject } from '../../firmhouse';
 
 export type { GetCurrentProjectQuery };
 /**
@@ -28,7 +29,7 @@ export class ProjectsResource extends BaseResource {
     taxRates?: boolean;
     extraFields?: boolean;
     promotions?: boolean;
-  }) {
+  }): Promise<FirmhouseProject> {
     const response = await this._client.request(GetCurrentProjectDocument, {
       includeTaxRates: includeRelations?.taxRates ?? false,
       includeExtraFields: includeRelations?.extraFields ?? false,

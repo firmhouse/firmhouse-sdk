@@ -1,11 +1,18 @@
 import { ServerError } from './errors';
 import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.generated';
-import { ResolveObject } from './types';
-import { capitalize } from './utils';
+import {
+  FirmhouseCart,
+  FirmhouseOrder,
+  FirmhouseOrderedProduct,
+  FirmhouseSubscription,
+  ResolveObject,
+} from './types';
+import { arrayFilterNulls, capitalize } from './utils';
 import { OrderedProductIntervalUnitOfMeasure } from '../graphql/generated';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import dayjs from 'dayjs';
+import { GetCartQuery } from '../resources/carts/cart.generated';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Amsterdam');
@@ -18,28 +25,30 @@ export type { GetSubscriptionQuery };
 /**
  * @public
  */
-export type BaseSubscriptionType = NonNullable<
+type BaseCartType = NonNullable<GetCartQuery['getCart']>;
+
+type BaseSubscriptionType = NonNullable<
   GetSubscriptionQuery['getSubscription']
 >;
 
 /**
- * @public
+ * @internal
  */
 export type BaseOrderedProductType = NonNullable<
-  BaseSubscriptionType['orderedProducts']
+  BaseCartType['orderedProducts']
 >[0];
 
 /**
  * @internal
  */
-export type _ContainsSubscription = { subscription: BaseSubscriptionType };
+export type _ContainsSubscription = { subscription: BaseCartType };
 
 /**
- * @public
+ * @internal
  * Ordered Product
  */
 export type OrderedProductType = ResolveObject<
-  NonNullable<BaseSubscriptionType['orderedProducts']>[0] & {
+  NonNullable<BaseCartType['orderedProducts']>[0] & {
     intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure | null;
     followsPlanSchedule: () => boolean;
     shipsOnlyOnce: () => boolean;
@@ -47,30 +56,12 @@ export type OrderedProductType = ResolveObject<
 >;
 
 /**
- * @public
- * Subscription
- */
-export type SubscriptionType<
-  T extends BaseSubscriptionType = BaseSubscriptionType
-> = Omit<T, 'orderedProducts' | 'token'> & {
-  orderedProducts: OrderedProductType[] | null;
-  token: string;
-};
-
-/**
- * @public
- * Extra field answer
- */
-export type ExtraFieldAnswerType =
-  SubscriptionType<BaseSubscriptionType>['extraFields'][0];
-
-/**
  * @internal
  */
 export function _formatOrderedProduct(
   orderedProduct: BaseOrderedProductType,
-  subscription: BaseSubscriptionType
-): OrderedProductType {
+  subscription: BaseCartType
+): FirmhouseOrderedProduct {
   const { intervalUnitOfMeasure } = orderedProduct;
   const unit = capitalize(intervalUnitOfMeasure ?? '');
   return {
@@ -98,7 +89,7 @@ export function _formatOrderedProduct(
  */
 function followsPlanSchedule(
   orderedProduct: BaseOrderedProductType,
-  subscription: BaseSubscriptionType
+  subscription: BaseCartType
 ) {
   return (
     orderedProduct.product.intervalUnitOfMeasure === 'on_billing_cycle' &&
@@ -124,43 +115,66 @@ function shipsOnlyOnce(orderedProduct: BaseOrderedProductType): boolean {
  * Formats fields of a subscription and assigns utils
  * @param subscription - Subscription to format
  * @returns Formatted subscription
- * @typeParam T - Subscription type
  */
-export function _formatSubscription<
-  T extends BaseSubscriptionType = BaseSubscriptionType
->(subscription: T) {
+export function _formatCart(subscription: BaseCartType): FirmhouseCart {
   const { orderedProducts, token, ...rest } = subscription;
   if (!token) {
     throw new ServerError('No token returned from API');
   }
-  const response: SubscriptionType<T> = {
+  return {
     ...rest,
     token,
     orderedProducts:
       orderedProducts === null
         ? null
         : orderedProducts.map((op) => _formatOrderedProduct(op, subscription)),
-  };
-
-  return assignSubscriptionUtils(response);
+  } as FirmhouseCart;
 }
 
 /**
  * @internal
- * Formats fields of a subscription in a response
- * @param response - Response with a subscription
- * @returns Response with formatted subscription
- * @typeParam T - Response type
+ * Formats fields of a subscription and assigns utils
+ * @param subscription - Subscription to format
+ * @returns Formatted subscription
+ * @typeParam T - Subscription type
  */
-export function _formatSubscriptionInResponse<T extends _ContainsSubscription>(
-  response: T
-) {
-  return (
-    response && {
-      ...response,
-      subscription: _formatSubscription(response.subscription),
-    }
-  );
+export function _formatSubscription(
+  subscription: BaseSubscriptionType
+): FirmhouseSubscription {
+  const { orderedProducts, token, ...rest } = subscription;
+  if (!token) {
+    throw new ServerError('No token returned from API');
+  }
+
+  return {
+    ...rest,
+    token,
+    orderedProducts:
+      orderedProducts === null
+        ? null
+        : orderedProducts.map((op) => _formatOrderedProduct(op, subscription)),
+    ordersV2: subscription.ordersV2
+      ? {
+          pageInfo: subscription.ordersV2?.pageInfo ?? undefined,
+          total: subscription.ordersV2?.totalCount ?? 0,
+          results: subscription.ordersV2?.nodes
+            ? []
+            : arrayFilterNulls(subscription.ordersV2?.nodes),
+        }
+      : undefined,
+    collectionCases: subscription.collectionCases?.nodes
+      ? arrayFilterNulls(subscription.collectionCases?.nodes)
+      : undefined,
+    invoices: subscription.invoices
+      ? arrayFilterNulls(subscription.invoices)
+      : undefined,
+    getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
+      null,
+      subscription
+    ),
+    getClosestUpcomingOrderOrderedProducts:
+      getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
+  } as FirmhouseSubscription;
 }
 
 /**
@@ -170,7 +184,7 @@ export function _formatSubscriptionInResponse<T extends _ContainsSubscription>(
  * @typeParam T - Subscription type
  */
 function getClosestUpcomingOrderDate<
-  T extends { orderedProducts: OrderedProductType[] | null }
+  T extends { orderedProducts: BaseOrderedProductType[] | null }
 >(subscription: T) {
   if (subscription.orderedProducts === null) {
     return null;
@@ -192,7 +206,7 @@ function getClosestUpcomingOrderDate<
  * @typeParam T - Subscription type
  */
 function getClosestUpcomingOrderOrderedProducts<
-  T extends { orderedProducts: OrderedProductType[] | null }
+  T extends { orderedProducts: BaseOrderedProductType[] | null }
 >(subscription: T) {
   if (subscription.orderedProducts === null) {
     return [];
@@ -202,25 +216,4 @@ function getClosestUpcomingOrderOrderedProducts<
   return subscription.orderedProducts.filter(
     (op) => op.shipmentDate === closestUpcomingOrderDate
   );
-}
-
-/**
- * @public
- * Assigns utils to a subscription
- * @param subscription - subscription to asssign utils to
- * @returns subscription with utils
- * @typeParam T - Subscription type
- */
-export function assignSubscriptionUtils<T extends SubscriptionType>(
-  subscription: T
-) {
-  return {
-    ...subscription,
-    getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
-      null,
-      subscription
-    ),
-    getClosestUpcomingOrderOrderedProducts:
-      getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
-  };
 }

@@ -3,13 +3,13 @@ import { PlansResource } from './resources/plans';
 import { ProductsResource } from './resources/products';
 import { SubscriptionsResource } from './resources/subscriptions';
 import { SelfServiceCenterTokenResource } from './resources/selfServiceCenterToken';
-import { WriteAccessSubscriptionsResource } from './resources/subscriptions/write';
 import { InvoicesResource } from './resources/invoices';
 import { ProjectsResource } from './resources/projects';
+import { CartsResource } from './resources/carts';
 
 export enum Access {
-  write,
   storefront,
+  write,
 }
 
 /**
@@ -34,25 +34,20 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   private readonly ACCESS_TYPE: Access;
   private client: _GraphQLClient;
   private _products: ProductsResource;
-  private _subscriptions:
-    | SubscriptionsResource
-    | WriteAccessSubscriptionsResource;
+  private _subscriptions: SubscriptionsResource;
+  private _carts: CartsResource;
   private _plans: PlansResource;
   private _selfServiceCenterToken: SelfServiceCenterTokenResource;
   private _invoices: InvoicesResource;
   private _projects: ProjectsResource;
 
-  constructor(readonly config: FirmhouseConfig<TAccess>) {
-    this.API_TOKEN = config.apiToken;
-    this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
+  constructor(private readonly _config: FirmhouseConfig<TAccess>) {
+    this.API_TOKEN = _config.apiToken;
+    this.BASE_URL = _config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
     this.client = new _GraphQLClient(this.API_TOKEN, this.BASE_URL);
-    this.ACCESS_TYPE = config?.accessType ?? Access.storefront;
-
-    if (this.ACCESS_TYPE === Access.write) {
-      this._subscriptions = new WriteAccessSubscriptionsResource(this.client);
-    } else {
-      this._subscriptions = new SubscriptionsResource(this.client);
-    }
+    this.ACCESS_TYPE = _config?.accessType ?? Access.storefront;
+    this._subscriptions = new SubscriptionsResource(this.client);
+    this._carts = new CartsResource(this.client);
     this._invoices = new InvoicesResource(this.client);
     this._projects = new ProjectsResource(this.client);
     this._products = new ProductsResource(this.client);
@@ -83,11 +78,24 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
    * Subscription methods
    */
   public get subscriptions(): TAccess extends Access.write
-    ? WriteAccessSubscriptionsResource
-    : SubscriptionsResource {
-    return this._subscriptions as TAccess extends Access.write
-      ? WriteAccessSubscriptionsResource
-      : SubscriptionsResource;
+    ? SubscriptionsResource
+    : never {
+    if (this.ACCESS_TYPE === Access.storefront) {
+      throw new Error(
+        'Cannot access subscriptions resource with Storefront acess'
+      );
+    }
+    return this._subscriptions as Access extends Access.write
+      ? SubscriptionsResource
+      : never;
+  }
+
+  /**
+   * @public
+   * Cart methods
+   */
+  public get carts(): CartsResource {
+    return this._carts;
   }
 
   /**

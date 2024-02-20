@@ -1,0 +1,179 @@
+mutation createCart($input: CreateCartInput!) {
+  createCart(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+  }
+}
+
+query getCart($token: ID!) {
+  getCart: getSubscription(token: $token) {
+    ...SubscriptionFragment
+  }
+}
+
+mutation addToCart($input: CreateOrderedProductInput!) {
+  addToCart: createOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation removeFromCart($input: DestroyOrderedProductInput!) {
+  removeFromCart: destroyOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation updateOrderedProductInCartQuantity($id: ID, $quantity: Int) {
+  updateOrderedProductInCartQuantity: updateOrderedProductQuantity(
+    input: { orderedProduct: { id: $id, quantity: $quantity } }
+  ) {
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+    subscription {
+      ...SubscriptionFragment
+    }
+  }
+}
+
+mutation updateOrderedProductInCart(
+  $id: ID
+  $interval: Int
+  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+  $metadata: JSON
+  $productId: ID
+  $quantity: Int
+  $shipmentDate: ISO8601Date
+) {
+  updateOrderedProductInCart: updateOrderedProduct(
+    input: {
+      id: $id
+      interval: $interval
+      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
+      metadata: $metadata
+      productId: $productId
+      quantity: $quantity
+      shipmentDate: $shipmentDate
+    }
+  ) {
+    orderedProduct {
+      ...OrderedProductFragment
+      subscription {
+        ...SubscriptionFragment
+      }
+    }
+  }
+}
+
+mutation updateAddressDetails(
+  $metadata: JSON
+  $companyName: String
+  $salutation: String
+  $name: String
+  $lastName: String
+  $address: String
+  $zipcode: String
+  $houseNumber: String
+  $city: String
+  $country: String
+  $state: String
+  $district: String
+  $phoneNumber: String
+  $dateOfBirth: ISO8601Date
+  $differentBillingAddress: Boolean
+  $billToCompanyName: String
+  $billToSalutation: String
+  $billToName: String
+  $billToLastName: String
+  $billToAddress: String
+  $billToZipcode: String
+  $billToHouseNumber: String
+  $billToCity: String
+  $billToCountry: String
+  $billToState: String
+  $billToDistrict: String
+  $billToPhoneNumber: String
+  $email: String
+  $termsAccepted: Boolean
+  $marketingOptIn: Boolean
+  $extraFields: [ExtraFieldInput!]
+  $locale: String
+  $chargeDayOfTheMonth: Int
+) {
+  updateAddressDetails(
+    input: {
+      metadata: $metadata
+      companyName: $companyName
+      salutation: $salutation
+      name: $name
+      lastName: $lastName
+      address: $address
+      zipcode: $zipcode
+      houseNumber: $houseNumber
+      city: $city
+      country: $country
+      state: $state
+      district: $district
+      phoneNumber: $phoneNumber
+      dateOfBirth: $dateOfBirth
+      differentBillingAddress: $differentBillingAddress
+      billToCompanyName: $billToCompanyName
+      billToSalutation: $billToSalutation
+      billToName: $billToName
+      billToLastName: $billToLastName
+      billToAddress: $billToAddress
+      billToZipcode: $billToZipcode
+      billToHouseNumber: $billToHouseNumber
+      billToCity: $billToCity
+      billToCountry: $billToCountry
+      billToState: $billToState
+      billToDistrict: $billToDistrict
+      billToPhoneNumber: $billToPhoneNumber
+      email: $email
+      termsAccepted: $termsAccepted
+      marketingOptIn: $marketingOptIn
+      extraFields: $extraFields
+      locale: $locale
+      chargeDayOfTheMonth: $chargeDayOfTheMonth
+    }
+  ) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation updateCartPlan($input: UpdatePlanInput!) {
+  updateCartPlan: updatePlan(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+  }
+}
+
+mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
+  createSubscriptionFromCart(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+    paymentUrl
+    returnUrl
+  }
+}

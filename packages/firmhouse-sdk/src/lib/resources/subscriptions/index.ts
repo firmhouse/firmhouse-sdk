@@ -1,20 +1,13 @@
-import { BaseResource } from '../BaseResource';
 import {
-  CreateOrderedProductInput,
-  SubscriptionStatus,
-} from '../../graphql/generated';
-
-import {
-  AddToCartDocument,
-  CreateCartDocument,
-  CreateSubscriptionFromCartDocument,
+  CancelSubcscriptionDocument,
+  CreateOrderedProductDocument,
+  DestroyOrderedProductDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   GetSubscriptionDocument,
-  RemoveFromCartDocument,
-  UpdateAddressDetailsDocument,
-  UpdateAddressDetailsMutationVariables,
+  PauseSubscriptionDocument,
+  ResumeSubscriptionDocument,
   UpdateOrderedProductDocument,
-  UpdateOrderedProductMutationVariables,
-  UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
 } from './subscriptions.generated';
 import {
@@ -23,51 +16,99 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import {
-  BaseSubscriptionType,
-  SubscriptionType,
+  arrayFilterNulls,
+  filterNullsFromPaginatedResult,
+} from '../../helpers/utils';
+import {
   _formatOrderedProduct,
   _formatSubscription,
-  _formatSubscriptionInResponse,
 } from '../../helpers/subscription';
+import {
+  CancelSubscriptionInput,
+  CreateOrderedProductInput,
+  DestroyOrderedProductInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
+  UpdateOrderedProductInput,
+  UpdatePlanInput,
+} from '../../graphql/generated';
+import { BaseResource } from '../BaseResource';
+import {
+  FirmhouseInvoice,
+  FirmhouseOrderedProduct,
+  FirmhouseSubscription,
+} from '../../firmhouse';
 
 /**
  * @public
  * Subscription methods
  */
 export class SubscriptionsResource extends BaseResource {
-  async createCart(clientMutationId?: string) {
-    const response = await this._client.request(CreateCartDocument, {
-      input: { clientMutationId },
-    });
-    if (response.createCart === null || response.createCart === undefined) {
-      throw new ServerError('Could not create subscription');
-    }
-    return _formatSubscriptionInResponse(response.createCart);
-  }
-
   /**
-   * Create a new cart and return the subscription token
-   * @param clientMutationId - Optional client mutation id
-   * @returns subscription token
-   */
-  public async createSubscriptionToken(clientMutationId?: string) {
-    const response = await this.createCart(clientMutationId);
-    const token = response.subscription.token;
-    if (token === null || token === undefined) {
-      throw new ServerError('No token returned from API');
-    }
-    return token;
-  }
-
-  /**
-   * Get a subscription by subscription token
+   * Get a subscription by subscription token including relations
    * @param token - Subscription token
+   * @param includeRelations - Relations to include
    * @returns Subscription
    */
-  public async get(token: string) {
+  public async get(
+    token: string,
+    includeRelations?: {
+      collectionCases?: boolean;
+      verifiedIdentity?: boolean;
+      orders?: {
+        after?: string;
+        before?: string;
+        first?: number;
+        last?: number;
+        includeRelations?: {
+          orderLines?: boolean;
+          payment?: boolean;
+          invoice?: boolean;
+        };
+      };
+      invoices?: {
+        includeRelations?: {
+          collectionCase?: boolean;
+          invoiceReminders?: boolean;
+          invoiceLineItems?: boolean;
+          payment?: boolean;
+          originalInvoice?: boolean;
+        };
+      };
+    }
+  ) {
     const response = await this._client.request(
       GetSubscriptionDocument,
-      { token },
+      {
+        token,
+        includeCollectionCases: includeRelations?.collectionCases ?? false,
+        includeVerifiedIdentity: includeRelations?.verifiedIdentity ?? false,
+        includeOrders: !!includeRelations?.orders,
+        ordersIncludeOrderLines:
+          includeRelations?.orders?.includeRelations?.orderLines ?? false,
+        ordersIncludePayment:
+          includeRelations?.orders?.includeRelations?.payment ?? false,
+        ordersIncludeInvoice:
+          includeRelations?.orders?.includeRelations?.invoice ?? false,
+        ordersAfter: includeRelations?.orders?.after,
+        ordersBefore: includeRelations?.orders?.before,
+        ordersFirst: includeRelations?.orders?.first,
+        ordersLast: includeRelations?.orders?.last,
+        includeInvoices: !!includeRelations?.invoices,
+        invoicesIncludeCollectionCase:
+          includeRelations?.invoices?.includeRelations?.collectionCase ?? false,
+        invoicesIncludeInvoiceReminders:
+          includeRelations?.invoices?.includeRelations?.invoiceReminders ??
+          false,
+        invoicesIncludeInvoiceLineItems:
+          includeRelations?.invoices?.includeRelations?.invoiceLineItems ??
+          false,
+        invoicesIncludePayment:
+          includeRelations?.invoices?.includeRelations?.payment ?? false,
+        invoicesIncludeOriginalInvoice:
+          includeRelations?.invoices?.includeRelations?.originalInvoice ??
+          false,
+      },
       this.getSubscriptionTokenHeader(token)
     );
     if (response.getSubscription === null) {
@@ -77,139 +118,18 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Try to get a subscription by token, if it exists and is a draft subscription, return it. Otherwise create a new draft subscription.
-   * @param token - Subscription token
-   * @returns Subscription if it exists, otherwise a new draft subscription
-   */
-  public async getOrCreateDraftSubscription(token?: string) {
-    let subscription: SubscriptionType<BaseSubscriptionType> | null = null;
-    if (token !== undefined) {
-      try {
-        const response = await this.get(token);
-        if (response.status === SubscriptionStatus.Draft) {
-          subscription = _formatSubscription(response);
-        }
-      } catch (error) {
-        // ignore
-      }
-    }
-    if (subscription === null) {
-      const response = await this.createCart();
-      subscription = response.subscription;
-    }
-
-    return subscription;
-  }
-
-  /**
-   * Add a product to the cart
-   * @param input - Selected product and quantity
-   * @param subscriptionToken - Subscription token
-   * @returns subscription after adding the product and the ordered product
-   */
-  public async addToCart(
-    input: CreateOrderedProductInput,
-    subscriptionToken: string
-  ) {
-    const response = await this._client.request(
-      AddToCartDocument,
-      { input },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const createOrderedProduct = response.createOrderedProduct ?? null;
-    if (createOrderedProduct === null) {
-      throw new ServerError('Could not add product to cart');
-    }
-    const subscription = createOrderedProduct.subscription ?? null;
-    const orderedProduct = createOrderedProduct.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not add product to cart');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
-   * Remove a product from the cart
-   * @param orderedProductId - Ordered product id to remove from the cart
-   * @param subscriptionToken - Subscription token
-   * @returns subscription after removing the product and the removed product
-   */
-  public async removeFromCart(
-    orderedProductId: string,
-    subscriptionToken: string
-  ) {
-    const response = await this._client.request(
-      RemoveFromCartDocument,
-      { input: { id: orderedProductId } },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const destroyOrderedProduct = response.destroyOrderedProduct ?? null;
-    if (destroyOrderedProduct === null) {
-      throw new ServerError('Could not remove product from cart');
-    }
-    const subscription = destroyOrderedProduct.subscription ?? null;
-    const orderedProduct = destroyOrderedProduct.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not remove product from cart');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
-   * Update a product quantity in the cart
-   * @param orderedProductId - Ordered product id to update quantity
-   * @param quantity - New quantity
-   * @param subscriptionToken - Subscription token
-   * @returns Updated subscription
-   */
-  public async updateOrderedProductQuantity(
-    orderedProductId: string,
-    quantity: number,
-    subscriptionToken: string
-  ) {
-    const response = await this._client.request(
-      UpdateOrderedProductQuantityDocument,
-      { id: orderedProductId, quantity },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const updateOrderedProductQuantity =
-      response.updateOrderedProductQuantity ?? null;
-    if (updateOrderedProductQuantity === null) {
-      throw new ServerError('Could not update ordered product quantity');
-    }
-    const subscription = updateOrderedProductQuantity.subscription ?? null;
-    const orderedProduct = updateOrderedProductQuantity.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not update ordered product quantity');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
-   * Update an ordered product
+   * Update a product in the cart
    * @param input - Payload for fields to update
    * @param subscriptionToken - Subscription token
    * @returns Updated subscription
    */
   public async updateOrderedProduct(
-    input: UpdateOrderedProductMutationVariables,
-    subscriptionToken: string
+    subscriptionToken: string,
+    input: UpdateOrderedProductInput
   ) {
     const response = await this._client.request(
       UpdateOrderedProductDocument,
-      input,
+      { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProduct = response.updateOrderedProduct ?? null;
@@ -220,12 +140,10 @@ export class SubscriptionsResource extends BaseResource {
     if (orderedProduct === null) {
       throw new ServerError('Could not update ordered product');
     }
-
     const { subscription, ...fields } = orderedProduct;
     if (subscription === null) {
       throw new ServerError('Could not update ordered product');
     }
-
     return {
       orderedProduct: _formatOrderedProduct(fields, subscription),
       subscription: _formatSubscription(subscription),
@@ -233,104 +151,189 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Update the address details of a subscription.
-   * @param input - Address details, address, name, email, etc
-   * @param subscriptionToken - Subscription token
-   * @returns Updated subscription and validation errors
-   * @remarks
-   * Will save changes to certain fields evesn when other fields given are invalid.
-   * Will return validation error messages for invalid fields.
+   * Get a subscription by self service center login token
+   * @param token - Self service center login token
+   * @returns Subscription
    */
-  public async updateAddressDetails(
-    input: UpdateAddressDetailsMutationVariables,
-    subscriptionToken: string
-  ) {
+  public async getBySelfServiceCenterLoginToken(token: string) {
     const response = await this._client.request(
-      UpdateAddressDetailsDocument,
+      GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+      { token },
+      this.getSubscriptionTokenHeader(token)
+    );
+    if (response.getSubscriptionBySelfServiceCenterLoginToken === null) {
+      throw new NotFoundError('Subscription not found');
+    }
+    return _formatSubscription(
+      response.getSubscriptionBySelfServiceCenterLoginToken
+    );
+  }
+
+  /**
+   * Cancel a subscription
+   * @param input - Payload for cancellation
+   * @returns Cancelled subscription
+   */
+  public async cancel(input: CancelSubscriptionInput) {
+    const response = await this._client.request(CancelSubcscriptionDocument, {
       input,
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-
-    const updateAddressDetails = response.updateAddressDetails;
-    if (updateAddressDetails === null) {
-      throw new ServerError('Could not update address details');
+    });
+    const cancelSubscription = response.cancelSubscription ?? null;
+    if (cancelSubscription === null) {
+      throw new ServerError('Could not cancel subscription');
     }
 
-    const { errors } = updateAddressDetails;
+    const { errors } = cancelSubscription;
     if (errors && errors.length > 0) {
       throw new ValidationError(errors);
     }
 
-    const subscription = updateAddressDetails.subscription;
+    const subscription = cancelSubscription.subscription ?? null;
     if (subscription === null) {
-      throw new ServerError('Could not update address details');
+      throw new ServerError('Could not cancel subscription');
+    }
+
+    return _formatSubscription(subscription);
+  }
+
+  /**
+   * Pause a subscription
+   * @param input - Payload for pausing
+   * @returns Paused subscription
+   */
+  public async pause(input: PauseSubscriptionInput) {
+    const response = await this._client.request(PauseSubscriptionDocument, {
+      input,
+    });
+    const pauseSubscription = response.pauseSubscription ?? null;
+    if (pauseSubscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    const { errors } = pauseSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = pauseSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    return _formatSubscription(subscription);
+  }
+
+  /**
+   * Resume a subscription
+   * @param input - Payload for resuming
+   * @returns Resumed subscription
+   */
+  public async resume(input: ResumeSubscriptionInput) {
+    const response = await this._client.request(ResumeSubscriptionDocument, {
+      input,
+    });
+    const resumeSubscription = response.resumeSubscription ?? null;
+    if (resumeSubscription === null) {
+      throw new ServerError('Could not resume subscription');
+    }
+
+    const { errors } = resumeSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = resumeSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not resume subscription');
     }
 
     return {
-      subscription: _formatSubscription(subscription),
+      subscription: _formatSubscription(subscription) as FirmhouseSubscription,
     };
   }
 
   /**
-   * Finalises a subscription and returns payment details based on a cart/draft subscription
-   * @param paymentPageUrl - The URL where the user can sign up for a new subscription
-   * @param returnUrl - The URL the user gets redirected to after completing payment
-   * @param subscriptionToken - subscriptionToken Subscription token
-   * @returns Payment details and validation errors if any
-   * @throws {@link @firmhouse/firmhouse-sdk#ValidationError}
-   * Thrown if required fields for payment is missing.
+   * Create a new ordered product
+   * @param subscriptionToken - Subscription token
+   * @param input - Payload for creating ordered product
+   * @returns Ordered product and subscription
    */
-  public async createSubscriptionFromCart(
-    paymentPageUrl: string,
-    returnUrl: string,
-    subscriptionToken: string
+  public async createOrderedProduct(
+    subscriptionToken: string,
+    input: CreateOrderedProductInput
   ) {
     const response = await this._client.request(
-      CreateSubscriptionFromCartDocument,
-      { input: { paymentPageUrl, returnUrl } },
+      CreateOrderedProductDocument,
+      { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { createSubscriptionFromCart } = response;
-
-    if (createSubscriptionFromCart === null) {
-      throw new ServerError('Could not create subscription');
+    const createOrderedProduct = response.createOrderedProduct ?? null;
+    if (createOrderedProduct === null) {
+      throw new ServerError('Could not create ordered product');
     }
-
-    const { errors, subscription, paymentUrl } = createSubscriptionFromCart;
-    if (errors && errors.length > 0) {
-      throw new ValidationError(errors);
+    const orderedProduct = createOrderedProduct.orderedProduct ?? null;
+    if (orderedProduct === null) {
+      throw new ServerError('Could not create ordered product');
     }
+    const subscription = createOrderedProduct.subscription ?? null;
 
     if (subscription === null) {
-      throw new ServerError('Could not create subscription');
+      throw new ServerError('Could not create ordered product');
     }
 
     return {
-      paymentUrl,
-      returnUrl: createSubscriptionFromCart.returnUrl,
+      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
 
   /**
-   * Updates the active plan of a subscription
-   * @param planSlug - Slug of the plan to update the subscription to
+   * Destroy an ordered product
    * @param subscriptionToken - Subscription token
+   * @param orderedProductId - Ordered product id to destroy
+   * @returns Subscription
+   */
+  public async destroyOrderedProduct(
+    subscriptionToken: string,
+    orderedProductId: string
+  ) {
+    const response = await this._client.request(
+      DestroyOrderedProductDocument,
+      { input: { id: orderedProductId } },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    const destroyOrderedProduct = response.destroyOrderedProduct ?? null;
+    if (destroyOrderedProduct === null) {
+      throw new ServerError('Could not destroy ordered product');
+    }
+    const subscription = destroyOrderedProduct.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not destroy ordered product');
+    }
+    return { subscription: _formatSubscription(subscription) };
+  }
+
+  /**
+   * Update the plan of a subscription
+   * @param subscriptionToken - Subscription token
+   * @param planSlug - Slug of the plan to update to
    * @returns Updated subscription
    */
-  public async updatePlan(planSlug: string, subscriptionToken: string) {
+  public async updatePlan(subscriptionToken: string, planSlug: string) {
     const response = await this._client.request(
       UpdatePlanDocument,
       { input: { planSlug } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { updatePlan } = response;
-
+    const updatePlan = response.updatePlan ?? null;
     if (updatePlan === null) {
       throw new ServerError('Could not update plan');
     }
-
-    return _formatSubscriptionInResponse(updatePlan);
+    const subscription = updatePlan.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not update plan');
+    }
+    return _formatSubscription(subscription);
   }
 
   protected getSubscriptionTokenHeader(subscriptionToken: string) {
@@ -339,14 +342,9 @@ export class SubscriptionsResource extends BaseResource {
 }
 
 export type {
-  BaseSubscriptionType,
-  SubscriptionType,
-  BaseOrderedProductType,
-  OrderedProductType,
-  ExtraFieldAnswerType,
-} from '../../helpers/subscription';
-
-export type {
-  UpdateAddressDetailsMutationVariables,
-  UpdateOrderedProductMutationVariables,
-} from './subscriptions.generated';
+  CancelSubscriptionInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
+  UpdateOrderedProductInput,
+};

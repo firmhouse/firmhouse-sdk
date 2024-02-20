@@ -5,6 +5,7 @@ import {
   AllInvoicesQueryVariables,
 } from './allInvoices.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
+import { FirmhouseInvoice, PaginatedResponse } from '../../firmhouse';
 
 export type { AllInvoicesQuery, AllInvoicesQueryVariables };
 
@@ -43,7 +44,7 @@ export class InvoicesResource extends BaseResource {
       payment?: boolean;
       originalInvoice?: boolean;
     }
-  ) {
+  ): Promise<PaginatedResponse<FirmhouseInvoice>> {
     const response = await this._client.request(AllInvoicesDocument, {
       ...(params ?? {}),
       includeCollectionCases: includeRelations?.collectionCases ?? false,
@@ -55,7 +56,7 @@ export class InvoicesResource extends BaseResource {
     return {
       total: response.invoices?.totalCount ?? 0,
       pageInfo: response.invoices?.pageInfo,
-      results: arrayFilterNulls(response.invoices?.nodes),
+      results: arrayFilterNulls(response.invoices?.nodes) as FirmhouseInvoice[],
     };
   }
 }

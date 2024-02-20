@@ -1,4 +1,4 @@
-import { ExtraFieldAnswerType } from '../firmhouse';
+import { FirmhouseExtraFieldAnswer } from './types';
 
 /**
  * @public
@@ -7,10 +7,10 @@ import { ExtraFieldAnswerType } from '../firmhouse';
  * @returns Map of extra fields by field id
  */
 export const mapExtraFieldsByFieldId = (
-  extraFields: ExtraFieldAnswerType[]
+  extraFields: FirmhouseExtraFieldAnswer[]
 ) => {
   return extraFields.reduce((result, extraField) => {
     result[extraField.extraFieldId] = extraField;
     return result;
-  }, {} as Record<string, ExtraFieldAnswerType>);
+  }, {} as Record<string, FirmhouseExtraFieldAnswer>);
 };
