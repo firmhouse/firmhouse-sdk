@@ -1,4 +1,4 @@
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { SelfServiceCenterTokenResource } from '@firmhouse/firmhouse-sdk/lib/resources/selfServiceCenterToken';
 import { CreateSelfServiceCenterLoginTokenDocument } from '@firmhouse/firmhouse-sdk/lib/resources/selfServiceCenterToken/selfServiceCenterToken.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');

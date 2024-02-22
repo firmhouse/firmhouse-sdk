@@ -18,9 +18,16 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.products).toBeDefined();
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
-        expect(client.subscriptions).toBeDefined();
-        expect(client.invoices).toBeFalsy();
-        expect(client.projects).toBeFalsy();
+        expect(client.carts).toBeDefined();
+        expect(() => client.invoices).toThrow(
+          'Cannot access invoices resource with Storefront acess'
+        );
+        expect(() => client.projects).toThrow(
+          'Cannot access projects resource with Storefront acess'
+        );
+        expect(() => client.subscriptions).toThrow(
+          'Cannot access subscriptions resource with Storefront acess'
+        );
       });
     });
 
@@ -38,8 +45,8 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.products).toBeDefined();
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
+        expect(client.carts).toBeDefined();
         expect(client.subscriptions).toBeDefined();
-        expect(client.subscriptions.getWith).toBeDefined();
         expect(client.invoices).toBeDefined();
         expect(client.projects).toBeDefined();
         expect(client.projects.getCurrent).toBeDefined();

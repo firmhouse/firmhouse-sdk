@@ -16,7 +16,7 @@ import {
   UpdateOrderedProductInCartDocument,
   UpdateOrderedProductInCartMutationVariables,
   UpdateOrderedProductInCartQuantityDocument,
-} from './cart.generated';
+} from './carts.generated';
 import {
   NotFoundError,
   ServerError,
@@ -30,7 +30,7 @@ import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
  * Cart(Draft subscription) methods
  */
 export class CartsResource extends BaseResource {
-  async createCart(clientMutationId?: string): Promise<FirmhouseCart> {
+  async create(clientMutationId?: string): Promise<FirmhouseCart> {
     const response = await this._client.request(CreateCartDocument, {
       input: { clientMutationId },
     });
@@ -42,11 +42,10 @@ export class CartsResource extends BaseResource {
 
   /**
    * Create a new cart and return the subscription token
-   * @param clientMutationId - Optional client mutation id
-   * @returns subscription token
+   * @returns cart token
    */
-  public async createSubscriptionToken(clientMutationId?: string) {
-    const response = await this.createCart(clientMutationId);
+  public async createCartToken() {
+    const response = await this.create();
     const token = response.token;
     if (token === null || token === undefined) {
       throw new ServerError('No token returned from API');
@@ -55,9 +54,9 @@ export class CartsResource extends BaseResource {
   }
 
   /**
-   * Get a cart by subscription token
+   * Get a cart by cart token
    * @param token - Cart token
-   * @returns Subscription
+   * @returns Cart
    */
   public async get(token: string): Promise<FirmhouseCart> {
     const response = await this._client.request(
@@ -76,7 +75,7 @@ export class CartsResource extends BaseResource {
    * @param token - Cart token
    * @returns Cart if it exists, otherwise a new cart
    */
-  public async getOrCreateCart(token?: string) {
+  public async getOrCreate(token?: string) {
     if (token !== undefined) {
       try {
         const response = await this.get(token);
@@ -87,7 +86,7 @@ export class CartsResource extends BaseResource {
         // ignore
       }
     }
-    return this.createCart();
+    return this.create();
   }
 
   /**
@@ -96,7 +95,7 @@ export class CartsResource extends BaseResource {
    * @param cartToken - Cart token
    * @returns subscription after adding the product and the ordered product
    */
-  public async addToCart(cartToken: string, input: CreateOrderedProductInput) {
+  public async addProduct(cartToken: string, input: CreateOrderedProductInput) {
     const response = await this._client.request(
       AddToCartDocument,
       { input },
@@ -124,7 +123,7 @@ export class CartsResource extends BaseResource {
    * @param cartToken - Cart token
    * @returns subscription after removing the product and the removed product
    */
-  public async removeFromCart(cartToken: string, orderedProductId: string) {
+  public async removeProduct(cartToken: string, orderedProductId: string) {
     const response = await this._client.request(
       RemoveFromCartDocument,
       { input: { id: orderedProductId } },
@@ -264,7 +263,7 @@ export class CartsResource extends BaseResource {
    * @throws {@link @firmhouse/firmhouse-sdk#ValidationError}
    * Thrown if required fields for payment is missing.
    */
-  public async createSubscriptionFromCart(
+  public async createSubscription(
     cartToken: string,
     paymentPageUrl: string,
     returnUrl: string
@@ -316,13 +315,9 @@ export class CartsResource extends BaseResource {
 
     return _formatCart(updateCartPlan.subscription);
   }
-
-  protected getSubscriptionTokenHeader(cartToken: string) {
-    return { 'X-Subscription-Token': cartToken };
-  }
 }
 
 export type {
   UpdateAddressDetailsMutationVariables,
   UpdateOrderedProductInCartMutationVariables,
-} from './cart.generated';
+} from './carts.generated';

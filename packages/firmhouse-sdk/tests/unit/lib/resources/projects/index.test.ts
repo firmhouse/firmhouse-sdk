@@ -1,4 +1,4 @@
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { NotFoundError } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
 import { ProjectsResource } from '@firmhouse/firmhouse-sdk/lib/resources/projects';
 import { GetCurrentProjectDocument } from '@firmhouse/firmhouse-sdk/lib/resources/projects/projects.generated';

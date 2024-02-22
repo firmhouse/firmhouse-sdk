@@ -1,4 +1,4 @@
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { ProductsResource } from '@firmhouse/firmhouse-sdk/lib/resources/products';
 import { AllProductsDocument } from '@firmhouse/firmhouse-sdk/lib/resources/products/allProducts.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');

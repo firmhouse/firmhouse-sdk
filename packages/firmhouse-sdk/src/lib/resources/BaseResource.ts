@@ -17,4 +17,8 @@ export abstract class BaseResource {
   constructor(client: _GraphQLClient) {
     this._client = client;
   }
+
+  protected getSubscriptionTokenHeader(token: string) {
+    return { 'X-Subscription-Token': token };
+  }
 }

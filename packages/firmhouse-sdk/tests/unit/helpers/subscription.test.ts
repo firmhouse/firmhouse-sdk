@@ -1,7 +1,4 @@
-import {
-  OrderedProductType,
-  assignSubscriptionUtils,
-} from '../../../src/lib/helpers/subscription';
+import { OrderedProductType } from '../../../src/lib/helpers/subscription';
 import {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
@@ -10,10 +7,8 @@ import {
 import {
   BaseOrderedProductType,
   BaseSubscriptionType,
-  SubscriptionType,
   _formatOrderedProduct,
   _formatSubscription,
-  _formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
 
 //Base ordered product example with all properties
@@ -79,20 +74,13 @@ const formattedOrderedProduct = {
   shipsOnlyOnce: expect.any(Function),
 };
 
-const subscription: SubscriptionType<BaseSubscriptionType> = {
+const subscription: BaseSubscriptionType = {
   token: 'test',
   startDate: '',
   status: SubscriptionStatus.Draft,
   termsAccepted: false,
   extraFields: [],
-  orderedProducts: [
-    {
-      ...orderedProduct,
-      shipsOnlyOnce: expect.any(Function),
-      followsPlanSchedule: expect.any(Function),
-      intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
-    },
-  ],
+  orderedProducts: [orderedProduct],
   createdAt: null,
   id: null,
   metadata: undefined,
@@ -143,7 +131,7 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   zipcode: null,
   activePlan: null,
   subscribedPlan: null,
-};
+} as unknown as BaseSubscriptionType;
 
 const formattedSubscription = {
   ...subscription,
@@ -186,7 +174,7 @@ describe('helpers/subscription', () => {
       };
       const output = _formatOrderedProduct(input, {
         ...subscription,
-        subscribedPlan: { id: '1' } as SubscriptionType['subscribedPlan'],
+        subscribedPlan: { id: '1' } as BaseSubscriptionType['subscribedPlan'],
       });
       expect(output.followsPlanSchedule()).toBe(true);
     });
@@ -213,7 +201,7 @@ describe('helpers/subscription', () => {
       };
       const output = _formatOrderedProduct(input, {
         ...subscription,
-        subscribedPlan: { id: '1' } as SubscriptionType['subscribedPlan'],
+        subscribedPlan: { id: '1' } as BaseSubscriptionType['subscribedPlan'],
       });
       expect(output.followsPlanSchedule()).toBe(false);
     });
@@ -292,31 +280,6 @@ describe('helpers/subscription', () => {
     });
   });
 
-  describe('formatSubscriptionInResponse', () => {
-    it('should format subscription in response correctly', () => {
-      const input = {
-        property: 'test',
-        subscription,
-      };
-      const output = _formatSubscriptionInResponse(input);
-      expect(output).toEqual({
-        ...input,
-        subscription: formattedSubscription,
-      });
-    });
-  });
-
-  describe('assignSubscriptionUtils', () => {
-    it('should add the utility methods to subscription object correctly', () => {
-      const result = assignSubscriptionUtils(subscription);
-      expect(result).toEqual({
-        ...subscription,
-        getClosestUpcomingOrderDate: expect.any(Function),
-        getClosestUpcomingOrderOrderedProducts: expect.any(Function),
-      });
-    });
-  });
-
   describe('getClosestUpcomingOrderDate', () => {
     it('should return the closest upcoming order date', () => {
       jest.useFakeTimers({ now: new Date('2024-01-05') });
@@ -326,10 +289,10 @@ describe('helpers/subscription', () => {
         { ...formattedOrderedProduct, shipmentDate: '2024-01-08' },
         { ...formattedOrderedProduct, shipmentDate: null },
       ];
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
-      });
+      } as BaseSubscriptionType);
       expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBe(
         '2024-01-06'
       );
@@ -337,7 +300,7 @@ describe('helpers/subscription', () => {
 
     it('should return null if ordered products list is empty', () => {
       const orderedProducts: OrderedProductType[] = [];
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
       });
@@ -346,7 +309,7 @@ describe('helpers/subscription', () => {
 
     it('should return null if ordered products list is null', () => {
       const orderedProducts = null;
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
       });
@@ -365,7 +328,7 @@ describe('helpers/subscription', () => {
         { ...formattedOrderedProduct, shipmentDate: null },
         { ...formattedOrderedProduct, shipmentDate: '2024-01-05' },
       ];
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
       });
@@ -378,7 +341,7 @@ describe('helpers/subscription', () => {
 
     it('should return empty array if ordered products list is empty', () => {
       const orderedProducts: OrderedProductType[] = [];
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
       });
@@ -389,7 +352,7 @@ describe('helpers/subscription', () => {
 
     it('should return empty array if ordered products list is null', () => {
       const orderedProducts = null;
-      const subscriptionWithUtils = assignSubscriptionUtils({
+      const subscriptionWithUtils = _formatSubscription({
         ...subscription,
         orderedProducts,
       });

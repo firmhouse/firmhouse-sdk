@@ -1,5 +1,8 @@
-import { InvoiceStatusEnum, PaymentTypeEnum } from '@firmhouse/firmhouse-sdk';
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import {
+  InvoiceStatusEnum,
+  PaymentTypeEnum,
+} from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
+import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import { InvoicesResource } from '@firmhouse/firmhouse-sdk/lib/resources/invoices';
 import { AllInvoicesDocument } from '@firmhouse/firmhouse-sdk/lib/resources/invoices/allInvoices.generated';
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');

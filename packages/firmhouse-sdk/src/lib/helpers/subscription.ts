@@ -2,7 +2,6 @@ import { ServerError } from './errors';
 import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.generated';
 import {
   FirmhouseCart,
-  FirmhouseOrder,
   FirmhouseOrderedProduct,
   FirmhouseSubscription,
   ResolveObject,
@@ -12,7 +11,7 @@ import { OrderedProductIntervalUnitOfMeasure } from '../graphql/generated';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import dayjs from 'dayjs';
-import { GetCartQuery } from '../resources/carts/cart.generated';
+import { GetCartQuery } from '../resources/carts/carts.generated';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Amsterdam');
@@ -23,11 +22,14 @@ dayjs.tz.setDefault('Europe/Amsterdam');
 export type { GetSubscriptionQuery };
 
 /**
- * @public
+ * @internal
  */
-type BaseCartType = NonNullable<GetCartQuery['getCart']>;
+export type BaseCartType = NonNullable<GetCartQuery['getCart']>;
 
-type BaseSubscriptionType = NonNullable<
+/**
+ * @internal
+ */
+export type BaseSubscriptionType = NonNullable<
   GetSubscriptionQuery['getSubscription']
 >;
 

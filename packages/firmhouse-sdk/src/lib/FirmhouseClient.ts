@@ -114,7 +114,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
     ? InvoicesResource
     : never {
     if (this.ACCESS_TYPE === Access.storefront) {
-      throw new Error('Cannot access projects resource with Storefront acess');
+      throw new Error('Cannot access invoices resource with Storefront acess');
     }
     return this._invoices as TAccess extends Access.write
       ? InvoicesResource
@@ -128,7 +128,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   public get projects(): TAccess extends Access.write
     ? ProjectsResource
     : never {
-    if (this.ACCESS_TYPE === Access.write) {
+    if (this.ACCESS_TYPE === Access.storefront) {
       throw new Error('Cannot access projects resource with Storefront acess');
     }
     return this._projects as TAccess extends Access.write

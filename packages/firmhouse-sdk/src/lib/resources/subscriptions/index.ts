@@ -16,28 +16,38 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import {
-  arrayFilterNulls,
-  filterNullsFromPaginatedResult,
-} from '../../helpers/utils';
-import {
   _formatOrderedProduct,
   _formatSubscription,
 } from '../../helpers/subscription';
 import {
-  CancelSubscriptionInput,
   CreateOrderedProductInput,
-  DestroyOrderedProductInput,
-  PauseSubscriptionInput,
-  ResumeSubscriptionInput,
+  InputMaybe,
+  Scalars,
   UpdateOrderedProductInput,
-  UpdatePlanInput,
 } from '../../graphql/generated';
 import { BaseResource } from '../BaseResource';
-import {
-  FirmhouseInvoice,
-  FirmhouseOrderedProduct,
-  FirmhouseSubscription,
-} from '../../firmhouse';
+import { FirmhouseSubscription } from '../../firmhouse';
+
+export interface CancelSubscriptionInput {
+  /** Why did this customer decide to cancel? */
+  cancellationNotes?: InputMaybe<Scalars['String']['input']>;
+  /** Skip sending the standard cancellation confirmation email to the customer. */
+  skipCancellationConfirmationEmail?: InputMaybe<Scalars['Boolean']['input']>;
+  /** If a customer cannot be cancelled due to active commitments, this process can be skipped. */
+  skipContractTermsEnforcement?: InputMaybe<Scalars['Boolean']['input']>;
+  /** If two-step cancellation is enabled it can be skipped */
+  skipTwoStepCancellation?: InputMaybe<Scalars['Boolean']['input']>;
+}
+
+export interface ResumeSubscriptionInput {
+  /** Time to resume the subscription from. If not given the subscription will be immediately resumed. */
+  resumeFrom?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+}
+
+export interface PauseSubscriptionInput {
+  /** Time from which the subscription automaticaly resumes again. */
+  pauseUntil?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+}
 
 /**
  * @public
@@ -171,12 +181,16 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Cancel a subscription
+   * @param subscriptionId - ID of the subscription to cancel
    * @param input - Payload for cancellation
    * @returns Cancelled subscription
    */
-  public async cancel(input: CancelSubscriptionInput) {
+  public async cancel(subscriptionId: string, input: CancelSubscriptionInput) {
     const response = await this._client.request(CancelSubcscriptionDocument, {
-      input,
+      input: {
+        ...input,
+        id: subscriptionId,
+      },
     });
     const cancelSubscription = response.cancelSubscription ?? null;
     if (cancelSubscription === null) {
@@ -198,12 +212,16 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Pause a subscription
+   * @param subscriptionId - ID of the subscription to pause
    * @param input - Payload for pausing
    * @returns Paused subscription
    */
-  public async pause(input: PauseSubscriptionInput) {
+  public async pause(subscriptionId: string, input: PauseSubscriptionInput) {
     const response = await this._client.request(PauseSubscriptionDocument, {
-      input,
+      input: {
+        ...input,
+        id: subscriptionId,
+      },
     });
     const pauseSubscription = response.pauseSubscription ?? null;
     if (pauseSubscription === null) {
@@ -225,12 +243,16 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Resume a subscription
+   * @param subscriptionId - ID of the subscription to resume
    * @param input - Payload for resuming
    * @returns Resumed subscription
    */
-  public async resume(input: ResumeSubscriptionInput) {
+  public async resume(subscriptionId: string, input: ResumeSubscriptionInput) {
     const response = await this._client.request(ResumeSubscriptionDocument, {
-      input,
+      input: {
+        ...input,
+        id: subscriptionId,
+      },
     });
     const resumeSubscription = response.resumeSubscription ?? null;
     if (resumeSubscription === null) {
@@ -247,18 +269,16 @@ export class SubscriptionsResource extends BaseResource {
       throw new ServerError('Could not resume subscription');
     }
 
-    return {
-      subscription: _formatSubscription(subscription) as FirmhouseSubscription,
-    };
+    return _formatSubscription(subscription) as FirmhouseSubscription;
   }
 
   /**
-   * Create a new ordered product
+   * Add a new product to subscription
    * @param subscriptionToken - Subscription token
    * @param input - Payload for creating ordered product
    * @returns Ordered product and subscription
    */
-  public async createOrderedProduct(
+  public async addProduct(
     subscriptionToken: string,
     input: CreateOrderedProductInput
   ) {
@@ -288,12 +308,12 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Destroy an ordered product
+   * Remove a product from subscription
    * @param subscriptionToken - Subscription token
    * @param orderedProductId - Ordered product id to destroy
    * @returns Subscription
    */
-  public async destroyOrderedProduct(
+  public async removeProduct(
     subscriptionToken: string,
     orderedProductId: string
   ) {
@@ -342,9 +362,6 @@ export class SubscriptionsResource extends BaseResource {
 }
 
 export type {
-  CancelSubscriptionInput,
-  PauseSubscriptionInput,
-  ResumeSubscriptionInput,
   GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   UpdateOrderedProductInput,
 };

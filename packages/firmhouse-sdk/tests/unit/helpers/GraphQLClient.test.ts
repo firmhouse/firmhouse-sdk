@@ -1,5 +1,5 @@
 import { ValidationError } from '@firmhouse/firmhouse-sdk';
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
   ClientError,
   GraphQLClient as GraphQLClientBase,
