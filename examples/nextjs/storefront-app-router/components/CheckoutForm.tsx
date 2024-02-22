@@ -1,13 +1,13 @@
 'use client';
 
-import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseCart } from '@firmhouse/firmhouse-sdk';
 import { mapExtraFieldsByFieldId } from '@firmhouse/firmhouse-sdk/utils';
 import { Input, Select } from '@firmhouse/ui-components';
 import { useState, useMemo, useCallback } from 'react';
 import { updateCheckoutDetails } from '../lib/actions/subscription';
 
 export interface CheckoutFormProps {
-  subscription: SubscriptionType;
+  subscription: FirmhouseCart;
 }
 
 export function CheckoutForm({ subscription }: CheckoutFormProps) {

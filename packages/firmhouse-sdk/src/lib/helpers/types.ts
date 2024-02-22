@@ -401,7 +401,7 @@ export interface FirmhouseCart {
   status: SubscriptionStatus;
   termsAccepted: boolean;
   termsAcceptedOn: string | null;
-  token: string | null;
+  token: string;
   trialPeriodMonths: number | null;
   updatedAt: string | null;
   vatNumber: string | null;

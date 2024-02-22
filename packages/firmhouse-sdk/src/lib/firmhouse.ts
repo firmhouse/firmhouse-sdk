@@ -13,4 +13,26 @@ export * from './helpers/errors';
 export * from './helpers/types';
 export * from './helpers/GraphQLClient';
 export * from './FirmhouseClient';
+export {
+  AcceptanceCheckStatus,
+  AppliedPromotionDeactivationStrategy,
+  AssetStatus,
+  BaseIntervalUnit,
+  BillingCycleIntervalUnit,
+  CollectionCaseStatus,
+  CommitmentUnit,
+  FeedbackTypeEnum,
+  InvoiceStatusEnum,
+  LineItemTypeEnum,
+  MaximumCommitmentUnit,
+  OrderStatus,
+  OrderedProductIntervalUnitOfMeasure,
+  OrderedProductStatus,
+  OrderedProductTypes,
+  PaymentStatusEnum,
+  PaymentTypeEnum,
+  RefundStatus,
+  ReturnOrderStatus,
+  SubscriptionStatus,
+} from './graphql/generated';
 export { Types };
