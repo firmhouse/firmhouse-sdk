@@ -1,10 +1,10 @@
-import { OrderType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseOrder } from '@firmhouse/firmhouse-sdk';
 import { Pill, formatShortDate, ChevronIcon } from '@firmhouse/ui-components';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export interface OrderProps {
-  order: OrderType;
+  order: FirmhouseOrder;
   inline?: boolean;
 }
 

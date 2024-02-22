@@ -161,3 +161,15 @@ mutation updatePlan($input: UpdatePlanInput!) {
     }
   }
 }
+
+mutation updateSubscription($input: UpdateSubscriptionInput!) {
+  updateSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}

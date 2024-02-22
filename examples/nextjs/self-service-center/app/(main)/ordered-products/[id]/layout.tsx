@@ -15,6 +15,7 @@ import {
   getOrderedProductInfo,
 } from '@firmhouse/ui-components';
 import dayjs from 'dayjs';
+import { assignOrderedProductUtils } from '@firmhouse/firmhouse-sdk';
 
 export default async function OrderedProduct({
   params,
@@ -36,7 +37,8 @@ export default async function OrderedProduct({
   if (!orderedProduct) {
     return notFound();
   }
-  const { title, product, quantity } = orderedProduct;
+  const { title, product, quantity, shipsOnlyOnce } =
+    assignOrderedProductUtils(orderedProduct);
   const notShipped =
     orderedProduct.shipmentDate !== null &&
     !dayjs(orderedProduct.shipmentDate).isBefore(dayjs(), 'day');
@@ -109,7 +111,7 @@ export default async function OrderedProduct({
         </div>
 
         <div className="lg:col-span-2">
-          {!(isPlanBasedProject || orderedProduct.shipsOnlyOnce()) && (
+          {!(isPlanBasedProject || shipsOnlyOnce()) && (
             <div className="mb-4">{frequency}</div>
           )}
           <div id="remove_product">

@@ -47,9 +47,9 @@ export async function updateSubscription(path: string, data: FormData) {
   });
   const client = await writeAccessFirmhouseClient();
   try {
-    client.subscriptions.updateAddressDetails(
-      body,
-      await getSSCSubscriptionToken()
+    client.subscriptions.updateSubscription(
+      await getSSCSubscriptionToken(),
+      body
     );
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -94,7 +94,7 @@ export async function clearSSCSubscriptionToken(): Promise<void> {
 
 export async function cancelSubscription(): Promise<void> {
   const client = await writeAccessFirmhouseClient();
-  await client.subscriptions.cancel({ token: await getSSCSubscriptionToken() });
+  await client.subscriptions.cancel(await getSSCSubscriptionToken());
   revalidatePath('/');
   redirect('/');
 }
@@ -103,9 +103,9 @@ export async function removeOrderedProduct(
   orderedProductId: string
 ): Promise<void> {
   const client = await writeAccessFirmhouseClient();
-  await client.subscriptions.removeFromCart(
-    orderedProductId,
-    await getSSCSubscriptionToken()
+  await client.subscriptions.removeProduct(
+    await getSSCSubscriptionToken(),
+    orderedProductId
   );
   revalidatePath('/');
   revalidatePath(`/orderedProducts/${orderedProductId}`);
@@ -124,14 +124,11 @@ export async function updateOrderedProductInterval(
   const unitOfMeasure = formData.get(
     'unitOfMeasure'
   ) as OrderedProductIntervalUnitOfMeasure;
-  await client.subscriptions.updateOrderedProduct(
-    {
-      intervalUnitOfMeasureType: unitOfMeasure,
-      interval: interval,
-      id: orderedProductId,
-    },
-    token
-  );
+  await client.subscriptions.updateOrderedProduct(token, {
+    intervalUnitOfMeasureType: unitOfMeasure,
+    interval: interval,
+    id: orderedProductId,
+  });
   revalidatePath('/');
   revalidatePath(`/orderedProducts/${orderedProductId}`);
 }
@@ -143,13 +140,10 @@ export async function updateShipmentDate(
 ): Promise<void> {
   const client = await writeAccessFirmhouseClient();
   const shipmentDate = formData.get('shipmentDate') as string;
-  await client.subscriptions.updateOrderedProduct(
-    {
-      shipmentDate: dayjs(shipmentDate).format('YYYY-MM-DD'),
-      id: orderedProductId,
-    },
-    token
-  );
+  await client.subscriptions.updateOrderedProduct(token, {
+    shipmentDate: dayjs(shipmentDate).format('YYYY-MM-DD'),
+    id: orderedProductId,
+  });
   revalidatePath('/');
   revalidatePath(`/orderedProducts/${orderedProductId}`);
 }

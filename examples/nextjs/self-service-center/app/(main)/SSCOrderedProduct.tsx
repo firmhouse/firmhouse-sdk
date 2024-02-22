@@ -1,12 +1,12 @@
 import {
-  OrderedProductType,
   SubscriptionStatus,
-  SubscriptionType,
+  FirmhouseSubscription,
+  FirmhouseOrderedProduct,
+  assignOrderedProductUtils,
 } from '@firmhouse/firmhouse-sdk';
 import {
   LinkButton,
   Pill,
-  ShoppingCartIcon,
   formatCentsWithCurrency,
   formatLongDate,
   getOrderedProductInfo,
@@ -16,8 +16,8 @@ import Image from 'next/image';
 import { calculateExpectedDeliveryDate } from '../../lib/projects';
 
 export interface SSCOrderedProductProps {
-  orderedProduct: OrderedProductType;
-  subscription: SubscriptionType;
+  orderedProduct: FirmhouseOrderedProduct;
+  subscription: FirmhouseSubscription;
   isPlanBasedProject?: boolean;
 }
 
@@ -33,7 +33,8 @@ export function SSCOrderedProduct({
     minimumCommitmentEndsAt,
     plan,
     shipmentDate,
-  } = orderedProduct;
+    followsPlanSchedule,
+  } = assignOrderedProductUtils(orderedProduct);
   const { totalPrice, frequency } = getOrderedProductInfo(orderedProduct);
   const partOfPlan = !!plan;
   const notShipped =
@@ -141,7 +142,7 @@ export function SSCOrderedProduct({
       </div>
       {!isPlanBasedProject && (
         <div className="md:flex justify-between items-center mt-2">
-          {!orderedProduct.followsPlanSchedule() && (
+          {!followsPlanSchedule() && (
             <div className="text-sm md:text-sm">
               <p>{`Bills & ships ${
                 frequency ? `every ${frequency}` : 'once'

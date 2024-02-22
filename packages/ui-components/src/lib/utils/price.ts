@@ -1,4 +1,4 @@
-import { OrderedProductType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseOrderedProduct } from '@firmhouse/firmhouse-sdk';
 
 export function formatCentsToEuros(cents: number, decimalPoints = 2): string {
   return `${(cents / 100).toFixed(decimalPoints)}€`;
@@ -19,7 +19,7 @@ export function formatCentsWithCurrency(
 }
 
 export function getOrderedProductInfo(
-  orderedProduct: OrderedProductType,
+  orderedProduct: FirmhouseOrderedProduct,
   currency = 'EUR',
   locale?: string | null
 ) {
@@ -75,7 +75,7 @@ export function getFrequency(
   return `${interval} ${intervalUnitOfMeasure}`;
 }
 
-function getShippingInterval(orderedProduct: OrderedProductType) {
+function getShippingInterval(orderedProduct: FirmhouseOrderedProduct) {
   // If the interval is default just get that from product
   const { intervalUnitOfMeasure, interval } =
     orderedProduct.intervalUnitOfMeasure === 'default'

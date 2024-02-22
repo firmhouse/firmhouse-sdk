@@ -13,6 +13,7 @@ export * from './helpers/errors';
 export * from './helpers/types';
 export * from './helpers/GraphQLClient';
 export * from './FirmhouseClient';
+export * from './helpers';
 export {
   AcceptanceCheckStatus,
   AppliedPromotionDeactivationStrategy,

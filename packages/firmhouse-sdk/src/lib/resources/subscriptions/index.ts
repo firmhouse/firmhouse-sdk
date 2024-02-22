@@ -9,6 +9,7 @@ import {
   ResumeSubscriptionDocument,
   UpdateOrderedProductDocument,
   UpdatePlanDocument,
+  UpdateSubscriptionDocument,
 } from './subscriptions.generated';
 import {
   NotFoundError,
@@ -21,8 +22,10 @@ import {
 } from '../../helpers/subscription';
 import {
   CreateOrderedProductInput,
+  ExtraFieldInput,
   InputMaybe,
   Scalars,
+  SubscriptionStatus,
   UpdateOrderedProductInput,
 } from '../../graphql/generated';
 import { BaseResource } from '../BaseResource';
@@ -47,6 +50,113 @@ export interface ResumeSubscriptionInput {
 export interface PauseSubscriptionInput {
   /** Time from which the subscription automaticaly resumes again. */
   pauseUntil?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+}
+
+export interface UpdateSubscriptionInput {
+  /** The time the subscription was activated. */
+  activatedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The customer's address line or street. */
+  address?: InputMaybe<Scalars['String']['input']>;
+  /** The Adyen shopper reference being used for charges. */
+  adyenShopperReference?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address address line or street. */
+  billToAddress?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address city or town. */
+  billToCity?: InputMaybe<Scalars['String']['input']>;
+  /** The company name of the customer's billing address. */
+  billToCompanyName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address country code (ISO3661). */
+  billToCountry?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address district. */
+  billToDistrict?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address house, building, or appartment number. */
+  billToHouseNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address last name. */
+  billToLastName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address first name. */
+  billToName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address phone number (international format). */
+  billToPhoneNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address salutation (mr,ms,mx). */
+  billToSalutation?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address state or province (ISO3661-2). */
+  billToState?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address zip code or postal code. */
+  billToZipcode?: InputMaybe<Scalars['String']['input']>;
+  /** The time the subscription started the cancellation process (with two-step cancellation) */
+  cancellationStartedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The time the subscription was (fully) cancelled. */
+  cancelledAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The day of the month when the customer is charged. */
+  chargeDayOfTheMonth?: InputMaybe<Scalars['Int']['input']>;
+  /** The customer's city or town. */
+  city?: InputMaybe<Scalars['String']['input']>;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The company name of the customer. */
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's country code (ISO3661). */
+  country?: InputMaybe<Scalars['String']['input']>;
+  /** The field that can be used for your internal reference. For example, internal customer id. */
+  customerReference?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's date of birth (yyyy-mm-dd). */
+  dateOfBirth?: InputMaybe<Scalars['ISO8601Date']['input']>;
+  /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
+  differentBillingAddress?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The customer's district. */
+  district?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's email address. */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Extra field values for the subscription. */
+  extraFields?: InputMaybe<Array<ExtraFieldInput>>;
+  /** The customer's house, building, or appartment number. */
+  houseNumber?: InputMaybe<Scalars['String']['input']>;
+  /** Unique ID for an imported subscription. */
+  importedSubscriptionId?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's last name. */
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's language/locale. Must be enabled on the project. */
+  locale?: InputMaybe<Scalars['String']['input']>;
+  /** Time time the subscription was marked as non-paying. */
+  markedAsNonPayingAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** Whether the customer accepted optional marketing communication opt-in. */
+  marketingOptIn?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  /** The Mollie Customer ID (cst_XXX) */
+  mollieCustomerId?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's first name. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Notes specific for this subscription */
+  notes?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's phone number (international format). */
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  /** Additional payment service provider specific properties used for payment creation. */
+  pspPaymentProperties?: InputMaybe<Scalars['JSON']['input']>;
+  /** The customer's salutation (mr,ms,mx). */
+  salutation?: InputMaybe<Scalars['String']['input']>;
+  /** The time when the signup was completed. */
+  signupCompletedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** Don't automatically activate the subscription on signup. */
+  skipAutoActivationOnSignup?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The customer's state or province (ISO3661-2). */
+  state?: InputMaybe<Scalars['String']['input']>;
+  /** The current status of the subscription. (default: inactive) */
+  status?: InputMaybe<SubscriptionStatus>;
+  /** The Stripe Customer ID (cus_XXX) */
+  stripeCustomerId?: InputMaybe<Scalars['String']['input']>;
+  /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
+  stripePaymentMethodId?: InputMaybe<Scalars['String']['input']>;
+  /** Whether the customer accepted the terms and conditions. */
+  termsAccepted?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The token of the subscription to update, or creates a new one if one doesn't exist. */
+  token?: InputMaybe<Scalars['ID']['input']>;
+  /** The number of months before the customer is charged for the first time. */
+  trialPeriodMonths?: InputMaybe<Scalars['Int']['input']>;
+  /** The company VAT number. */
+  vatNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's zip code or postal code. */
+  zipcode?: InputMaybe<Scalars['String']['input']>;
 }
 
 /**
@@ -185,10 +295,10 @@ export class SubscriptionsResource extends BaseResource {
    * @param input - Payload for cancellation
    * @returns Cancelled subscription
    */
-  public async cancel(subscriptionId: string, input: CancelSubscriptionInput) {
+  public async cancel(subscriptionId: string, input?: CancelSubscriptionInput) {
     const response = await this._client.request(CancelSubcscriptionDocument, {
       input: {
-        ...input,
+        ...(input ?? {}),
         id: subscriptionId,
       },
     });
@@ -216,10 +326,10 @@ export class SubscriptionsResource extends BaseResource {
    * @param input - Payload for pausing
    * @returns Paused subscription
    */
-  public async pause(subscriptionId: string, input: PauseSubscriptionInput) {
+  public async pause(subscriptionId: string, input?: PauseSubscriptionInput) {
     const response = await this._client.request(PauseSubscriptionDocument, {
       input: {
-        ...input,
+        ...(input ?? {}),
         id: subscriptionId,
       },
     });
@@ -247,10 +357,10 @@ export class SubscriptionsResource extends BaseResource {
    * @param input - Payload for resuming
    * @returns Resumed subscription
    */
-  public async resume(subscriptionId: string, input: ResumeSubscriptionInput) {
+  public async resume(subscriptionId: string, input?: ResumeSubscriptionInput) {
     const response = await this._client.request(ResumeSubscriptionDocument, {
       input: {
-        ...input,
+        ...(input ?? {}),
         id: subscriptionId,
       },
     });
@@ -353,6 +463,47 @@ export class SubscriptionsResource extends BaseResource {
     if (subscription === null) {
       throw new ServerError('Could not update plan');
     }
+    return _formatSubscription(subscription);
+  }
+
+  /**
+   * Update a subscription.
+   * @param cartToken - Cart token
+   * @param input - Payload for updating subscription
+   * @returns Updated subscription and validation errors
+   * @remarks
+   * Will return validation error messages for invalid fields.
+   */
+  public async updateSubscription(
+    cartToken: string,
+    input: UpdateSubscriptionInput
+  ) {
+    const response = await this._client.request(
+      UpdateSubscriptionDocument,
+      {
+        input: {
+          ...input,
+          token: cartToken,
+        },
+      },
+      this.getSubscriptionTokenHeader(cartToken)
+    );
+
+    const updateSubscription = response.updateSubscription;
+    if (updateSubscription === null) {
+      throw new ServerError('Could not update address details');
+    }
+
+    const { errors } = updateSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = updateSubscription.subscription;
+    if (subscription === null) {
+      throw new ServerError('Could not update address details');
+    }
+
     return _formatSubscription(subscription);
   }
 

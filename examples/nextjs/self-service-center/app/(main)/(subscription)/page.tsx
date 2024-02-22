@@ -1,6 +1,9 @@
 import { getSSCSubscriptionToken } from '../../../lib/actions/subscription';
 import { writeAccessFirmhouseClient } from '../../../lib/firmhouse-write';
-import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
+import {
+  SubscriptionStatus,
+  assignSubscriptionUtils,
+} from '@firmhouse/firmhouse-sdk';
 import {
   formatCentsWithCurrency,
   ChevronIcon,
@@ -24,9 +27,11 @@ export default async function Subscription() {
   const project = await firmhouseClient.projects.getCurrent();
   const isPlanBasedProject = project.projectType === 'plan_based';
   const minimumOrderAmount = 10000;
-  const subscription = await firmhouseClient.subscriptions.get(token, {
-    orders: { first: 3, includeRelations: { orderLines: true } },
-  });
+  const subscription = assignSubscriptionUtils(
+    await firmhouseClient.subscriptions.get(token, {
+      orders: { first: 3, includeRelations: { orderLines: true } },
+    })
+  );
   const { results: invoices } = await firmhouseClient.invoices.fetchAll(
     {
       subscriptionId: subscription.id,
@@ -39,7 +44,7 @@ export default async function Subscription() {
   const orderedProducts = subscription.orderedProducts ?? [];
   const planProducts = orderedProducts.filter((op) => op.plan !== null);
   const additionalProducts = orderedProducts.filter((op) => op.plan === null);
-  const latestOrders = subscription.ordersV2?.nodes ?? [];
+  const latestOrders = subscription.ordersV2?.results ?? [];
   const canAdjustOrder =
     !isPlanBasedProject &&
     orderedProducts.some(
