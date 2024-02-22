@@ -24,7 +24,7 @@ export default async function Subscription() {
   const project = await firmhouseClient.projects.getCurrent();
   const isPlanBasedProject = project.projectType === 'plan_based';
   const minimumOrderAmount = 10000;
-  const subscription = await firmhouseClient.subscriptions.getWith(token, {
+  const subscription = await firmhouseClient.subscriptions.get(token, {
     orders: { first: 3, includeRelations: { orderLines: true } },
   });
   const { results: invoices } = await firmhouseClient.invoices.fetchAll(

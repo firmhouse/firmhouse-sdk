@@ -120,8 +120,8 @@ export async function updateCheckoutDetails(data: FormData) {
 export async function updatePlan(data: FormData) {
   const planSlug = data.get('planSlug') as string;
   await firmhouseClient.carts.updatePlan(
-    planSlug,
-    await getSubscriptionToken()
+    await getSubscriptionToken(),
+    planSlug
   );
   revalidatePath('/');
 }

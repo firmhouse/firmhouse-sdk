@@ -12,10 +12,10 @@ export default async function Order({ params }: { params: { id: string } }) {
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
-  const subscription = await firmhouseClient.subscriptions.getWith(token, {
+  const subscription = await firmhouseClient.subscriptions.get(token, {
     orders: { includeRelations: { orderLines: true } },
   });
-  const orders = subscription.ordersV2?.nodes ?? [];
+  const orders = subscription.ordersV2?.results ?? [];
   const order = orders.find((order) => order?.id === params.id);
   if (!order) {
     return notFound();

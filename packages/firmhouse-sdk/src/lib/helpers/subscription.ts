@@ -3,7 +3,9 @@ import { GetSubscriptionQuery } from '../resources/subscriptions/subscriptions.g
 import {
   FirmhouseCart,
   FirmhouseOrderedProduct,
+  FirmhouseOrderedProductWithUtils,
   FirmhouseSubscription,
+  FirmhouseSubscriptionWithUtils,
   ResolveObject,
 } from './types';
 import { arrayFilterNulls, capitalize } from './utils';
@@ -74,12 +76,6 @@ export function _formatOrderedProduct(
             unit as keyof typeof OrderedProductIntervalUnitOfMeasure
           ]
         : null,
-    followsPlanSchedule: followsPlanSchedule.bind(
-      null,
-      orderedProduct,
-      subscription
-    ),
-    shipsOnlyOnce: shipsOnlyOnce.bind(null, orderedProduct),
   };
 }
 
@@ -170,12 +166,6 @@ export function _formatSubscription(
     invoices: subscription.invoices
       ? arrayFilterNulls(subscription.invoices)
       : undefined,
-    getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
-      null,
-      subscription
-    ),
-    getClosestUpcomingOrderOrderedProducts:
-      getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
   } as FirmhouseSubscription;
 }
 
@@ -217,5 +207,29 @@ function getClosestUpcomingOrderOrderedProducts<
   if (closestUpcomingOrderDate === null) return [];
   return subscription.orderedProducts.filter(
     (op) => op.shipmentDate === closestUpcomingOrderDate
-  );
+  ) as FirmhouseOrderedProduct[];
+}
+
+export function assignSubscriptionUtils(
+  subscription: FirmhouseSubscription
+): FirmhouseSubscriptionWithUtils {
+  return {
+    ...subscription,
+    getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
+      null,
+      subscription
+    ),
+    getClosestUpcomingOrderOrderedProducts:
+      getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
+  } as FirmhouseSubscriptionWithUtils;
+}
+
+export function assignOrderedProductUtils(
+  orderedProduct: FirmhouseOrderedProduct
+): FirmhouseOrderedProductWithUtils {
+  return {
+    ...orderedProduct,
+    followsPlanSchedule: followsPlanSchedule.bind(null, orderedProduct),
+    shipsOnlyOnce: shipsOnlyOnce.bind(null, orderedProduct),
+  } as FirmhouseOrderedProductWithUtils;
 }

@@ -2,7 +2,6 @@ import { BaseResource } from '../BaseResource';
 import {
   AllProductsDocument,
   AllProductsQueryVariables,
-  AllProductsQuery,
 } from './allProducts.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 import { NotFoundError } from '../../helpers/errors';

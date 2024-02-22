@@ -322,7 +322,7 @@ export interface FirmhouseOrderedProductUtils {
   shipsOnlyOnce: () => boolean;
 }
 
-export interface FirmhouseOrderedProduct extends FirmhouseOrderedProductUtils {
+export interface FirmhouseOrderedProduct {
   createdAt: string | null;
   graceCancellationEndsAt: string | null;
   id: string;
@@ -347,6 +347,10 @@ export interface FirmhouseOrderedProduct extends FirmhouseOrderedProductUtils {
   plan: { id: string } | null;
   product: FirmhouseProduct;
 }
+
+export interface FirmhouseOrderedProductWithUtils
+  extends FirmhouseOrderedProduct,
+    FirmhouseOrderedProductUtils {}
 
 export interface FirmhouseSubscriptionUtils {
   getClosestUpcomingOrderDate: () => string | null;
@@ -480,9 +484,7 @@ export interface FirmhouseVerifiedIdentity {
   verificationMethod: string | null;
 }
 
-export interface FirmhouseSubscription
-  extends FirmhouseCart,
-    FirmhouseSubscriptionUtils {
+export interface FirmhouseSubscription extends FirmhouseCart {
   activatedAt: string | null;
   cancellationStartedAt: string | null;
   cancelledAt: string | null;
@@ -506,4 +508,10 @@ export interface FirmhouseSubscription
   ordersV2?: PaginatedResponse<FirmhouseOrder>;
   invoices?: FirmhouseInvoice[] | null;
   payment?: FirmhousePayment | null;
+}
+
+export interface FirmhouseSubscriptionWithUtils
+  extends FirmhouseSubscription,
+    FirmhouseSubscriptionUtils {
+  orderedProducts: FirmhouseOrderedProductWithUtils[] | null;
 }
