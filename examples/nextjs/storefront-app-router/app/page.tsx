@@ -13,7 +13,7 @@ export default async function Index() {
   const pageSize = 2;
   let subscription;
   try {
-    subscription = await firmhouseClient.subscriptions.get(
+    subscription = await firmhouseClient.carts.get(
       await getSubscriptionToken()
     );
   } catch (e) {

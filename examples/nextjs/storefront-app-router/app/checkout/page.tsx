@@ -11,7 +11,7 @@ import { Plan, formatCentsToEuros } from '@firmhouse/ui-components';
 export default async function Index() {
   let subscription = null;
   if (await isInitialized()) {
-    subscription = await firmhouseClient.subscriptions.get(
+    subscription = await firmhouseClient.carts.get(
       await getSubscriptionToken()
     );
   } else {

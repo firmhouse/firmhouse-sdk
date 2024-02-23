@@ -1,0 +1,45 @@
+query getCurrentProject(
+  $includeTaxRates: Boolean!
+  $includeExtraFields: Boolean!
+  $includePromotions: Boolean!
+) {
+  getCurrentProject {
+    availableCountries
+    availableCountryStates
+    currency
+    currentStock
+    dynamicOrderStrategy
+    freeShipmentFromCents
+    id
+    name
+    paymentProvider
+    productImageUrl
+    productName
+    projectType
+    shippingCostsCents
+    shippingCostsExclTaxCents
+    subscriptionLimitEnabled
+    token
+    twoStepCancellationEnabled
+    twoStepSignupEnabled
+    updatedAt
+    licence {
+      showFirmhouseLogo
+    }
+    promotions @include(if: $includePromotions) {
+      ...PromotionFields
+      ... on BillingCyclePromotion {
+        ...BillingCyclePromotionFields
+      }
+      ... on OrderDiscountPromotion {
+        ...OrderDiscountPromotionFields
+      }
+    }
+    taxRates @include(if: $includeTaxRates) {
+      ...TaxRateFields
+    }
+    extraFields @include(if: $includeExtraFields) {
+      ...ExtraFieldFields
+    }
+  }
+}

@@ -5,7 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": ["node"]
+    "types": ["@edge-runtime/types"]
   },
   "exclude": [
     "jest.config.ts",

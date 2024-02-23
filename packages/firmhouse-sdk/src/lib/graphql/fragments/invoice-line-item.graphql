@@ -1,0 +1,20 @@
+fragment InvoiceLineItemFields on InvoiceLineItem {
+  amountExcludingTaxCents
+  amountIncludingTaxCents
+  billingPeriodEndsAt
+  billingPeriodStartsAt
+  description
+  effectiveAmountExcludingTaxCents
+  effectiveAmountIncludingTaxCents
+  id
+  lineItemType
+  metadata
+  quantity
+  taxPercentage
+  totalAmountExcludingTaxCents
+  totalAmountIncludingTaxCents
+  totalTaxAmountCents
+  product {
+    ...ProductFragment
+  }
+}

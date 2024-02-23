@@ -1,11 +1,11 @@
 import {
+  FirmhouseCart,
   OrderedProductIntervalUnitOfMeasure,
-  SubscriptionType,
 } from '@firmhouse/firmhouse-sdk';
 import { CartProduct, formatCentsWithCurrency } from '@firmhouse/ui-components';
 
 export interface CartProps {
-  subscription: SubscriptionType;
+  subscription: FirmhouseCart;
   onRemove: (orderedProductId: string) => void;
   onUpdateQuantity: (orderedProductId: string, quantity: number) => void;
   onUpdateInterval?: (

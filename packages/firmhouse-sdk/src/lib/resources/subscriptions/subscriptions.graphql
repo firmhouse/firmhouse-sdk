@@ -1,219 +1,33 @@
-mutation createCart($input: CreateCartInput!) {
-  createCart(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-  }
-}
-
-query getSubscription($token: ID!) {
-  getSubscription(token: $token) {
-    ...SubscriptionFragment
-  }
-}
-
-mutation addToCart($input: CreateOrderedProductInput!) {
-  createOrderedProduct(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
+mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
+  updateOrderedProduct(input: $input) {
     orderedProduct {
       ...OrderedProductFragment
+      subscription {
+        ...SubscriptionFragment
+        ...CompleteSubscriptionFields
+      }
     }
   }
 }
 
-mutation removeFromCart($input: DestroyOrderedProductInput!) {
-  destroyOrderedProduct(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-  }
-}
-
-mutation updateOrderedProductQuantity($id: ID, $quantity: Int) {
-  updateOrderedProductQuantity(
-    input: { orderedProduct: { id: $id, quantity: $quantity } }
-  ) {
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-    subscription {
-      ...SubscriptionFragment
-    }
-  }
-}
-
-mutation updateOrderedProduct(
-  $id: ID
-  $interval: Int
-  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
-  $metadata: JSON
-  $productId: ID
-  $quantity: Int
-  $shipmentDate: ISO8601Date
-) {
-  updateOrderedProduct(
-    input: {
-      id: $id
-      interval: $interval
-      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
-      metadata: $metadata
-      productId: $productId
-      quantity: $quantity
-      shipmentDate: $shipmentDate
-    }
-  ) {
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-  }
-}
-
-mutation updateOrderedProductWithWriteAccess(
-  $id: ID
-  $customPriceCents: Int
-  $interval: Int
-  $intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
-  $metadata: JSON
-  $productId: ID
-  $quantity: Int
-  $shipmentDate: ISO8601Date
-) {
-  updateOrderedProduct(
-    input: {
-      id: $id
-      customPriceCents: $customPriceCents
-      interval: $interval
-      intervalUnitOfMeasureType: $intervalUnitOfMeasureType
-      metadata: $metadata
-      productId: $productId
-      quantity: $quantity
-      shipmentDate: $shipmentDate
-    }
-  ) {
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-  }
-}
-
-mutation updateAddressDetails(
-  $metadata: JSON
-  $companyName: String
-  $salutation: String
-  $name: String
-  $lastName: String
-  $address: String
-  $zipcode: String
-  $houseNumber: String
-  $city: String
-  $country: String
-  $state: String
-  $district: String
-  $phoneNumber: String
-  $dateOfBirth: ISO8601Date
-  $differentBillingAddress: Boolean
-  $billToCompanyName: String
-  $billToSalutation: String
-  $billToName: String
-  $billToLastName: String
-  $billToAddress: String
-  $billToZipcode: String
-  $billToHouseNumber: String
-  $billToCity: String
-  $billToCountry: String
-  $billToState: String
-  $billToDistrict: String
-  $billToPhoneNumber: String
-  $email: String
-  $termsAccepted: Boolean
-  $marketingOptIn: Boolean
-  $extraFields: [ExtraFieldInput!]
-  $locale: String
-  $chargeDayOfTheMonth: Int
-) {
-  updateAddressDetails(
-    input: {
-      metadata: $metadata
-      companyName: $companyName
-      salutation: $salutation
-      name: $name
-      lastName: $lastName
-      address: $address
-      zipcode: $zipcode
-      houseNumber: $houseNumber
-      city: $city
-      country: $country
-      state: $state
-      district: $district
-      phoneNumber: $phoneNumber
-      dateOfBirth: $dateOfBirth
-      differentBillingAddress: $differentBillingAddress
-      billToCompanyName: $billToCompanyName
-      billToSalutation: $billToSalutation
-      billToName: $billToName
-      billToLastName: $billToLastName
-      billToAddress: $billToAddress
-      billToZipcode: $billToZipcode
-      billToHouseNumber: $billToHouseNumber
-      billToCity: $billToCity
-      billToCountry: $billToCountry
-      billToState: $billToState
-      billToDistrict: $billToDistrict
-      billToPhoneNumber: $billToPhoneNumber
-      email: $email
-      termsAccepted: $termsAccepted
-      marketingOptIn: $marketingOptIn
-      extraFields: $extraFields
-      locale: $locale
-      chargeDayOfTheMonth: $chargeDayOfTheMonth
-    }
-  ) {
-    subscription {
-      ...SubscriptionFragment
-    }
-    errors {
-      ...ModelValidationErrorFragment
-    }
-  }
-}
-
-mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
-  createSubscriptionFromCart(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-    errors {
-      ...ModelValidationErrorFragment
-    }
-    paymentUrl
-    returnUrl
-  }
-}
-
-mutation updatePlan($input: UpdatePlanInput!) {
-  updatePlan(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-  }
-}
-
-query getCompleteSubscription($token: ID!) {
-  getSubscription(token: $token) {
-    ...SubscriptionFragment
-    ...CompleteSubscriptionFields
-  }
-}
-
-query getSubscriptionWith(
+query getSubscription(
   $token: ID!
-  $includeVerifiedIdentity: Boolean! = false
-  $includeCollectionCases: Boolean! = false
+  $includeVerifiedIdentity: Boolean!
+  $includeCollectionCases: Boolean!
+  $includeOrders: Boolean!
+  $ordersAfter: String
+  $ordersBefore: String
+  $ordersFirst: Int
+  $ordersLast: Int
+  $ordersIncludeOrderLines: Boolean!
+  $ordersIncludePayment: Boolean!
+  $ordersIncludeInvoice: Boolean!
+  $includeInvoices: Boolean!
+  $invoicesIncludeInvoiceLineItems: Boolean!
+  $invoicesIncludePayment: Boolean!
+  $invoicesIncludeOriginalInvoice: Boolean!
+  $invoicesIncludeInvoiceReminders: Boolean!
+  $invoicesIncludeCollectionCase: Boolean!
 ) {
   getSubscription(token: $token) {
     ...SubscriptionFragment
@@ -226,6 +40,136 @@ query getSubscriptionWith(
 
     verifiedIdentity @include(if: $includeVerifiedIdentity) {
       ...SubscriptionIdentityFields
+    }
+
+    ordersV2(
+      after: $ordersAfter
+      before: $ordersBefore
+      first: $ordersFirst
+      last: $ordersLast
+    ) @include(if: $includeOrders) {
+      nodes {
+        ...OrderFields
+        orderLines @include(if: $ordersIncludeOrderLines) {
+          ...OrderLineFields
+        }
+        invoice @include(if: $ordersIncludeInvoice) {
+          ...InvoiceFields
+        }
+        payment @include(if: $ordersIncludePayment) {
+          ...PaymentFields
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+      totalCount
+    }
+    invoices @include(if: $includeInvoices) {
+      ...InvoiceFields
+      invoiceLineItems @include(if: $invoicesIncludeInvoiceLineItems) {
+        ...InvoiceLineItemFields
+      }
+      payment @include(if: $invoicesIncludePayment) {
+        ...PaymentFields
+      }
+      originalInvoice @include(if: $invoicesIncludeOriginalInvoice) {
+        ...InvoiceFields
+      }
+      invoiceReminders @include(if: $invoicesIncludeInvoiceReminders) {
+        ...InvoiceReminderFields
+      }
+      collectionCase @include(if: $invoicesIncludeCollectionCase) {
+        ...CollectionCaseFields
+      }
+    }
+  }
+}
+
+query getSubscriptionBySelfServiceCenterLoginToken($token: ID!) {
+  getSubscriptionBySelfServiceCenterLoginToken(token: $token) {
+    ...SubscriptionFragment
+    ...CompleteSubscriptionFields
+  }
+}
+
+mutation cancelSubcscription($input: CancelSubscriptionInput!) {
+  cancelSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation pauseSubscription($input: PauseSubscriptionInput!) {
+  pauseSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation resumeSubscription($input: ResumeSubscriptionInput!) {
+  resumeSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
+    }
+  }
+}
+
+mutation createOrderedProduct($input: CreateOrderedProductInput!) {
+  createOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation destroyOrderedProduct($input: DestroyOrderedProductInput!) {
+  destroyOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    orderedProduct {
+      ...OrderedProductFragment
+    }
+  }
+}
+
+mutation updatePlan($input: UpdatePlanInput!) {
+  updatePlan(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+  }
+}
+
+mutation updateSubscription($input: UpdateSubscriptionInput!) {
+  updateSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFragment
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFragment
     }
   }
 }

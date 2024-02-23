@@ -2,10 +2,21 @@
 import {
   GraphQLClient as GraphQLClientBase,
   ClientError,
+  type ResponseMiddleware,
 } from 'graphql-request';
 import { _mapToLibraryErrorTypes } from './errors';
-// Wraps the graphql-request client to provide a typed interface
-export class GraphQLClient {
+
+/**
+ * @internal
+ * Response type for the graphql client
+ */
+export type _GraphQLClientResponse = Parameters<ResponseMiddleware>[0];
+
+/**
+ * @internal
+ * Wrapper around the graphql client
+ */
+export class _GraphQLClient {
   private readonly API_TOKEN: string;
   private readonly BASE_URL: string;
   private client: GraphQLClientBase;
@@ -18,16 +29,24 @@ export class GraphQLClient {
   ) {
     this.API_TOKEN = apiToken;
     this.BASE_URL = baseUrl;
+    const fetchMethod = typeof fetch === 'undefined' ? undefined : fetch;
     this.client = new GraphQLClientBase(this.BASE_URL, {
+      fetch: fetchMethod,
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },
-      responseMiddleware: async (res) => {
-        if (res instanceof ClientError) {
-          return _mapToLibraryErrorTypes(res as ClientError);
-        }
-      },
+      responseMiddleware: this._responseMiddleware,
     });
     this.request = this.client.request.bind(this.client);
+  }
+  /**
+   * @internal
+   * @param res - Response
+   * @returns Modified response
+   */
+  async _responseMiddleware(res: _GraphQLClientResponse) {
+    if (res instanceof ClientError) {
+      return _mapToLibraryErrorTypes(res as ClientError);
+    }
   }
 }

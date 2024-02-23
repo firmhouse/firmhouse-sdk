@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { formatCentsToEuros } from '../../utils/price';
 import { QuantityInput } from './QuantityInput';
-import { OrderedProductType } from '@firmhouse/firmhouse-sdk';
-export interface CartProductProps extends OrderedProductType {
+import { FirmhouseOrderedProduct } from '@firmhouse/firmhouse-sdk';
+export interface CartProductProps extends FirmhouseOrderedProduct {
   onRemove?: (data: FormData) => void;
   onUpdateQuantity?: (data: FormData) => void;
 }

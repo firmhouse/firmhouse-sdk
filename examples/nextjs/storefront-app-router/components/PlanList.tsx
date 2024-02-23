@@ -1,10 +1,10 @@
 'use client';
-import { type PlanType } from '@firmhouse/firmhouse-sdk';
+import { FirmhousePlan } from '@firmhouse/firmhouse-sdk';
 import { updatePlan } from '../lib/actions/subscription';
 import { Button, Plan } from '@firmhouse/ui-components';
 
 export interface PlanListProps {
-  plans: PlanType[];
+  plans: FirmhousePlan[];
   locale?: string | null;
   activePlanSlug?: string;
 }

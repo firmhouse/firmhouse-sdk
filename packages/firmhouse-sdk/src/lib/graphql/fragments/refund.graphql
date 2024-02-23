@@ -1,0 +1,8 @@
+fragment RefundFields on Refund {
+  amountCents
+  id
+  paymentProviderObjectId
+  reason
+  refundedAt
+  status
+}

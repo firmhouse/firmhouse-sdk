@@ -1,0 +1,6 @@
+fragment InvoiceReminderFields on InvoiceReminder {
+  id
+  remindOn
+  remindedAt
+  reminderNumber
+}

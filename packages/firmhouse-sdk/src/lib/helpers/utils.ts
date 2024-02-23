@@ -13,6 +13,27 @@ export function arrayFilterNulls<T>(
 
 /**
  * @internal
+ */
+export function filterNullsFromPaginatedResult<T>(
+  result?: {
+    nodes: (T | null)[] | null;
+    totalCount: number | null;
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor: string | null;
+      endCursor: string | null;
+    };
+  } | null
+) {
+  return {
+    ...result,
+    nodes: arrayFilterNulls(result?.nodes),
+  };
+}
+
+/**
+ * @internal
  * @param value
  * @returns
  */

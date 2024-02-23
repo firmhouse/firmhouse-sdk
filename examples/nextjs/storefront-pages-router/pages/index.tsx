@@ -1,9 +1,9 @@
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useSubscription } from '../lib/hooks/subscription';
 import { firmhouseClient } from '../lib/firmhouse';
-import { AllProductsResponse } from '@firmhouse/firmhouse-sdk';
 import ProductList from '../components/ProductList';
 import Cart from '../components/Cart';
+import { FirmhouseProduct, PaginatedResponse } from '@firmhouse/firmhouse-sdk';
 
 const pageSize = 2;
 export const getStaticProps = (async () => {
@@ -11,7 +11,7 @@ export const getStaticProps = (async () => {
     first: pageSize,
   });
   return { props: response };
-}) satisfies GetStaticProps<AllProductsResponse>;
+}) satisfies GetStaticProps<PaginatedResponse<FirmhouseProduct>>;
 
 export default function Index({
   results: products,

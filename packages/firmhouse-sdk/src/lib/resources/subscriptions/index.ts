@@ -1,22 +1,15 @@
-import { BaseResource } from '../BaseResource';
 import {
-  CreateOrderedProductInput,
-  SubscriptionStatus,
-  UpdateOrderedProductInput,
-} from '../../graphql/generated';
-
-import {
-  AddToCartDocument,
-  CreateCartDocument,
-  CreateSubscriptionFromCartDocument,
+  CancelSubcscriptionDocument,
+  CreateOrderedProductDocument,
+  DestroyOrderedProductDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   GetSubscriptionDocument,
-  RemoveFromCartDocument,
-  UpdateAddressDetailsDocument,
-  UpdateAddressDetailsMutationVariables,
+  PauseSubscriptionDocument,
+  ResumeSubscriptionDocument,
   UpdateOrderedProductDocument,
-  UpdateOrderedProductMutationVariables,
-  UpdateOrderedProductQuantityDocument,
   UpdatePlanDocument,
+  UpdateSubscriptionDocument,
 } from './subscriptions.generated';
 import {
   NotFoundError,
@@ -24,51 +17,218 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import {
-  BaseSubscriptionType,
-  SubscriptionType,
   _formatOrderedProduct,
   _formatSubscription,
-  _formatSubscriptionInResponse,
 } from '../../helpers/subscription';
+import {
+  CreateOrderedProductInput,
+  ExtraFieldInput,
+  InputMaybe,
+  Scalars,
+  SubscriptionStatus,
+  UpdateOrderedProductInput,
+} from '../../graphql/generated';
+import { BaseResource } from '../BaseResource';
+import { FirmhouseSubscription } from '../../firmhouse';
+
+export interface CancelSubscriptionInput {
+  /** Why did this customer decide to cancel? */
+  cancellationNotes?: InputMaybe<Scalars['String']['input']>;
+  /** Skip sending the standard cancellation confirmation email to the customer. */
+  skipCancellationConfirmationEmail?: InputMaybe<Scalars['Boolean']['input']>;
+  /** If a customer cannot be cancelled due to active commitments, this process can be skipped. */
+  skipContractTermsEnforcement?: InputMaybe<Scalars['Boolean']['input']>;
+  /** If two-step cancellation is enabled it can be skipped */
+  skipTwoStepCancellation?: InputMaybe<Scalars['Boolean']['input']>;
+}
+
+export interface ResumeSubscriptionInput {
+  /** Time to resume the subscription from. If not given the subscription will be immediately resumed. */
+  resumeFrom?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+}
+
+export interface PauseSubscriptionInput {
+  /** Time from which the subscription automaticaly resumes again. */
+  pauseUntil?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+}
+
+export interface UpdateSubscriptionInput {
+  /** The time the subscription was activated. */
+  activatedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The customer's address line or street. */
+  address?: InputMaybe<Scalars['String']['input']>;
+  /** The Adyen shopper reference being used for charges. */
+  adyenShopperReference?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address address line or street. */
+  billToAddress?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address city or town. */
+  billToCity?: InputMaybe<Scalars['String']['input']>;
+  /** The company name of the customer's billing address. */
+  billToCompanyName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address country code (ISO3661). */
+  billToCountry?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address district. */
+  billToDistrict?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address house, building, or appartment number. */
+  billToHouseNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address last name. */
+  billToLastName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address first name. */
+  billToName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address phone number (international format). */
+  billToPhoneNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address salutation (mr,ms,mx). */
+  billToSalutation?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address state or province (ISO3661-2). */
+  billToState?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's billing address zip code or postal code. */
+  billToZipcode?: InputMaybe<Scalars['String']['input']>;
+  /** The time the subscription started the cancellation process (with two-step cancellation) */
+  cancellationStartedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The time the subscription was (fully) cancelled. */
+  cancelledAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** The day of the month when the customer is charged. */
+  chargeDayOfTheMonth?: InputMaybe<Scalars['Int']['input']>;
+  /** The customer's city or town. */
+  city?: InputMaybe<Scalars['String']['input']>;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The company name of the customer. */
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's country code (ISO3661). */
+  country?: InputMaybe<Scalars['String']['input']>;
+  /** The field that can be used for your internal reference. For example, internal customer id. */
+  customerReference?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's date of birth (yyyy-mm-dd). */
+  dateOfBirth?: InputMaybe<Scalars['ISO8601Date']['input']>;
+  /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
+  differentBillingAddress?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The customer's district. */
+  district?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's email address. */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Extra field values for the subscription. */
+  extraFields?: InputMaybe<Array<ExtraFieldInput>>;
+  /** The customer's house, building, or appartment number. */
+  houseNumber?: InputMaybe<Scalars['String']['input']>;
+  /** Unique ID for an imported subscription. */
+  importedSubscriptionId?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's last name. */
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's language/locale. Must be enabled on the project. */
+  locale?: InputMaybe<Scalars['String']['input']>;
+  /** Time time the subscription was marked as non-paying. */
+  markedAsNonPayingAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** Whether the customer accepted optional marketing communication opt-in. */
+  marketingOptIn?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  /** The Mollie Customer ID (cst_XXX) */
+  mollieCustomerId?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's first name. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Notes specific for this subscription */
+  notes?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's phone number (international format). */
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  /** Additional payment service provider specific properties used for payment creation. */
+  pspPaymentProperties?: InputMaybe<Scalars['JSON']['input']>;
+  /** The customer's salutation (mr,ms,mx). */
+  salutation?: InputMaybe<Scalars['String']['input']>;
+  /** The time when the signup was completed. */
+  signupCompletedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
+  /** Don't automatically activate the subscription on signup. */
+  skipAutoActivationOnSignup?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The customer's state or province (ISO3661-2). */
+  state?: InputMaybe<Scalars['String']['input']>;
+  /** The current status of the subscription. (default: inactive) */
+  status?: InputMaybe<SubscriptionStatus>;
+  /** The Stripe Customer ID (cus_XXX) */
+  stripeCustomerId?: InputMaybe<Scalars['String']['input']>;
+  /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
+  stripePaymentMethodId?: InputMaybe<Scalars['String']['input']>;
+  /** Whether the customer accepted the terms and conditions. */
+  termsAccepted?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The token of the subscription to update, or creates a new one if one doesn't exist. */
+  token?: InputMaybe<Scalars['ID']['input']>;
+  /** The number of months before the customer is charged for the first time. */
+  trialPeriodMonths?: InputMaybe<Scalars['Int']['input']>;
+  /** The company VAT number. */
+  vatNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The customer's zip code or postal code. */
+  zipcode?: InputMaybe<Scalars['String']['input']>;
+}
 
 /**
  * @public
  * Subscription methods
  */
 export class SubscriptionsResource extends BaseResource {
-  async createCart(clientMutationId?: string) {
-    const response = await this.client.request(CreateCartDocument, {
-      input: { clientMutationId },
-    });
-    if (response.createCart === null || response.createCart === undefined) {
-      throw new ServerError('Could not create subscription');
-    }
-    return _formatSubscriptionInResponse(response.createCart);
-  }
-
   /**
-   * Create a new cart and return the subscription token
-   * @param clientMutationId - Optional client mutation id
-   * @returns subscription token
-   */
-  public async createSubscriptionToken(clientMutationId?: string) {
-    const response = await this.createCart(clientMutationId);
-    const token = response.subscription.token;
-    if (token === null || token === undefined) {
-      throw new ServerError('No token returned from API');
-    }
-    return token;
-  }
-
-  /**
-   * Get a subscription by subscription token
+   * Get a subscription by subscription token including relations
    * @param token - Subscription token
+   * @param includeRelations - Relations to include
    * @returns Subscription
    */
-  public async get(token: string) {
-    const response = await this.client.request(
+  public async get(
+    token: string,
+    includeRelations?: {
+      collectionCases?: boolean;
+      verifiedIdentity?: boolean;
+      orders?: {
+        after?: string;
+        before?: string;
+        first?: number;
+        last?: number;
+        includeRelations?: {
+          orderLines?: boolean;
+          payment?: boolean;
+          invoice?: boolean;
+        };
+      };
+      invoices?: {
+        includeRelations?: {
+          collectionCase?: boolean;
+          invoiceReminders?: boolean;
+          invoiceLineItems?: boolean;
+          payment?: boolean;
+          originalInvoice?: boolean;
+        };
+      };
+    }
+  ) {
+    const response = await this._client.request(
       GetSubscriptionDocument,
-      { token },
+      {
+        token,
+        includeCollectionCases: includeRelations?.collectionCases ?? false,
+        includeVerifiedIdentity: includeRelations?.verifiedIdentity ?? false,
+        includeOrders: !!includeRelations?.orders,
+        ordersIncludeOrderLines:
+          includeRelations?.orders?.includeRelations?.orderLines ?? false,
+        ordersIncludePayment:
+          includeRelations?.orders?.includeRelations?.payment ?? false,
+        ordersIncludeInvoice:
+          includeRelations?.orders?.includeRelations?.invoice ?? false,
+        ordersAfter: includeRelations?.orders?.after,
+        ordersBefore: includeRelations?.orders?.before,
+        ordersFirst: includeRelations?.orders?.first,
+        ordersLast: includeRelations?.orders?.last,
+        includeInvoices: !!includeRelations?.invoices,
+        invoicesIncludeCollectionCase:
+          includeRelations?.invoices?.includeRelations?.collectionCase ?? false,
+        invoicesIncludeInvoiceReminders:
+          includeRelations?.invoices?.includeRelations?.invoiceReminders ??
+          false,
+        invoicesIncludeInvoiceLineItems:
+          includeRelations?.invoices?.includeRelations?.invoiceLineItems ??
+          false,
+        invoicesIncludePayment:
+          includeRelations?.invoices?.includeRelations?.payment ?? false,
+        invoicesIncludeOriginalInvoice:
+          includeRelations?.invoices?.includeRelations?.originalInvoice ??
+          false,
+      },
       this.getSubscriptionTokenHeader(token)
     );
     if (response.getSubscription === null) {
@@ -78,139 +238,18 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Try to get a subscription by token, if it exists and is a draft subscription, return it. Otherwise create a new draft subscription.
-   * @param token - Subscription token
-   * @returns Subscription if it exists, otherwise a new draft subscription
-   */
-  public async getOrCreateDraftSubscription(token?: string) {
-    let subscription: SubscriptionType<BaseSubscriptionType> | null = null;
-    if (token !== undefined) {
-      try {
-        const response = await this.get(token);
-        if (response.status === SubscriptionStatus.Draft) {
-          subscription = _formatSubscription(response);
-        }
-      } catch (error) {
-        // ignore
-      }
-    }
-    if (subscription === null) {
-      const response = await this.createCart();
-      subscription = response.subscription;
-    }
-
-    return subscription;
-  }
-
-  /**
-   * Add a product to the cart
-   * @param input - Selected product and quantity
-   * @param subscriptionToken - Subscription token
-   * @returns subscription after adding the product and the ordered product
-   */
-  public async addToCart(
-    input: CreateOrderedProductInput,
-    subscriptionToken: string
-  ) {
-    const response = await this.client.request(
-      AddToCartDocument,
-      { input },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const createOrderedProduct = response.createOrderedProduct ?? null;
-    if (createOrderedProduct === null) {
-      throw new ServerError('Could not add product to cart');
-    }
-    const subscription = createOrderedProduct.subscription ?? null;
-    const orderedProduct = createOrderedProduct.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not add product to cart');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
-   * Remove a product from the cart
-   * @param orderedProductId - Ordered product id to remove from the cart
-   * @param subscriptionToken - Subscription token
-   * @returns subscription after removing the product and the removed product
-   */
-  public async removeFromCart(
-    orderedProductId: string,
-    subscriptionToken: string
-  ) {
-    const response = await this.client.request(
-      RemoveFromCartDocument,
-      { input: { id: orderedProductId } },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const destroyOrderedProduct = response.destroyOrderedProduct ?? null;
-    if (destroyOrderedProduct === null) {
-      throw new ServerError('Could not remove product from cart');
-    }
-    const subscription = destroyOrderedProduct.subscription ?? null;
-    const orderedProduct = destroyOrderedProduct.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not remove product from cart');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
-   * Update a product quantity in the cart
-   * @param orderedProductId - Ordered product id to update quantity
-   * @param quantity - New quantity
-   * @param subscriptionToken - Subscription token
-   * @returns Updated subscription
-   */
-  public async updateOrderedProductQuantity(
-    orderedProductId: string,
-    quantity: number,
-    subscriptionToken: string
-  ) {
-    const response = await this.client.request(
-      UpdateOrderedProductQuantityDocument,
-      { id: orderedProductId, quantity },
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-    const updateOrderedProductQuantity =
-      response.updateOrderedProductQuantity ?? null;
-    if (updateOrderedProductQuantity === null) {
-      throw new ServerError('Could not update ordered product quantity');
-    }
-    const subscription = updateOrderedProductQuantity.subscription ?? null;
-    const orderedProduct = updateOrderedProductQuantity.orderedProduct ?? null;
-    if (subscription === null || orderedProduct === null) {
-      throw new ServerError('Could not update ordered product quantity');
-    }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
-      subscription: _formatSubscription(subscription),
-    };
-  }
-
-  /**
    * Update a product in the cart
    * @param input - Payload for fields to update
    * @param subscriptionToken - Subscription token
    * @returns Updated subscription
    */
   public async updateOrderedProduct(
-    input: UpdateOrderedProductMutationVariables,
-    subscriptionToken: string
+    subscriptionToken: string,
+    input: UpdateOrderedProductInput
   ) {
-    const response = await this.client.request(
+    const response = await this._client.request(
       UpdateOrderedProductDocument,
-      input,
+      { input },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
     const updateOrderedProduct = response.updateOrderedProduct ?? null;
@@ -221,111 +260,251 @@ export class SubscriptionsResource extends BaseResource {
     if (orderedProduct === null) {
       throw new ServerError('Could not update ordered product');
     }
-
-    return {
-      orderedProduct: _formatOrderedProduct(orderedProduct),
-    };
-  }
-
-  /**
-   * Update the address details of a subscription.
-   * @param input - Address details, address, name, email, etc
-   * @param subscriptionToken - Subscription token
-   * @returns Updated subscription and validation errors
-   * @remarks
-   * Will save changes to certain fields even when other fields given are invalid.
-   * Will return validation error messages for invalid fields.
-   */
-  public async updateAddressDetails(
-    input: UpdateAddressDetailsMutationVariables,
-    subscriptionToken: string
-  ) {
-    const response = await this.client.request(
-      UpdateAddressDetailsDocument,
-      input,
-      this.getSubscriptionTokenHeader(subscriptionToken)
-    );
-
-    const updateAddressDetails = response.updateAddressDetails;
-    if (updateAddressDetails === null) {
-      throw new ServerError('Could not update address details');
-    }
-
-    const { errors } = updateAddressDetails;
-    if (errors && errors.length > 0) {
-      throw new ValidationError(errors);
-    }
-
-    const subscription = updateAddressDetails.subscription;
+    const { subscription, ...fields } = orderedProduct;
     if (subscription === null) {
-      throw new ServerError('Could not update address details');
+      throw new ServerError('Could not update ordered product');
     }
-
     return {
+      orderedProduct: _formatOrderedProduct(fields, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
 
   /**
-   * Finalises a subscription and returns payment details based on a cart/draft subscription
-   * @param paymentPageUrl - The URL where the user can sign up for a new subscription
-   * @param returnUrl - The URL the user gets redirected to after completing payment
-   * @param subscriptionToken - subscriptionToken Subscription token
-   * @returns Payment details and validation errors if any
-   * @throws {@link helpers/errors#ValidationError}
-   * Thrown if required fields for payment is missing.
+   * Get a subscription by self service center login token
+   * @param token - Self service center login token
+   * @returns Subscription
    */
-  public async createSubscriptionFromCart(
-    paymentPageUrl: string,
-    returnUrl: string,
-    subscriptionToken: string
-  ) {
-    const response = await this.client.request(
-      CreateSubscriptionFromCartDocument,
-      { input: { paymentPageUrl, returnUrl } },
-      this.getSubscriptionTokenHeader(subscriptionToken)
+  public async getBySelfServiceCenterLoginToken(token: string) {
+    const response = await this._client.request(
+      GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+      { token },
+      this.getSubscriptionTokenHeader(token)
     );
-    const { createSubscriptionFromCart } = response;
+    if (response.getSubscriptionBySelfServiceCenterLoginToken === null) {
+      throw new NotFoundError('Subscription not found');
+    }
+    return _formatSubscription(
+      response.getSubscriptionBySelfServiceCenterLoginToken
+    );
+  }
 
-    if (createSubscriptionFromCart === null) {
-      throw new ServerError('Could not create subscription');
+  /**
+   * Cancel a subscription
+   * @param subscriptionId - ID of the subscription to cancel
+   * @param input - Payload for cancellation
+   * @returns Cancelled subscription
+   */
+  public async cancel(subscriptionId: string, input?: CancelSubscriptionInput) {
+    const response = await this._client.request(CancelSubcscriptionDocument, {
+      input: {
+        ...(input ?? {}),
+        id: subscriptionId,
+      },
+    });
+    const cancelSubscription = response.cancelSubscription ?? null;
+    if (cancelSubscription === null) {
+      throw new ServerError('Could not cancel subscription');
     }
 
-    const { errors, subscription, paymentUrl } = createSubscriptionFromCart;
+    const { errors } = cancelSubscription;
     if (errors && errors.length > 0) {
       throw new ValidationError(errors);
     }
 
+    const subscription = cancelSubscription.subscription ?? null;
     if (subscription === null) {
-      throw new ServerError('Could not create subscription');
+      throw new ServerError('Could not cancel subscription');
+    }
+
+    return _formatSubscription(subscription);
+  }
+
+  /**
+   * Pause a subscription
+   * @param subscriptionId - ID of the subscription to pause
+   * @param input - Payload for pausing
+   * @returns Paused subscription
+   */
+  public async pause(subscriptionId: string, input?: PauseSubscriptionInput) {
+    const response = await this._client.request(PauseSubscriptionDocument, {
+      input: {
+        ...(input ?? {}),
+        id: subscriptionId,
+      },
+    });
+    const pauseSubscription = response.pauseSubscription ?? null;
+    if (pauseSubscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    const { errors } = pauseSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = pauseSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not pause subscription');
+    }
+
+    return _formatSubscription(subscription);
+  }
+
+  /**
+   * Resume a subscription
+   * @param subscriptionId - ID of the subscription to resume
+   * @param input - Payload for resuming
+   * @returns Resumed subscription
+   */
+  public async resume(subscriptionId: string, input?: ResumeSubscriptionInput) {
+    const response = await this._client.request(ResumeSubscriptionDocument, {
+      input: {
+        ...(input ?? {}),
+        id: subscriptionId,
+      },
+    });
+    const resumeSubscription = response.resumeSubscription ?? null;
+    if (resumeSubscription === null) {
+      throw new ServerError('Could not resume subscription');
+    }
+
+    const { errors } = resumeSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = resumeSubscription.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not resume subscription');
+    }
+
+    return _formatSubscription(subscription) as FirmhouseSubscription;
+  }
+
+  /**
+   * Add a new product to subscription
+   * @param subscriptionToken - Subscription token
+   * @param input - Payload for creating ordered product
+   * @returns Ordered product and subscription
+   */
+  public async addProduct(
+    subscriptionToken: string,
+    input: CreateOrderedProductInput
+  ) {
+    const response = await this._client.request(
+      CreateOrderedProductDocument,
+      { input },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    const createOrderedProduct = response.createOrderedProduct ?? null;
+    if (createOrderedProduct === null) {
+      throw new ServerError('Could not create ordered product');
+    }
+    const orderedProduct = createOrderedProduct.orderedProduct ?? null;
+    if (orderedProduct === null) {
+      throw new ServerError('Could not create ordered product');
+    }
+    const subscription = createOrderedProduct.subscription ?? null;
+
+    if (subscription === null) {
+      throw new ServerError('Could not create ordered product');
     }
 
     return {
-      paymentUrl,
-      returnUrl: createSubscriptionFromCart.returnUrl,
+      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
       subscription: _formatSubscription(subscription),
     };
   }
 
   /**
-   * Updates the active plan of a subscription
-   * @param planSlug - Slug of the plan to update the subscription to
+   * Remove a product from subscription
    * @param subscriptionToken - Subscription token
+   * @param orderedProductId - Ordered product id to destroy
+   * @returns Subscription
+   */
+  public async removeProduct(
+    subscriptionToken: string,
+    orderedProductId: string
+  ) {
+    const response = await this._client.request(
+      DestroyOrderedProductDocument,
+      { input: { id: orderedProductId } },
+      this.getSubscriptionTokenHeader(subscriptionToken)
+    );
+    const destroyOrderedProduct = response.destroyOrderedProduct ?? null;
+    if (destroyOrderedProduct === null) {
+      throw new ServerError('Could not destroy ordered product');
+    }
+    const subscription = destroyOrderedProduct.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not destroy ordered product');
+    }
+    return { subscription: _formatSubscription(subscription) };
+  }
+
+  /**
+   * Update the plan of a subscription
+   * @param subscriptionToken - Subscription token
+   * @param planSlug - Slug of the plan to update to
    * @returns Updated subscription
    */
-  public async updatePlan(planSlug: string, subscriptionToken: string) {
-    const response = await this.client.request(
+  public async updatePlan(subscriptionToken: string, planSlug: string) {
+    const response = await this._client.request(
       UpdatePlanDocument,
       { input: { planSlug } },
       this.getSubscriptionTokenHeader(subscriptionToken)
     );
-    const { updatePlan } = response;
-
+    const updatePlan = response.updatePlan ?? null;
     if (updatePlan === null) {
       throw new ServerError('Could not update plan');
     }
+    const subscription = updatePlan.subscription ?? null;
+    if (subscription === null) {
+      throw new ServerError('Could not update plan');
+    }
+    return _formatSubscription(subscription);
+  }
 
-    return _formatSubscriptionInResponse(updatePlan);
+  /**
+   * Update a subscription.
+   * @param cartToken - Cart token
+   * @param input - Payload for updating subscription
+   * @returns Updated subscription and validation errors
+   * @remarks
+   * Will return validation error messages for invalid fields.
+   */
+  public async updateSubscription(
+    cartToken: string,
+    input: UpdateSubscriptionInput
+  ) {
+    const response = await this._client.request(
+      UpdateSubscriptionDocument,
+      {
+        input: {
+          ...input,
+          token: cartToken,
+        },
+      },
+      this.getSubscriptionTokenHeader(cartToken)
+    );
+
+    const updateSubscription = response.updateSubscription;
+    if (updateSubscription === null) {
+      throw new ServerError('Could not update address details');
+    }
+
+    const { errors } = updateSubscription;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const subscription = updateSubscription.subscription;
+    if (subscription === null) {
+      throw new ServerError('Could not update address details');
+    }
+
+    return _formatSubscription(subscription);
   }
 
   protected getSubscriptionTokenHeader(subscriptionToken: string) {
@@ -334,11 +513,6 @@ export class SubscriptionsResource extends BaseResource {
 }
 
 export type {
-  BaseSubscriptionType,
-  SubscriptionType,
-  BaseOrderedProductType,
-  OrderedProductType,
-  ExtraFieldAnswerType,
-} from '../../helpers/subscription';
-
-export type { GetSubscriptionQuery } from './subscriptions.generated';
+  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
+  UpdateOrderedProductInput,
+};

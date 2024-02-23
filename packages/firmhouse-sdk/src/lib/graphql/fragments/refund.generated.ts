@@ -1,0 +1,6 @@
+import * as Types from '../generated';
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type RefundFieldsFragment = { amountCents: number, id: string, paymentProviderObjectId: string | null, reason: string | null, refundedAt: string | null, status: Types.RefundStatus };
+
+export const RefundFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RefundFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Refund"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amountCents"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paymentProviderObjectId"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"refundedAt"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]} as unknown as DocumentNode<RefundFieldsFragment, unknown>;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { firmhouseClient } from '../firmhouse';
 import {
+  FirmhouseCart,
+  FirmhouseOrderedProduct,
   OrderedProductIntervalUnitOfMeasure,
-  OrderedProductType,
-  SubscriptionType,
 } from '@firmhouse/firmhouse-sdk';
 const SUBSCRIPTION_TOKEN_KEY = 'Firmhouse.cartToken';
 
@@ -12,17 +12,17 @@ async function addToCart(
   productId: string,
   quantity: number
 ) {
-  return firmhouseClient.subscriptions.addToCart(
-    { productId, quantity },
-    subscriptionToken
-  );
+  return firmhouseClient.carts.addProduct(subscriptionToken, {
+    productId,
+    quantity,
+  });
 }
 
 async function removeFromCart(
   subscriptionToken: string,
   orderedProductId: string
 ) {
-  return firmhouseClient.subscriptions.removeFromCart(
+  return firmhouseClient.carts.removeProduct(
     orderedProductId,
     subscriptionToken
   );
@@ -33,16 +33,16 @@ async function updateOrderedProductQuantity(
   orderedProductId: string,
   quantity: number
 ) {
-  return firmhouseClient.subscriptions.updateOrderedProductQuantity(
+  return firmhouseClient.carts.updateOrderedProductQuantity(
+    subscriptionToken,
     orderedProductId,
-    quantity,
-    subscriptionToken
+    quantity
   );
 }
 
 export function useSubscription() {
   const [subscription, setSubscription] = useState(
-    null as SubscriptionType | null
+    null as FirmhouseCart | null
   );
   useEffect(() => {
     const token =
@@ -50,10 +50,9 @@ export function useSubscription() {
       localStorage.getItem(SUBSCRIPTION_TOKEN_KEY) ??
       undefined;
     const initialize = async (subscriptionToken?: string) => {
-      const response =
-        await firmhouseClient.subscriptions.getOrCreateDraftSubscription(
-          subscriptionToken
-        );
+      const response = await firmhouseClient.carts.getOrCreate(
+        subscriptionToken
+      );
       setSubscription(response);
       localStorage.setItem(SUBSCRIPTION_TOKEN_KEY, response.token);
     };
@@ -141,15 +140,12 @@ export function useSubscription() {
       if (subscription === null) {
         return;
       }
-      firmhouseClient.subscriptions
-        .updateOrderedProduct(
-          {
-            id: orderedProductId,
-            interval,
-            intervalUnitOfMeasureType,
-          },
-          subscription.token
-        )
+      firmhouseClient.carts
+        .updateOrderedProduct(subscription.token, {
+          id: orderedProductId,
+          interval,
+          intervalUnitOfMeasureType,
+        })
         .then((response) => {
           const updatedOrderedProduct = response?.orderedProduct;
           if (
@@ -160,12 +156,14 @@ export function useSubscription() {
           setSubscription({
             ...subscription,
             orderedProducts:
-              subscription?.orderedProducts?.map((op): OrderedProductType => {
-                if (op.id === orderedProductId) {
-                  return updatedOrderedProduct;
+              subscription?.orderedProducts?.map(
+                (op): FirmhouseOrderedProduct => {
+                  if (op.id === orderedProductId) {
+                    return updatedOrderedProduct;
+                  }
+                  return { ...op, intervalUnitOfMeasureType: null };
                 }
-                return { ...op, intervalUnitOfMeasureType: null };
-              }) ?? [],
+              ) ?? [],
           });
         })
         .catch((error) => {

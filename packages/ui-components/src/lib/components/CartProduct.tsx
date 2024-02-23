@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { getOrderedProductInfo } from '../utils/price';
 import { NumberInput } from './NumberInput';
 import {
+  FirmhouseOrderedProduct,
   OrderedProductIntervalUnitOfMeasure,
-  OrderedProductType,
 } from '@firmhouse/firmhouse-sdk';
-export interface CartProductProps extends OrderedProductType {
+export interface CartProductProps extends FirmhouseOrderedProduct {
   onRemove?: () => void;
   onUpdateQuantity?: (quantity: number) => void;
   onUpdateInterval?: (

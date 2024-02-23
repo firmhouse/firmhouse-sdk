@@ -1,19 +1,27 @@
 import {
+  FirmhouseOrderedProduct,
+  FirmhouseSubscription,
+} from '@firmhouse/firmhouse-sdk';
+import {
+  BaseCartType,
+  OrderedProductType,
+  assignOrderedProductUtils,
+  assignSubscriptionUtils,
+} from '../../../src/lib/helpers/subscription';
+import {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
   SubscriptionStatus,
 } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
 import {
+  BaseOrderedProductType,
   BaseSubscriptionType,
-  OrderedProductType,
-  SubscriptionType,
   _formatOrderedProduct,
   _formatSubscription,
-  _formatSubscriptionInResponse,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/subscription';
 
 //Base ordered product example with all properties
-const orderedProduct: OrderedProductType = {
+const orderedProduct: BaseOrderedProductType = {
   id: '1',
   intervalUnitOfMeasure: 'months',
   product: {
@@ -67,14 +75,13 @@ const orderedProduct: OrderedProductType = {
   totalOrdered: null,
   updatedAt: null,
   plan: null,
-  intervalUnitOfMeasureType: null,
 };
 const formattedOrderedProduct = {
   ...orderedProduct,
   intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure.Months,
 };
 
-const subscription: SubscriptionType<BaseSubscriptionType> = {
+const subscription: BaseSubscriptionType = {
   token: 'test',
   startDate: '',
   status: SubscriptionStatus.Draft,
@@ -130,7 +137,8 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   vatNumber: null,
   zipcode: null,
   activePlan: null,
-};
+  subscribedPlan: null,
+} as unknown as BaseSubscriptionType;
 
 const formattedSubscription = {
   ...subscription,
@@ -141,7 +149,7 @@ describe('helpers/subscription', () => {
   describe('formatOrderedProduct', () => {
     it('should format ordered products correctly', () => {
       const input = orderedProduct;
-      const output = _formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input, subscription);
       expect(output).toEqual(formattedOrderedProduct);
     });
 
@@ -150,11 +158,105 @@ describe('helpers/subscription', () => {
         ...orderedProduct,
         intervalUnitOfMeasure: 'only_once',
       };
-      const output = _formatOrderedProduct(input);
+      const output = _formatOrderedProduct(input, subscription);
       expect(output).toEqual({
         ...input,
         intervalUnitOfMeasureType: null,
       });
+    });
+  });
+
+  describe('followsPlanSchedule', () => {
+    it('should return true if the interval unit is "on_billing_cycle" and subscription is for plan based project', () => {
+      const input = {
+        ...orderedProduct,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(input, {
+        ...subscription,
+        subscribedPlan: { id: '1' },
+      } as FirmhouseSubscription);
+      expect(output.followsPlanSchedule()).toBe(true);
+    });
+
+    it('should return false if subscription is not for plan based project', () => {
+      const input = {
+        ...orderedProduct,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(input, {
+        ...subscription,
+        subscribedPlan: null,
+      } as FirmhouseSubscription);
+      expect(output.followsPlanSchedule()).toBe(false);
+    });
+
+    it('should return false if interval unit is not "on_billing_cycle"', () => {
+      const input = {
+        ...orderedProduct,
+        product: { ...orderedProduct.product, intervalUnitOfMeasure: 'months' },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(input, {
+        ...subscription,
+        subscribedPlan: { id: '1' } as BaseSubscriptionType['subscribedPlan'],
+      } as FirmhouseSubscription);
+      expect(output.followsPlanSchedule()).toBe(false);
+    });
+  });
+
+  describe('shipsOnlyOnce', () => {
+    it('should return true if the product interval unit is only_once and it is not overriden', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Default,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'only_once',
+        },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(
+        input,
+        subscription as FirmhouseSubscription
+      );
+      expect(output.shipsOnlyOnce()).toBe(true);
+    });
+
+    it('should return false if the product interval unit is not only_once', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Default,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'on_billing_cycle',
+        },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(
+        input,
+        subscription as FirmhouseSubscription
+      );
+      expect(output.shipsOnlyOnce()).toBe(false);
+    });
+
+    it('should return false if the product interval unit is overriden', () => {
+      const input = {
+        ...orderedProduct,
+        intervalUnitOfMeasure: OrderedProductIntervalUnitOfMeasure.Months,
+        product: {
+          ...orderedProduct.product,
+          intervalUnitOfMeasure: 'only_once',
+        },
+      } as FirmhouseOrderedProduct;
+      const output = assignOrderedProductUtils(
+        input,
+        subscription as FirmhouseSubscription
+      );
+      expect(output.shipsOnlyOnce()).toBe(false);
     });
   });
 
@@ -190,17 +292,85 @@ describe('helpers/subscription', () => {
     });
   });
 
-  describe('formatSubscriptionInResponse', () => {
-    it('should format subscription in response correctly', () => {
-      const input = {
-        property: 'test',
-        subscription,
-      };
-      const output = _formatSubscriptionInResponse(input);
-      expect(output).toEqual({
-        ...input,
-        subscription: formattedSubscription,
-      });
+  describe('getClosestUpcomingOrderDate', () => {
+    it('should return the closest upcoming order date', () => {
+      jest.useFakeTimers({ now: new Date('2024-01-05') });
+      const orderedProducts = [
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-04' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-08' },
+        { ...formattedOrderedProduct, shipmentDate: null },
+      ];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBe(
+        '2024-01-06'
+      );
+    });
+
+    it('should return null if ordered products list is empty', () => {
+      const orderedProducts: OrderedProductType[] = [];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBeNull();
+    });
+
+    it('should return null if ordered products list is null', () => {
+      const orderedProducts = null;
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(subscriptionWithUtils.getClosestUpcomingOrderDate()).toBeNull();
+    });
+  });
+
+  describe('getClosestUpcomingOrderOrderedProducts', () => {
+    it('should return the products for the closest upcoming order', () => {
+      jest.useFakeTimers({ now: new Date('2024-01-05') });
+      const orderedProducts = [
+        { ...formattedOrderedProduct, id: '1', shipmentDate: '2024-01-07' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '4' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-04', id: '2' },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-06', id: '3' },
+        { ...formattedOrderedProduct, shipmentDate: null },
+        { ...formattedOrderedProduct, shipmentDate: '2024-01-05' },
+      ];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(
+        subscriptionWithUtils
+          .getClosestUpcomingOrderOrderedProducts()
+          .map((op) => op.id)
+      ).toStrictEqual(['4', '3']);
+    });
+
+    it('should return empty array if ordered products list is empty', () => {
+      const orderedProducts: OrderedProductType[] = [];
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(
+        subscriptionWithUtils.getClosestUpcomingOrderOrderedProducts()
+      ).toStrictEqual([]);
+    });
+
+    it('should return empty array if ordered products list is null', () => {
+      const orderedProducts = null;
+      const subscriptionWithUtils = assignSubscriptionUtils({
+        ...subscription,
+        orderedProducts,
+      } as FirmhouseSubscription);
+      expect(
+        subscriptionWithUtils.getClosestUpcomingOrderOrderedProducts()
+      ).toStrictEqual([]);
     });
   });
 });

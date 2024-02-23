@@ -1,30 +1,28 @@
-import { SubscriptionType, SubscriptionStatus } from '@firmhouse/firmhouse-sdk';
-import { GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
-  ServerError,
-  ValidationError,
-} from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
-import {
-  BaseSubscriptionType,
   SubscriptionsResource,
+  CancelSubscriptionInput,
+  PauseSubscriptionInput,
+  ResumeSubscriptionInput,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
 import {
-  CreateCartDocument,
+  GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionDocument,
-  AddToCartDocument,
-  RemoveFromCartDocument,
-  UpdateOrderedProductQuantityDocument,
   UpdateOrderedProductDocument,
-  UpdateAddressDetailsDocument,
-  CreateSubscriptionFromCartDocument,
-  UpdatePlanDocument,
+  CancelSubcscriptionDocument,
+  PauseSubscriptionDocument,
+  ResumeSubscriptionDocument,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
+
+import { _GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
+
+import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
+
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 
-const subscription: SubscriptionType<BaseSubscriptionType> = {
+const subscription = {
   token: 'test',
   startDate: '',
-  status: SubscriptionStatus.Draft,
+  status: SubscriptionStatus.Activated,
   termsAccepted: false,
   extraFields: [],
   orderedProducts: [],
@@ -77,94 +75,21 @@ const subscription: SubscriptionType<BaseSubscriptionType> = {
   vatNumber: null,
   zipcode: null,
   activePlan: null,
+  subscribedPlan: null,
+  collectionCases: undefined,
+  invoices: undefined,
+  ordersV2: undefined,
 };
 
 describe('lib/resources/subscriptions/index.ts', () => {
-  let mockGraphQLClient: GraphQLClient;
+  let mockGraphQLClient: _GraphQLClient;
 
   beforeEach(() => {
-    mockGraphQLClient = new GraphQLClient('test', 'http://test.com');
+    mockGraphQLClient = new _GraphQLClient('test', 'http://test.com');
   });
-  it('should initialize the SubscriptionResource correctly', () => {
+  it('should initialize the SubscriptionsResource correctly', () => {
     const testResource = new SubscriptionsResource(mockGraphQLClient);
     expect(testResource).toBeInstanceOf(SubscriptionsResource);
-  });
-
-  describe('createCart', () => {
-    it('should call the correct query', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        createCart: { subscription: { ...subscription, token: 'test' } },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      await testResource.createCart();
-      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        CreateCartDocument,
-        { input: {} }
-      );
-    });
-    it('should throw error if null response is return from API', async () => {
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createCart: null });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.createCart()).rejects.toThrow(
-        'Could not create subscription'
-      );
-    });
-
-    it('should throw error if undefinfed response is return from API', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({});
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.createCart()).rejects.toThrow(
-        'Could not create subscription'
-      );
-    });
-
-    it('should return subscription token', async () => {
-      const token = 'test';
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        createCart: { subscription: { ...subscription, token } },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const { subscription: draftSubscription } =
-        await testResource.createCart();
-      expect(draftSubscription?.token).toBe(token);
-    });
-  });
-
-  describe('createSubscriptionToken', () => {
-    it('should call createCart method', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        createCart: { subscription: { ...subscription, token: 'test' } },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      testResource.createCart = jest
-        .fn()
-        .mockResolvedValue({ subscription: { token: 'test' } });
-      await testResource.createSubscriptionToken();
-      expect(testResource.createCart).toHaveBeenCalled();
-    });
-
-    it('should return subscription token', async () => {
-      const token = 'test';
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      testResource.createCart = jest
-        .fn()
-        .mockResolvedValue({ subscription: { token } });
-      expect(
-        testResource.createSubscriptionToken('testMutationId')
-      ).resolves.toStrictEqual(token);
-    });
-
-    it('should throw error if no token is returned', async () => {
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      testResource.createCart = jest
-        .fn()
-        .mockResolvedValue({ subscription: { token: null } });
-      expect(
-        testResource.createSubscriptionToken('testMutationId')
-      ).rejects.toThrow('No token returned from API');
-    });
   });
 
   describe('get', () => {
@@ -174,22 +99,65 @@ describe('lib/resources/subscriptions/index.ts', () => {
       });
       const token = 'testToken';
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      await testResource.get(token);
+      await testResource.get(token, {
+        collectionCases: true,
+        verifiedIdentity: true,
+        orders: {
+          after: 'x',
+          before: 'y',
+          first: 10,
+          last: 10,
+          includeRelations: {
+            orderLines: true,
+            payment: true,
+            invoice: true,
+          },
+        },
+        invoices: {
+          includeRelations: {
+            collectionCase: true,
+            invoiceReminders: true,
+            invoiceLineItems: true,
+            payment: true,
+            originalInvoice: true,
+          },
+        },
+      });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         GetSubscriptionDocument,
-        { token },
+        {
+          token,
+          includeCollectionCases: true,
+          includeVerifiedIdentity: true,
+          includeOrders: true,
+          ordersIncludeOrderLines: true,
+          ordersIncludeInvoice: true,
+          ordersIncludePayment: true,
+          includeInvoices: true,
+          ordersAfter: 'x',
+          ordersBefore: 'y',
+          ordersFirst: 10,
+          ordersLast: 10,
+          invoicesIncludeInvoiceLineItems: true,
+          invoicesIncludePayment: true,
+          invoicesIncludeOriginalInvoice: true,
+          invoicesIncludeInvoiceReminders: true,
+          invoicesIncludeCollectionCase: true,
+        },
         { 'X-Subscription-Token': token }
       );
     });
 
     it('should return subscription with given token', async () => {
       const token = 'testToken';
-      const draftSubscription = { ...subscription, id: 'test', token };
+      const activeSubscription = { ...subscription, id: 'test', token };
       mockGraphQLClient.request = jest
         .fn()
-        .mockResolvedValue({ getSubscription: draftSubscription });
+        .mockResolvedValue({ getSubscription: activeSubscription });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.get(token)).resolves.toStrictEqual(draftSubscription);
+      expect(testResource.get(token)).resolves.toMatchObject(
+        activeSubscription
+      );
     });
 
     it('should throw error if no subscription found matching the given token', async () => {
@@ -202,338 +170,21 @@ describe('lib/resources/subscriptions/index.ts', () => {
     });
   });
 
-  describe('getOrCreateDraftSubscription', () => {
-    it('should return subscription if a draft subscription matching the given token exists ', async () => {
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const draftSubscription = {
-        ...subscription,
-        status: SubscriptionStatus.Draft,
-        token: 'testToken',
-        orderedProducts: [],
-      };
-      testResource.get = jest.fn().mockResolvedValue(draftSubscription);
-      expect(
-        testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(draftSubscription);
-    });
-
-    it('should create a new subscription if the subscription matching the given token is not a draft subscription ', async () => {
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const activeSubscription = { status: 'Active', token: 'token' };
-      testResource.get = jest.fn().mockResolvedValue(activeSubscription);
-      const draftSubscription = {
-        ...subscription,
-        status: SubscriptionStatus.Draft,
-        token: 'token',
-        orderedProducts: [],
-      };
-      testResource.createCart = jest
-        .fn()
-        .mockResolvedValue({ subscription: draftSubscription });
-      expect(
-        testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(draftSubscription);
-    });
-
-    it('should create a new subscription if no subscription matches given token', async () => {
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      testResource.get = jest
-        .fn()
-        .mockRejectedValue(new Error('Subscription not found'));
-      const draftSubscription = {
-        ...subscription,
-        status: SubscriptionStatus.Draft,
-        token: 'testToken',
-      };
-      testResource.createCart = jest
-        .fn()
-        .mockResolvedValue({ subscription: draftSubscription });
-      expect(
-        testResource.getOrCreateDraftSubscription('testToken')
-      ).resolves.toStrictEqual(draftSubscription);
-    });
-
-    it('should throw an error if returned subscription does not have a token', async () => {
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      testResource.get = jest
-        .fn()
-        .mockRejectedValue(new Error('Subscription not found'));
-      testResource.createCart = jest
-        .fn()
-        .mockRejectedValue(new ServerError('No token returned from API'));
-      expect(
-        testResource.getOrCreateDraftSubscription('testToken')
-      ).rejects.toThrow('No token returned from API');
-    });
-  });
-
-  describe('addToCart', () => {
-    it('should call the correct mutation', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        createOrderedProduct: {
-          subscription,
-          orderedProduct: {},
-        },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { productId: 'test', quantity: 1 };
-      await testResource.addToCart(input, 'testToken');
-      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        AddToCartDocument,
-        { input },
-        { 'X-Subscription-Token': 'testToken' }
-      );
-    });
-
-    it('should return ordered product with updated subscription', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { productId: 'test', quantity: 1 };
-      expect(testResource.addToCart(input, 'testToken')).resolves.toStrictEqual(
-        response
-      );
-    });
-
-    it('should throw an error if response is null', async () => {
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { productId: 'test', quantity: 1 };
-      expect(testResource.addToCart(input, 'testToken')).rejects.toThrow(
-        'Could not add product to cart'
-      );
-    });
-
-    it('should throw an error if returned ordered product is null', async () => {
-      const response = {
-        orderedProduct: null,
-        subscription,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { productId: 'test', quantity: 1 };
-      expect(testResource.addToCart(input, 'testToken')).rejects.toThrow(
-        'Could not add product to cart'
-      );
-    });
-    it('should throw an error if returned subscription is null', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { productId: 'test', quantity: 1 };
-      expect(testResource.addToCart(input, 'testToken')).rejects.toThrow(
-        'Could not add product to cart'
-      );
-    });
-  });
-
-  describe('removeFromCart', () => {
-    it('should call the correct mutation', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        destroyOrderedProduct: {
-          subscription,
-          orderedProduct: {},
-        },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const id = 'test';
-      await testResource.removeFromCart(id, 'testToken');
-      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        RemoveFromCartDocument,
-        { input: { id } },
-        { 'X-Subscription-Token': 'testToken' }
-      );
-    });
-
-    it('should return removed product with updated subscription', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ destroyOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.removeFromCart(response.orderedProduct.id, 'testToken')
-      ).resolves.toStrictEqual(response);
-    });
-    it('should throw an error if response is null', async () => {
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ destroyOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.removeFromCart('test', 'testToken')).rejects.toThrow(
-        'Could not remove product from cart'
-      );
-    });
-
-    it('should throw an error if returned ordered product is null', async () => {
-      const response = {
-        orderedProduct: null,
-        subscription: {
-          id: 'test',
-          token: 'test',
-        },
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ destroyOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.removeFromCart('test', 'testToken')).rejects.toThrow(
-        'Could not remove product from cart'
-      );
-    });
-
-    it('should throw an error if returned subscription is null', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ destroyOrderedProduct: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.removeFromCart('test', 'testToken')).rejects.toThrow(
-        'Could not remove product from cart'
-      );
-    });
-  });
-
-  describe('updateOrderedProductQuantity', () => {
-    it('should call the correct mutation', async () => {
-      mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        updateOrderedProductQuantity: {
-          subscription: { ...subscription, id: 'test', token: 'test' },
-          orderedProduct: {},
-        },
-      });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const testId = 'test';
-      const testQuantity = 5;
-      await testResource.updateOrderedProductQuantity(
-        testId,
-        testQuantity,
-        'testToken'
-      );
-      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        UpdateOrderedProductQuantityDocument,
-        { id: testId, quantity: testQuantity },
-        { 'X-Subscription-Token': 'testToken' }
-      );
-    });
-
-    it('should return updated product with updated subscription', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription: {
-          ...subscription,
-          id: 'test',
-          token: 'test',
-        },
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateOrderedProductQuantity: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateOrderedProductQuantity(
-          response.orderedProduct.id,
-          response.orderedProduct.quantity,
-          'testToken'
-        )
-      ).resolves.toStrictEqual(response);
-    });
-    it('should throw an error if response is null', async () => {
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateOrderedProductQuantity: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateOrderedProductQuantity('test', 1, 'testToken')
-      ).rejects.toThrow('Could not update ordered product quantity');
-    });
-
-    it('should throw an error if returned ordered product is null', async () => {
-      const response = {
-        orderedProduct: null,
-        subscription: {
-          id: 'test',
-          token: 'test',
-        },
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateOrderedProductQuantity: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateOrderedProductQuantity('test', 1, 'testToken')
-      ).rejects.toThrow('Could not update ordered product quantity');
-    });
-
-    it('should throw an error if returned subscription is null', async () => {
-      const response = {
-        orderedProduct: {
-          id: 'test',
-          quantity: 1,
-        },
-        subscription: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateOrderedProductQuantity: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateOrderedProductQuantity('test', 1, 'testToken')
-      ).rejects.toThrow('Could not update ordered product quantity');
-    });
-  });
-
   describe('updateOrderedProduct', () => {
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         updateOrderedProduct: {
-          orderedProduct: {},
+          orderedProduct: {
+            subscription: { token: 'testToken', orderedProducts: [] },
+          },
         },
       });
-      const input = { id: 'test', shipmentDate: '20-01-2024' };
+      const input = { shipmentDate: '20-01-2024' };
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      await testResource.updateOrderedProduct(input, 'testToken');
+      await testResource.updateOrderedProduct('testToken', input);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateOrderedProductDocument,
-        input,
+        { input },
         { 'X-Subscription-Token': 'testToken' }
       );
     });
@@ -544,15 +195,18 @@ describe('lib/resources/subscriptions/index.ts', () => {
         shipmentDate: '20-01-2024',
       };
       const response = {
-        orderedProduct: input,
+        orderedProduct: { ...input, subscription },
       };
       mockGraphQLClient.request = jest
         .fn()
         .mockResolvedValue({ updateOrderedProduct: response });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct(input, 'testToken')
-      ).resolves.toStrictEqual(response);
+        testResource.updateOrderedProduct('testToken', input)
+      ).resolves.toMatchObject({
+        orderedProduct: input,
+        subscription,
+      });
     });
 
     it('should throw an error if response is null', async () => {
@@ -566,7 +220,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
         .mockResolvedValue({ updateOrderedProduct: response });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct(input, 'testToken')
+        testResource.updateOrderedProduct('testToken', input)
       ).rejects.toThrow('Could not update ordered product');
     });
 
@@ -583,281 +237,244 @@ describe('lib/resources/subscriptions/index.ts', () => {
         .mockResolvedValue({ updateOrderedProduct: response });
       const testResource = new SubscriptionsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct(input, 'testToken')
+        testResource.updateOrderedProduct('testToken', input)
       ).rejects.toThrow('Could not update ordered product');
     });
   });
 
-  describe('updateAddressDetails', () => {
-    it('should call the correct mutation', async () => {
+  describe('getBySelfServiceCenterLoginToken', () => {
+    it('should call the correct query', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        updateAddressDetails: {
-          subscription: { ...subscription, id: 'test', token: 'token' },
+        getSubscriptionBySelfServiceCenterLoginToken: {
+          ...subscription,
+          token: 'test',
         },
       });
+      const token = 'testToken';
       const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const input = { address: 'test' };
-      await testResource.updateAddressDetails(input, 'testToken');
+      await testResource.getBySelfServiceCenterLoginToken(token);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        UpdateAddressDetailsDocument,
-        input,
-        { 'X-Subscription-Token': 'testToken' }
+        GetSubscriptionBySelfServiceCenterLoginTokenDocument,
+        { token },
+        { 'X-Subscription-Token': token }
       );
     });
 
-    it('should return updated subscription', async () => {
-      const input = { address: 'test', name: 'test name' };
-      const response = {
-        subscription: {
-          ...subscription,
-          id: 'test',
-          token: 'test',
-          ...input,
-        },
-        errors: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateAddressDetails: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateAddressDetails(input, 'testToken')
-      ).resolves.toStrictEqual({ subscription: response.subscription });
-    });
-
-    it('should handle empty response correctly', async () => {
-      const input = { address: 'test', name: 'test name' };
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateAddressDetails: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateAddressDetails(input, 'testToken')
-      ).rejects.toThrow('Could not update address details');
-    });
-
-    it('should throw an error if returned subscription is null', async () => {
-      const input = { address: 'test', name: 'test name' };
-      const response = {
-        subscription: null,
-        errors: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateAddressDetails: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updateAddressDetails(input, 'testToken')
-      ).rejects.toThrow('Could not update address details');
-    });
-
-    it('should throw validation errors with correctly formated attribute names', async () => {
-      const input = { address: 'test', name: 'test name' };
-      const response = {
-        subscription: {
-          id: 'test',
-          token: 'test',
-        },
-        errors: [
-          {
-            attribute: 'date_of_birth',
-            message: 'test',
-          },
-        ],
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updateAddressDetails: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      let thrownError: ValidationError | undefined;
-      try {
-        await testResource.updateAddressDetails(input, 'testToken');
-      } catch (error) {
-        thrownError = error as ValidationError;
-      }
-      expect(thrownError?.message).toEqual('Validation error');
-      expect(thrownError?.details).toEqual({
-        dateOfBirth: 'test',
+    it('should return subscription with given self service center login token', async () => {
+      const token = 'testToken';
+      const activeSubscription = { ...subscription, id: 'test', token };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscriptionBySelfServiceCenterLoginToken: activeSubscription,
       });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.getBySelfServiceCenterLoginToken(token)
+      ).resolves.toMatchObject(activeSubscription);
+    });
+
+    it('should throw error if no subscription found matching the given token', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscriptionBySelfServiceCenterLoginToken: null,
+      });
+      const token = 'testToken';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.getBySelfServiceCenterLoginToken(token)
+      ).rejects.toThrow('Subscription not found');
     });
   });
 
-  describe('finaliseSubscription', () => {
+  describe('cancel', () => {
+    let testResource: SubscriptionsResource;
+    let input: CancelSubscriptionInput;
+    const subscriptionId = '1';
+
+    beforeEach(() => {
+      testResource = new SubscriptionsResource(mockGraphQLClient);
+      input = { cancellationNotes: 'note' };
+    });
+
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        createSubscriptionFromCart: {
-          subscription: { ...subscription, id: 'test', token: 'test' },
-        },
+        cancelSubscription: { subscription },
       });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const paymentPageUrl = 'test';
-      const returnUrl = 'test';
-      await testResource.createSubscriptionFromCart(
-        paymentPageUrl,
-        returnUrl,
-        'testToken'
-      );
+      await testResource.cancel(subscriptionId, input);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        CreateSubscriptionFromCartDocument,
-        { input: { paymentPageUrl, returnUrl } },
-        { 'X-Subscription-Token': 'testToken' }
+        CancelSubcscriptionDocument,
+        {
+          input: {
+            ...input,
+            id: subscriptionId,
+          },
+        }
       );
     });
 
-    it('should return updated subscription', async () => {
-      const paymentUrl = 'test';
-      const returnUrl = 'test';
-      const response = {
-        subscription: {
-          ...subscription,
-          id: 'test',
-          token: 'test',
-        },
-        paymentUrl,
-        returnUrl: returnUrl,
-        errors: null,
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createSubscriptionFromCart: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.createSubscriptionFromCart(
-          paymentUrl,
-          returnUrl,
-          'testToken'
-        )
-      ).resolves.toStrictEqual({
-        subscription: response.subscription,
-        paymentUrl,
-        returnUrl,
+    it('should return cancelled subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: response,
       });
+      expect(testResource.cancel(subscriptionId, input)).resolves.toMatchObject(
+        subscription
+      );
     });
 
-    it('should handle empty response correctly', async () => {
-      const paymentPageUrl = 'test';
-      const returnUrl = 'test';
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createSubscriptionFromCart: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.createSubscriptionFromCart(
-          paymentPageUrl,
-          returnUrl,
-          'testToken'
-        )
-      ).rejects.toThrow('Could not create subscription');
-    });
-
-    it('should throw an error if returned subscription is null', async () => {
-      const paymentUrl = 'test';
-      const returnUrl = 'test';
+    it('should throw validation error if an error is returned', async () => {
       const response = {
-        subscription: null,
-        paymentUrl,
-        returnUrl: returnUrl,
-        errors: null,
+        errors: [{ messsage: 'Subscription is already cancelled' }],
       };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createSubscriptionFromCart: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.createSubscriptionFromCart(
-          paymentUrl,
-          returnUrl,
-          'testToken'
-        )
-      ).rejects.toThrow('Could not create subscription');
-    });
-
-    it('should throw validation errors with correctly formated attribute names', async () => {
-      const paymentPageUrl = 'test';
-      const returnUrl = 'test';
-      const response = {
-        subscription: {
-          ...subscription,
-          id: 'test',
-          token: 'test',
-        },
-        errors: [
-          {
-            attribute: 'date_of_birth',
-            message: 'test',
-          },
-        ],
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ createSubscriptionFromCart: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      let thrownError: ValidationError | undefined;
-      try {
-        await testResource.createSubscriptionFromCart(
-          paymentPageUrl,
-          returnUrl,
-          'testToken'
-        );
-      } catch (error) {
-        thrownError = error as ValidationError;
-      }
-      expect(thrownError?.message).toEqual('Validation error');
-      expect(thrownError?.details).toEqual({
-        dateOfBirth: 'test',
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: response,
       });
+      expect(testResource.cancel(subscriptionId, input)).rejects.toThrow(
+        'Validation error'
+      );
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: null,
+      });
+      expect(testResource.cancel(subscriptionId, input)).rejects.toThrow(
+        'Could not cancel subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        cancelSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.cancel(subscriptionId, input)).rejects.toThrow(
+        'Could not cancel subscription'
+      );
     });
   });
 
-  describe('updatePlan', () => {
+  describe('pause', () => {
+    let testResource: SubscriptionsResource;
+    let input: PauseSubscriptionInput;
+    const subscriptionId = '1';
+
+    beforeEach(() => {
+      testResource = new SubscriptionsResource(mockGraphQLClient);
+      input = { pauseUntil: '2025-01-01' };
+    });
+
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
-        updatePlan: {
-          subscription: { ...subscription, id: 'test', token: 'test' },
-        },
+        pauseSubscription: { subscription },
       });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      const planSlug = 'new-plan';
-      await testResource.updatePlan(planSlug, 'testToken');
+      await testResource.pause(subscriptionId, input);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        UpdatePlanDocument,
-        { input: { planSlug: planSlug } },
-        { 'X-Subscription-Token': 'testToken' }
+        PauseSubscriptionDocument,
+        { input: { ...input, id: subscriptionId } }
       );
     });
 
-    it('should return updated subscription', async () => {
-      const input = 'new-plan';
-      const response = {
-        subscription: {
-          ...subscription,
-          id: 'test',
-          token: 'test',
-          activePlan: {
-            slug: input,
-          },
-        },
-      };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updatePlan: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(
-        testResource.updatePlan(input, 'testToken')
-      ).resolves.toStrictEqual({ subscription: response.subscription });
+    it('should return paused subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: response,
+      });
+      expect(testResource.pause(subscriptionId, input)).resolves.toMatchObject(
+        subscription
+      );
     });
 
-    it('should throw an error if response is null', async () => {
-      const input = 'new-plan';
-      const response = null;
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({ updatePlan: response });
-      const testResource = new SubscriptionsResource(mockGraphQLClient);
-      expect(testResource.updatePlan(input, 'testToken')).rejects.toThrow(
-        'Could not update plan'
+    it('should throw validation error if an error is returned', async () => {
+      const response = {
+        errors: [{ messsage: 'Subscription is already paused' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: response,
+      });
+      expect(testResource.pause(subscriptionId, input)).rejects.toThrow(
+        'Validation error'
+      );
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: null,
+      });
+      expect(testResource.pause(subscriptionId, input)).rejects.toThrow(
+        'Could not pause subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        pauseSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.pause(subscriptionId, input)).rejects.toThrow(
+        'Could not pause subscription'
+      );
+    });
+  });
+  describe('resume', () => {
+    let testResource: SubscriptionsResource;
+    let input: ResumeSubscriptionInput;
+    const subscriptionId = '1';
+    beforeEach(() => {
+      testResource = new SubscriptionsResource(mockGraphQLClient);
+      input = { resumeFrom: '2025-01-01' };
+    });
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: { subscription },
+      });
+      await testResource.resume(subscriptionId, input);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        ResumeSubscriptionDocument,
+        { input: { ...input, id: subscriptionId } }
+      );
+    });
+
+    it('should return resumed subscription', async () => {
+      const response = { subscription };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: response,
+      });
+      expect(testResource.resume(subscriptionId, input)).resolves.toMatchObject(
+        subscription
+      );
+    });
+
+    it('should throw validation error if an error is returned', async () => {
+      const response = {
+        errors: [{ messsage: 'Subscription is already resumed' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: response,
+      });
+      expect(testResource.resume(subscriptionId, input)).rejects.toThrow(
+        'Validation error'
+      );
+    });
+
+    it('should throw server error if the response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: null,
+      });
+      expect(testResource.resume(subscriptionId, input)).rejects.toThrow(
+        'Could not resume subscription'
+      );
+    });
+
+    it('should throw server error if the subscription is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        resumeSubscription: {
+          subscription: null,
+        },
+      });
+      expect(testResource.resume(subscriptionId, input)).rejects.toThrow(
+        'Could not resume subscription'
       );
     });
   });

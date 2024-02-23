@@ -2,7 +2,6 @@ import {
   Access,
   FirmhouseClient,
 } from '@firmhouse/firmhouse-sdk/lib/FirmhouseClient';
-import { WriteAccessSubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/write';
 
 describe('lib/FirmhouseClient.ts', () => {
   describe('FirmhouseClient', () => {
@@ -19,7 +18,16 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.products).toBeDefined();
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
-        expect(client.subscriptions).toBeDefined();
+        expect(client.carts).toBeDefined();
+        expect(() => client.invoices).toThrow(
+          'Cannot access invoices resource with Storefront acess'
+        );
+        expect(() => client.projects).toThrow(
+          'Cannot access projects resource with Storefront acess'
+        );
+        expect(() => client.subscriptions).toThrow(
+          'Cannot access subscriptions resource with Storefront acess'
+        );
       });
     });
 
@@ -37,8 +45,12 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.products).toBeDefined();
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
+        expect(client.carts).toBeDefined();
         expect(client.subscriptions).toBeDefined();
-        expect(client.subscriptions.getWith).toBeDefined();
+        expect(client.invoices).toBeDefined();
+        expect(client.projects).toBeDefined();
+        expect(client.projects.getCurrent).toBeDefined();
+        expect(client.invoices.fetchAll).toBeDefined();
       });
     });
   });

@@ -1,0 +1,22 @@
+fragment OrderFields on Order {
+  acceptUrl
+  amountCents
+  cancelUrl
+  createdAt
+  discountCents
+  discountExclTaxCents
+  fulfilledAt
+  id
+  paid
+  shipmentDate
+  shippingCostsCents
+  shippingCostsExclTaxCents
+  shopifyDraftId
+  shopifyId
+  snoozeUrl
+  status
+  totalTaxCents
+  trackAndTraceCode
+  trackingCode
+  updatedAt
+}
