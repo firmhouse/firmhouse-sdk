@@ -81,11 +81,6 @@ const subscription = {
   ordersV2: undefined,
 };
 
-export const subscriptionWithUtils = {
-  ...subscription,
-  getClosestUpcomingOrderDate: expect.any(Function),
-  getClosestUpcomingOrderOrderedProducts: expect.any(Function),
-};
 describe('lib/resources/subscriptions/index.ts', () => {
   let mockGraphQLClient: _GraphQLClient;
 
@@ -321,7 +316,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
         cancelSubscription: response,
       });
       expect(testResource.cancel(subscriptionId, input)).resolves.toMatchObject(
-        subscriptionWithUtils
+        subscription
       );
     });
 
@@ -385,7 +380,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
         pauseSubscription: response,
       });
       expect(testResource.pause(subscriptionId, input)).resolves.toMatchObject(
-        subscriptionWithUtils
+        subscription
       );
     });
 
@@ -447,7 +442,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
         resumeSubscription: response,
       });
       expect(testResource.resume(subscriptionId, input)).resolves.toMatchObject(
-        subscriptionWithUtils
+        subscription
       );
     });
 

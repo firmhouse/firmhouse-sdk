@@ -37,8 +37,10 @@ export default async function OrderedProduct({
   if (!orderedProduct) {
     return notFound();
   }
-  const { title, product, quantity, shipsOnlyOnce } =
-    assignOrderedProductUtils(orderedProduct);
+  const { title, product, quantity, shipsOnlyOnce } = assignOrderedProductUtils(
+    orderedProduct,
+    subscription
+  );
   const notShipped =
     orderedProduct.shipmentDate !== null &&
     !dayjs(orderedProduct.shipmentDate).isBefore(dayjs(), 'day');

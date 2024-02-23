@@ -34,7 +34,7 @@ export function SSCOrderedProduct({
     plan,
     shipmentDate,
     followsPlanSchedule,
-  } = assignOrderedProductUtils(orderedProduct);
+  } = assignOrderedProductUtils(orderedProduct, subscription);
   const { totalPrice, frequency } = getOrderedProductInfo(orderedProduct);
   const partOfPlan = !!plan;
   const notShipped =

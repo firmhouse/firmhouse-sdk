@@ -225,11 +225,16 @@ export function assignSubscriptionUtils(
 }
 
 export function assignOrderedProductUtils(
-  orderedProduct: FirmhouseOrderedProduct
+  orderedProduct: FirmhouseOrderedProduct,
+  subscription: FirmhouseCart | FirmhouseSubscription
 ): FirmhouseOrderedProductWithUtils {
   return {
     ...orderedProduct,
-    followsPlanSchedule: followsPlanSchedule.bind(null, orderedProduct),
+    followsPlanSchedule: followsPlanSchedule.bind(
+      null,
+      orderedProduct,
+      subscription
+    ),
     shipsOnlyOnce: shipsOnlyOnce.bind(null, orderedProduct),
   } as FirmhouseOrderedProductWithUtils;
 }
