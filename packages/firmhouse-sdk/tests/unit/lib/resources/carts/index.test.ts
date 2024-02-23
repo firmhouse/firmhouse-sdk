@@ -280,11 +280,9 @@ describe('lib/resources/carts/index.ts', () => {
         id: 'test',
         quantity: 1,
       };
-      mockGraphQLClient.request = jest
-        .fn()
-        .mockResolvedValue({
-          addToCart: { orderedProduct: { ...orderedProduct }, subscription },
-        });
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        addToCart: { orderedProduct: { ...orderedProduct }, subscription },
+      });
       const testResource = new CartsResource(mockGraphQLClient);
       const input = { productId: 'test', quantity: 1 };
       expect(

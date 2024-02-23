@@ -7,8 +7,17 @@ import { InvoicesResource } from './resources/invoices';
 import { ProjectsResource } from './resources/projects';
 import { CartsResource } from './resources/carts';
 
+/**
+ * Access type for the Firmhouse access token
+ */
 export enum Access {
+  /**
+   * Storefront access
+   */
   storefront,
+  /**
+   * Write access
+   */
   write,
 }
 
@@ -17,11 +26,27 @@ export enum Access {
  * @typeParam T - Access type
  * @public
  */
-export type FirmhouseConfig<T extends Access> = {
+export interface FirmhouseConfig<T extends Access> {
+  /**
+   * Firmhouse api token
+   * @remarks
+   * This token can be obtained from Firmhouse portal \> Integrations
+   */
   readonly apiToken: string;
+  /**
+   * Base url for the Firmhouse api
+   * @remarks
+   * Default value is `https://portal.firmhouse.com/graphql`
+   */
   readonly baseUrl?: string;
+  /**
+   * Access type for the apiToken
+   * @remarks
+   * If the accessType is `storefront`, then the client will not have access to write operations such as projects, subscriptions, invoices etc.
+   * Default value is `Access.storefront`
+   */
   readonly accessType?: T;
-};
+}
 
 /**
  * @public
@@ -41,11 +66,11 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   private _invoices: InvoicesResource;
   private _projects: ProjectsResource;
 
-  constructor(private readonly _config: FirmhouseConfig<TAccess>) {
-    this.API_TOKEN = _config.apiToken;
-    this.BASE_URL = _config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
+  constructor(readonly config: FirmhouseConfig<TAccess>) {
+    this.API_TOKEN = config.apiToken;
+    this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
     this.client = new _GraphQLClient(this.API_TOKEN, this.BASE_URL);
-    this.ACCESS_TYPE = _config?.accessType ?? Access.storefront;
+    this.ACCESS_TYPE = config?.accessType ?? Access.storefront;
     this._subscriptions = new SubscriptionsResource(this.client);
     this._carts = new CartsResource(this.client);
     this._invoices = new InvoicesResource(this.client);
@@ -75,7 +100,9 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
 
   /**
    * @public
-   * Subscription methods
+   * Subscription methods.
+   * @remarks
+   * This resource is only available if the access type is `write`
    */
   public get subscriptions(): TAccess extends Access.write
     ? SubscriptionsResource
@@ -109,6 +136,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Invoice methods
+   * @remarks
+   * This resource is only available if the access type is `write`
    */
   public get invoices(): TAccess extends Access.write
     ? InvoicesResource
@@ -124,6 +153,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Project methods
+   * @remarks
+   * This resource is only available if the access type is `write`
    */
   public get projects(): TAccess extends Access.write
     ? ProjectsResource

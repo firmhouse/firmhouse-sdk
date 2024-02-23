@@ -357,6 +357,10 @@ export interface FirmhouseSubscriptionUtils {
   getClosestUpcomingOrderOrderedProducts: () => FirmhouseOrderedProduct[];
 }
 
+/**
+ * @public
+ * Cart
+ */
 export interface FirmhouseCart {
   address: string | null;
   amountForStartingSubscriptionCents: number | null;

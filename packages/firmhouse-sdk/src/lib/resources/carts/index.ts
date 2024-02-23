@@ -30,9 +30,9 @@ import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
  * Cart(Draft subscription) methods
  */
 export class CartsResource extends BaseResource {
-  async create(clientMutationId?: string): Promise<FirmhouseCart> {
+  async create(): Promise<FirmhouseCart> {
     const response = await this._client.request(CreateCartDocument, {
-      input: { clientMutationId },
+      input: {},
     });
     if (response.createCart === null || response.createCart === undefined) {
       throw new ServerError('Could not create subscription');
