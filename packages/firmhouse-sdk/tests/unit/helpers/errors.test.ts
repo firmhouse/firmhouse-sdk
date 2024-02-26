@@ -3,7 +3,6 @@ import {
   _snakeToCamelCase,
   NotFoundError,
   ServerError,
-  ErrorType,
   ValidationError,
   _mapToLibraryErrorTypes,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
@@ -53,7 +52,7 @@ describe('helpers/errors', () => {
         { query: '' }
       );
       const notFoundError = new NotFoundError(clientError);
-      expect(notFoundError.name).toBe(ErrorType.NotFound);
+      expect(notFoundError.name).toBe('NotFoundError');
       expect(notFoundError.message).toBe(message);
     });
   });
@@ -71,7 +70,7 @@ describe('helpers/errors', () => {
         { query: '' }
       );
       const serverError = new ServerError(clientError);
-      expect(serverError.name).toBe(ErrorType.Server);
+      expect(serverError.name).toBe('ServerError');
       expect(serverError.message).toBe(message);
     });
   });
@@ -82,7 +81,7 @@ describe('helpers/errors', () => {
       const validationError = new ValidationError([
         { message, attribute: 'test' },
       ]);
-      expect(validationError.name).toBe(ErrorType.Validation);
+      expect(validationError.name).toBe('ValidationError');
       expect(validationError.message).toBe('Validation error');
       expect(validationError.details).toEqual({ test: message });
     });
@@ -103,9 +102,7 @@ describe('helpers/errors', () => {
         },
         { query: '' }
       );
-      expect(_mapToLibraryErrorTypes(clientError).name).toBe(
-        ErrorType.NotFound
-      );
+      expect(_mapToLibraryErrorTypes(clientError).name).toBe('NotFoundError');
     });
 
     it('should return a ValidationError if the error is a ValidationError', () => {
@@ -130,7 +127,7 @@ describe('helpers/errors', () => {
         { query: '' }
       );
       const error = _mapToLibraryErrorTypes(clientError);
-      expect(error.name).toBe(ErrorType.Validation);
+      expect(error.name).toBe('ValidationError');
       expect((error as ValidationError).details).toEqual({
         test: 'test explanation',
       });
@@ -143,7 +140,7 @@ describe('helpers/errors', () => {
         { query: '' }
       );
       const error = _mapToLibraryErrorTypes(clientError);
-      expect(error.name).toBe(ErrorType.Server);
+      expect(error.name).toBe('ServerError');
       expect(error.message).toBe(message);
     });
   });

@@ -260,7 +260,7 @@ export class CartsResource extends BaseResource {
    * @param returnUrl - The URL the user gets redirected to after completing payment
    * @param cartToken - Cart token
    * @returns Payment details and validation errors if any
-   * @throws {@link @firmhouse/firmhouse-sdk#ValidationError}
+   * @throws {@link ValidationError}
    * Thrown if required fields for payment is missing.
    */
   public async createSubscription(

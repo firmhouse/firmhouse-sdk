@@ -1,21 +1,9 @@
 import { BaseResource } from '../BaseResource';
-import {
-  AllInvoicesDocument,
-  AllInvoicesQuery,
-  AllInvoicesQueryVariables,
-} from './allInvoices.generated';
+import * as Types from '../../graphql/generated';
+import { PaymentTypeEnum, InvoiceStatusEnum } from '../../graphql/generated';
+import { AllInvoicesDocument } from './allInvoices.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 import { FirmhouseInvoice, PaginatedResponse } from '../../firmhouse';
-
-export type { AllInvoicesQuery, AllInvoicesQueryVariables };
-
-/**
- * @public
- * Invoice
- */
-export type InvoiceType = NonNullable<
-  NonNullable<NonNullable<AllInvoicesQuery['invoices']>['nodes']>[0]
->;
 
 /**
  * @public
@@ -29,14 +17,27 @@ export class InvoicesResource extends BaseResource {
    * @returns List of invoices with pagination info
    */
   public async fetchAll(
-    params?: Omit<
-      AllInvoicesQueryVariables,
-      | 'includeCollectionCases'
-      | 'includeInvoiceReminders'
-      | 'includeInvoiceLineItems'
-      | 'includePayment'
-      | 'includeOriginalInvoice'
-    >,
+    params?: Types.Exact<{
+      invoicedSince?: Types.InputMaybe<
+        Types.Scalars['ISO8601DateTime']['input']
+      >;
+      invoicedUntil?: Types.InputMaybe<
+        Types.Scalars['ISO8601DateTime']['input']
+      >;
+      updatedSince?: Types.InputMaybe<
+        Types.Scalars['ISO8601DateTime']['input']
+      >;
+      updatedUntil?: Types.InputMaybe<
+        Types.Scalars['ISO8601DateTime']['input']
+      >;
+      subscriptionId?: Types.InputMaybe<Types.Scalars['ID']['input']>;
+      paymentTypes?: Types.InputMaybe<Array<PaymentTypeEnum> | PaymentTypeEnum>;
+      statuses?: Types.InputMaybe<Array<InvoiceStatusEnum> | InvoiceStatusEnum>;
+      after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+      before?: Types.InputMaybe<Types.Scalars['String']['input']>;
+      last?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+      first?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+    }>,
     includeRelations?: {
       collectionCases?: boolean;
       invoiceReminders?: boolean;

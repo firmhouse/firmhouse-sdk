@@ -17,7 +17,7 @@ import {
 } from '../graphql/generated';
 
 /**
- * @public
+ * @internal
  * Resolves all modifiers in a interface.
  * @remarks
  * e.g. \{ foo: string \} & \{ bar: number \} =\> \{ foo: string, bar: number\}
@@ -40,7 +40,9 @@ export type PaginatedResponse<T> = {
   };
   results: T[];
 };
-
+/**
+ * @public
+ */
 export interface FirmhousePromotion {
   activated: boolean;
   autoApply: boolean;
@@ -52,14 +54,18 @@ export interface FirmhousePromotion {
   publicName: string | null;
   title: string;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseTaxRate {
   description: string;
   excludingTax: boolean;
   id: string;
   percentage: number;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseExtraField {
   fieldType: string;
   id: string;
@@ -69,7 +75,9 @@ export interface FirmhouseExtraField {
   selectOptions: string[] | null;
   visibility: string;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseExtraFieldAnswer {
   extraFieldId: string;
   fieldType: string;
@@ -81,7 +89,9 @@ export interface FirmhouseExtraFieldAnswer {
   value: string | null;
   visibility: string;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseProject {
   availableCountries: string[];
   availableCountryStates: unknown;
@@ -109,7 +119,9 @@ export interface FirmhouseProject {
   taxRates?: FirmhouseTaxRate[];
   extraFields?: FirmhouseExtraField[] | null;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseProduct {
   available: boolean;
   eligibleForDiscount: boolean;
@@ -142,7 +154,9 @@ export interface FirmhouseProduct {
   taxPercentage: number | null;
   title: string;
 }
-
+/**
+ * @public
+ */
 export interface FirmhousePlan {
   available: boolean;
   currency: string | null;
@@ -175,6 +189,9 @@ export interface FirmhousePlan {
     product: FirmhouseProduct;
   }[];
 }
+/**
+ * @public
+ */
 
 export interface FirmhouseInvoiceLineItem {
   amountExcludingTaxCents: number;
@@ -194,6 +211,9 @@ export interface FirmhouseInvoiceLineItem {
   totalTaxAmountCents: number;
   product: FirmhouseProduct;
 }
+/**
+ * @public
+ */
 export interface FirmhouseCollectionCase {
   caseNumber: string;
   createdAt: string | null;
@@ -201,14 +221,18 @@ export interface FirmhouseCollectionCase {
   status: CollectionCaseStatus;
   updatedAt: string | null;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseInvoiceReminder {
   id: string;
   remindOn: string;
   remindedAt: string | null;
   reminderNumber: number;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseOriginalInvoice {
   city: string | null;
   companyName: string | null;
@@ -234,7 +258,9 @@ export interface FirmhouseOriginalInvoice {
   totalTaxAmountCents: number;
   zipcode: string | null;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseRefund {
   amountCents: number;
   id: string;
@@ -243,7 +269,9 @@ export interface FirmhouseRefund {
   refundedAt: string | null;
   status: RefundStatus;
 }
-
+/**
+ * @public
+ */
 export interface FirmhousePayment {
   amountCents: number;
   amountWithSymbol: string;
@@ -258,7 +286,9 @@ export interface FirmhousePayment {
   updatedAt: string;
   refunds: FirmhouseRefund[];
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseInvoice {
   city: string | null;
   companyName: string | null;
@@ -290,6 +320,9 @@ export interface FirmhouseInvoice {
   payment?: FirmhousePayment | null;
 }
 
+/**
+ * @public
+ */
 export interface FirmhouseSubscribedPlan {
   activatedAt: string | null;
   allowedToCancel: boolean;
@@ -317,11 +350,17 @@ export interface FirmhouseSubscribedPlan {
   unconsumedContractTermEventCount: number | null;
 }
 
+/**
+ * @public
+ */
 export interface FirmhouseOrderedProductUtils {
   followsPlanSchedule: () => boolean;
   shipsOnlyOnce: () => boolean;
 }
 
+/**
+ * @public
+ */
 export interface FirmhouseOrderedProduct {
   createdAt: string | null;
   graceCancellationEndsAt: string | null;
@@ -347,11 +386,16 @@ export interface FirmhouseOrderedProduct {
   plan: { id: string } | null;
   product: FirmhouseProduct;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseOrderedProductWithUtils
   extends FirmhouseOrderedProduct,
     FirmhouseOrderedProductUtils {}
 
+/**
+ * @public
+ */
 export interface FirmhouseSubscriptionUtils {
   getClosestUpcomingOrderDate: () => string | null;
   getClosestUpcomingOrderOrderedProducts: () => FirmhouseOrderedProduct[];
@@ -419,6 +463,10 @@ export interface FirmhouseCart {
   orderedProducts: FirmhouseOrderedProduct[] | null;
   extraFields: FirmhouseExtraFieldAnswer[];
 }
+
+/**
+ * @public
+ */
 export interface FirmhouseOrderLine {
   metadata: unknown | null;
   productSku: string | null;
@@ -431,6 +479,9 @@ export interface FirmhouseOrderLine {
   product: FirmhouseProduct;
 }
 
+/**
+ * @public
+ */
 export interface FirmhouseOrder {
   acceptUrl: string | null;
   amountCents: number;
@@ -457,6 +508,9 @@ export interface FirmhouseOrder {
   payment?: FirmhousePayment | null;
 }
 
+/**
+ * @public
+ */
 export interface FirmouseCollectionCase {
   caseNumber: string;
   createdAt: string | null;
@@ -465,6 +519,9 @@ export interface FirmouseCollectionCase {
   updatedAt: string | null;
 }
 
+/**
+ * @public
+ */
 export interface FirmhouseVerifiedIdentity {
   /**
    * The createdAt date of the identity verification
@@ -487,7 +544,9 @@ export interface FirmhouseVerifiedIdentity {
    */
   verificationMethod: string | null;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseSubscription extends FirmhouseCart {
   activatedAt: string | null;
   cancellationStartedAt: string | null;
@@ -513,7 +572,9 @@ export interface FirmhouseSubscription extends FirmhouseCart {
   invoices?: FirmhouseInvoice[] | null;
   payment?: FirmhousePayment | null;
 }
-
+/**
+ * @public
+ */
 export interface FirmhouseSubscriptionWithUtils
   extends FirmhouseSubscription,
     FirmhouseSubscriptionUtils {
