@@ -1,3 +1,11 @@
+# [1.0.0-alpha.5](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.4...firmhouse-sdk-v1.0.0-alpha.5) (2024-03-04)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix imports from nodejs repos ([bdea63b](https://github.com/firmhouse/firmhouse-sdk/commit/bdea63b5ca66e1bdd8abab42a88bb22acc8d45cb))
+* **firmhouse-sdk:** remove cross-fetch from bundle ([bdea63b](https://github.com/firmhouse/firmhouse-sdk/commit/bdea63b5ca66e1bdd8abab42a88bb22acc8d45cb))
+
 # [1.0.0-alpha.4](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.3...firmhouse-sdk-v1.0.0-alpha.4) (2024-02-23)
 
 
