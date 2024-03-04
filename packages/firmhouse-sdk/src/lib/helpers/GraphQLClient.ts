@@ -30,7 +30,7 @@ export class _GraphQLClient {
     this.API_TOKEN = apiToken;
     this.BASE_URL = baseUrl;
     this.client = new GraphQLClientBase(this.BASE_URL, {
-      fetch: fetch,
+      fetch: globalThis.fetch,
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },

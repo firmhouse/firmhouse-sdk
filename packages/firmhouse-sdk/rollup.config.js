@@ -8,14 +8,14 @@ module.exports = (config) => {
         delimiters: ['', ''],
         values: {
           // Remove cross-fetch from the bundle to clear node.js dependencies and use the native fetch
-          "import * as CrossFetch from 'cross-fetch';": '',
-          "import CrossFetch__default from 'cross-fetch';": '',
-          "import fetch$1 from 'cross-fetch';": '',
           fetch$1: 'fetch',
           CrossFetch__default: 'fetch',
           'CrossFetch.Headers': 'Headers',
           crossFetch: 'fetch',
           'CrossFetch &&': '',
+          "var fetch = require('cross-fetch');":
+            'var fetch = globalThis.fetch;',
+          "import fetch from 'cross-fetch';": 'const fetch = globalThis.fetch;',
         },
       }),
       ...config.plugins,
