@@ -23,19 +23,20 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
       packages: write # to be able to publish to GitHub Packages
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://npm.pkg.github.com/
           scope: '@firmhouse'
-      - uses: nrwl/nx-set-shas@v3
+          node-version: 18
+          cache: 'npm'
       - run: npm ci
+      - uses: nrwl/nx-set-shas@v3
       - run: npx nx format:check
       - run: npx nx affected -t lint --parallel=3
       - run: npx nx affected -t test --parallel=3
-      - uses: nrwl/nx-set-shas@v3
       - name: Release
         run: npx nx affected --target release
         env:
