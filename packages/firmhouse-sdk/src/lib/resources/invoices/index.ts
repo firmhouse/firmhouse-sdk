@@ -17,32 +17,80 @@ export class InvoicesResource extends BaseResource {
    * @returns List of invoices with pagination info
    */
   public async fetchAll(
-    params?: Types.Exact<{
-      invoicedSince?: Types.InputMaybe<
-        Types.Scalars['ISO8601DateTime']['input']
-      >;
-      invoicedUntil?: Types.InputMaybe<
-        Types.Scalars['ISO8601DateTime']['input']
-      >;
-      updatedSince?: Types.InputMaybe<
-        Types.Scalars['ISO8601DateTime']['input']
-      >;
-      updatedUntil?: Types.InputMaybe<
-        Types.Scalars['ISO8601DateTime']['input']
-      >;
-      subscriptionId?: Types.InputMaybe<Types.Scalars['ID']['input']>;
-      paymentTypes?: Types.InputMaybe<Array<PaymentTypeEnum> | PaymentTypeEnum>;
-      statuses?: Types.InputMaybe<Array<InvoiceStatusEnum> | InvoiceStatusEnum>;
-      after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-      before?: Types.InputMaybe<Types.Scalars['String']['input']>;
-      last?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-      first?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-    }>,
+    params?: {
+      /**
+       * List invoices that are invoiced since the given date time.
+       * @example
+       * 2024-01-15T00:00:00+01:00
+       */
+      invoicedSince?: string | null;
+      /**
+       * List invoices that are invoiced until the given date time.
+       * @example
+       * 2024-01-15T00:00:00+01:00
+       */
+      invoicedUntil?: string | null;
+      /**
+       * List invoices that are updated since the given date time.
+       * @example
+       * 2024-01-15T00:00:00+01:00
+       */
+      updatedSince?: string | null;
+      /**
+       * List invoices that are updated until the given date time.
+       * @example
+       * 2024-01-15T00:00:00+01:00
+       */
+      updatedUntil?: string | null;
+      /**
+       * Only list invoices for the subscription with the given ID
+       */
+      subscriptionId?: string | null;
+      /**
+       * Only list invoices with the given payment types
+       */
+      paymentTypes?: PaymentTypeEnum[] | PaymentTypeEnum | null;
+      /**
+       * Only list invoices with the given statuses
+       */
+      statuses?: InvoiceStatusEnum[] | InvoiceStatusEnum | null;
+      /**
+       * Return the elements in the list that come after the specified cursor.
+       */
+      after?: string | null;
+      /**
+       * Return the elements in the list that come before the specified cursor
+       */
+      before?: string | null;
+      /**
+       * Return the last n elements from the list.
+       */
+      last?: number | null;
+      /**
+       * Return the first n elements from the list
+       */
+      first?: number | null;
+    },
     includeRelations?: {
+      /**
+       * Include collectionCases relation
+       */
       collectionCases?: boolean;
+      /**
+       * Include invoiceReminders relation
+       */
       invoiceReminders?: boolean;
+      /**
+       * Include invoiceLineItems relation
+       */
       invoiceLineItems?: boolean;
+      /**
+       * Include payment relation
+       */
       payment?: boolean;
+      /**
+       * Include originalInvoice relation
+       */
       originalInvoice?: boolean;
     }
   ): Promise<PaginatedResponse<FirmhouseInvoice>> {

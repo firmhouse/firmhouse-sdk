@@ -1,6 +1,7 @@
 import { BaseResource } from '../BaseResource';
 import {
-  CreateOrderedProductInput,
+  ExtraFieldInput,
+  OrderedProductIntervalUnitOfMeasure,
   SubscriptionStatus,
 } from '../../graphql/generated';
 
@@ -11,10 +12,8 @@ import {
   GetCartDocument,
   RemoveFromCartDocument,
   UpdateAddressDetailsDocument,
-  UpdateAddressDetailsMutationVariables,
   UpdateCartPlanDocument,
   UpdateOrderedProductInCartDocument,
-  UpdateOrderedProductInCartMutationVariables,
   UpdateOrderedProductInCartQuantityDocument,
 } from './carts.generated';
 import {
@@ -43,6 +42,7 @@ export class CartsResource extends BaseResource {
   /**
    * Create a new cart and return the subscription token
    * @returns cart token
+   * @throws {@link ServerError} Thrown if no token is returned from the API
    */
   public async createCartToken() {
     const response = await this.create();
@@ -57,6 +57,7 @@ export class CartsResource extends BaseResource {
    * Get a cart by cart token
    * @param token - Cart token
    * @returns Cart
+   * @throws {@link NotFoundError} Thrown if the cart is not found
    */
   public async get(token: string): Promise<FirmhouseCart> {
     const response = await this._client.request(
@@ -94,8 +95,47 @@ export class CartsResource extends BaseResource {
    * @param input - Selected product and quantity
    * @param cartToken - Cart token
    * @returns subscription after adding the product and the ordered product
+   * @throws {@link ServerError} Thrown if the product could not be added to the cart
+   * @throws {@link ValidationError} Thrown if the input is invalid
+   * @throws {@link NotFoundError} Thrown if the product or cart is not found
    */
-  public async addProduct(cartToken: string, input: CreateOrderedProductInput) {
+  public async addProduct(
+    cartToken: string,
+    input: {
+      /** A custom price in cents for this ordered product, if left blank the default product price will be used */
+      customPriceCents?: number | null;
+      /**
+       * Create a new record even if the same product already exists in subscription.
+       * Without this paramater when you add a new product and if the product already exists
+       * in the subscription, the quantity of the product will be updated.
+       */
+      ensureNewRecord?: boolean | null;
+      /** The amount of time in units between shipments of this order */
+      interval?: number | null;
+      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
+      intervalUnitOfMeasure?: string | null;
+      /** The time measure for interval units */
+      intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** ID for the related product */
+      productId?: string | null;
+      /** The quantity for this ordered product. */
+      quantity?: number | null;
+      /** The next date on which a new order should get initiated
+       * @example 2000-01-01
+       */
+      shipmentDate?: string | null;
+      /** Use this field to look up the associated product based on Shopify Variant ID. */
+      shopifyVariantId?: string | null;
+      /** Use this field to look up the associated product based on SKU. */
+      sku?: string | null;
+      /** Use this field to look up the associated product based on slug. */
+      slug?: string | null;
+      /** ID of the subscription to create this OrderedProduct for. Required if authenticated via a project access token */
+      subscriptionId?: string | null;
+    }
+  ) {
     const response = await this._client.request(
       AddToCartDocument,
       { input },
@@ -122,6 +162,8 @@ export class CartsResource extends BaseResource {
    * @param orderedProductId - Ordered product id to remove from the cart
    * @param cartToken - Cart token
    * @returns subscription after removing the product and the removed product
+   * @throws {@link ServerError} Thrown if the product could not be removed from the cart
+   * @throws {@link NotFoundError} Thrown if the product or cart is not found
    */
   public async removeProduct(cartToken: string, orderedProductId: string) {
     const response = await this._client.request(
@@ -154,6 +196,9 @@ export class CartsResource extends BaseResource {
    * @param quantity - New quantity
    * @param cartToken - Cart token
    * @returns Updated cart
+   * @throws {@link ServerError} Thrown if the product quantity could not be updated
+   * @throws {@link NotFoundError} Thrown if the product or cart is not found
+   * @throws {@link ValidationError} Thrown if the input is invalid
    */
   public async updateOrderedProductQuantity(
     cartToken: string,
@@ -187,10 +232,35 @@ export class CartsResource extends BaseResource {
    * @param input - Payload for fields to update
    * @param cartToken - Cart token
    * @returns Updated cart
+   * @throws {@link ServerError} Thrown if the ordered product could not be updated
+   * @throws {@link ValidationError} Thrown if the input is invalid
+   * @throws {@link NotFoundError} Thrown if the product or cart is not found
    */
   public async updateOrderedProduct(
     cartToken: string,
-    input: UpdateOrderedProductInCartMutationVariables
+    input: {
+      /** ID of this ordered product. */
+      id?: string | null;
+      /** A custom price in cents for this ordered product, if left blank the default product price will be used */
+      customPriceCents?: number | null;
+      /** The amount of time in units between shipments of this order */
+      interval?: number | null;
+      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
+      intervalUnitOfMeasure?: string | null;
+      /** The time measure for interval units */
+      intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** ID for the related product */
+      productId?: string | null;
+      /** The quantity for this ordered product. */
+      quantity?: number | null;
+      /**
+       * The next date on which a new order should get initiated
+       * @example 2024-01-01
+       */
+      shipmentDate?: string | null;
+    }
   ) {
     const response = await this._client.request(
       UpdateOrderedProductInCartDocument,
@@ -223,12 +293,130 @@ export class CartsResource extends BaseResource {
    * @param cartToken - Cart token
    * @returns Updated cart and validation errors
    * @remarks
-   * Will save changes to certain fields evesn when other fields given are invalid.
+   * Will save changes to certain fields even when other fields given are invalid.
    * Will return validation error messages for invalid fields.
+   * @throws {@link ValidationError} Thrown if the input is invalid
+   * @throws {@link ServerError} Thrown if the address details could not be updated
+   * @throws {@link NotFoundError} Thrown if the cart is not found
    */
   public async updateAddressDetails(
     cartToken: string,
-    input: UpdateAddressDetailsMutationVariables
+    input: {
+      /** The time the subscription was activated
+       * @example2024-01-15T00:00:00+01:00
+       */
+      activatedAt?: string | null;
+      /** The customer's address line or street. */
+      address?: string | null;
+      /** The Adyen shopper reference being used for charges. */
+      adyenShopperReference?: string | null;
+      /** The customer's billing address address line or street. */
+      billToAddress?: string | null;
+      /** The customer's billing address city or town. */
+      billToCity?: string | null;
+      /** The company name of the customer's billing address. */
+      billToCompanyName?: string | null;
+      /** The customer's billing address country code (ISO3661). */
+      billToCountry?: string | null;
+      /** The customer's billing address district. */
+      billToDistrict?: string | null;
+      /** The customer's billing address house, building, or appartment number. */
+      billToHouseNumber?: string | null;
+      /** The customer's billing address last name. */
+      billToLastName?: string | null;
+      /** The customer's billing address first name. */
+      billToName?: string | null;
+      /** The customer's billing address phone number (international format). */
+      billToPhoneNumber?: string | null;
+      /** The customer's billing address salutation (mr,ms,mx). */
+      billToSalutation?: string | null;
+      /** The customer's billing address state or province (ISO3661-2). */
+      billToState?: string | null;
+      /** The customer's billing address zip code or postal code. */
+      billToZipcode?: string | null;
+      /** The time the subscription started the cancellation process (with two-step cancellation)
+       * @example2024-01-15T00:00:00+01:00
+       */
+      cancellationStartedAt?: string | null;
+      /** The time the subscription was (fully) cancelled.
+       * @example2024-01-15T00:00:00+01:00
+       */
+      cancelledAt?: string | null;
+      /** The day of the month when the customer is charged. */
+      chargeDayOfTheMonth?: number | null;
+      /** The customer's city or town. */
+      city?: string | null;
+      /** The company name of the customer. */
+      companyName?: string | null;
+      /** The customer's country code (ISO3661). */
+      country?: string | null;
+      /** The field that can be used for your internal reference. For example, internal customer id. */
+      customerReference?: string | null;
+      /** The customer's date of birth (yyyy-mm-dd).
+       * @example 2000-01-01
+       */
+      dateOfBirth?: string | null;
+      /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
+      differentBillingAddress?: boolean | null;
+      /** The customer's district. */
+      district?: string | null;
+      /** The customer's email address. */
+      email?: string | null;
+      /** Extra field values for the subscription. */
+      extraFields?: ExtraFieldInput[] | null;
+      /** The customer's house, building, or appartment number. */
+      houseNumber?: string | null;
+      /** Unique ID for an imported subscription. */
+      importedSubscriptionId?: string | null;
+      /** The customer's last name. */
+      lastName?: string | null;
+      /** The customer's language/locale. Must be enabled on the project. */
+      locale?: string | null;
+      /** Time time the subscription was marked as non-paying.
+       * @example2024-01-15T00:00:00+01:00
+       */
+      markedAsNonPayingAt?: string | null;
+      /** Whether the customer accepted optional marketing communication opt-in. */
+      marketingOptIn?: boolean | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** The Mollie Customer ID (cst_XXX) */
+      mollieCustomerId?: string | null;
+      /** The customer's first name. */
+      name?: string | null;
+      /** Notes specific for this subscription */
+      notes?: string | null;
+      /** The customer's phone number (international format). */
+      phoneNumber?: string | null;
+      /** Additional payment service provider specific properties used for payment creation. */
+      pspPaymentProperties?: unknown | null;
+      /** The customer's salutation (mr,ms,mx). */
+      salutation?: string | null;
+      /** The time when the signup was completed.
+       * @example2024-01-15T00:00:00+01:00
+       */
+      signupCompletedAt?: string | null;
+      /** Don't automatically activate the subscription on signup. */
+      skipAutoActivationOnSignup?: boolean | null;
+      /** The customer's state or province (ISO3661-2). */
+      state?: string | null;
+      /** The current status of the subscription. (default: inactive) */
+      status?: SubscriptionStatus | null;
+      /** The Stripe Customer ID (cus_XXX) */
+      stripeCustomerId?: string | null;
+      /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
+      stripePaymentMethodId?: string | null;
+      /** Whether the customer accepted the terms and conditions. */
+      termsAccepted?: boolean | null;
+      /** The token of the subscription to update, or creates a new one if one doesn't exist. */
+      token?: string | null;
+      /** The number of months before the customer is charged for the first time. */
+      trialPeriodMonths?: number | null;
+      /** The company VAT number. */
+      vatNumber?: string | null;
+      /** The customer's zip code or postal code. */
+      zipcode?: string | null;
+    }
   ) {
     const response = await this._client.request(
       UpdateAddressDetailsDocument,
@@ -260,8 +448,9 @@ export class CartsResource extends BaseResource {
    * @param returnUrl - The URL the user gets redirected to after completing payment
    * @param cartToken - Cart token
    * @returns Payment details and validation errors if any
-   * @throws {@link ValidationError}
-   * Thrown if required fields for payment is missing.
+   * @throws {@link ValidationError} Thrown if required fields is missing from cart
+   * @throws {@link ServerError} Thrown if the subscription could not be created
+   * @throws {@link NotFoundError} Thrown if the cart is not found
    */
   public async createSubscription(
     cartToken: string,
@@ -300,6 +489,8 @@ export class CartsResource extends BaseResource {
    * @param planSlug - Slug of the plan to update the subscription to
    * @param cartToken - Cart token
    * @returns Updated cart
+   * @throws {@link ServerError} Thrown if the plan could not be changed
+   * @throws {@link NotFoundError} Thrown if the cart or plan is not found
    */
   public async updatePlan(cartToken: string, planSlug: string) {
     const response = await this._client.request(
@@ -316,8 +507,3 @@ export class CartsResource extends BaseResource {
     return _formatCart(updateCartPlan.subscription);
   }
 }
-
-export type {
-  UpdateAddressDetailsMutationVariables,
-  UpdateOrderedProductInCartMutationVariables,
-} from './carts.generated';

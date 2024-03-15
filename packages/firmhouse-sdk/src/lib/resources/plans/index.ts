@@ -13,10 +13,25 @@ export class PlansResource extends BaseResource {
    * @param params - Parameters to filter products by
    * @returns List of products with pagination info
    */
-  public async fetchAll(
-    params: AllPlansQueryVariables = {}
-  ): Promise<PaginatedResponse<FirmhousePlan>> {
-    const response = await this._client.request(AllPlansDocument, params);
+  public async fetchAll(params?: {
+    /**
+     * Return the elements in the list that come after the specified cursor.
+     */
+    after?: string | null;
+    /**
+     * Return the elements in the list that come before the specified cursor
+     */
+    before?: string | null;
+    /**
+     * Return the last n elements from the list.
+     */
+    last?: number | null;
+    /**
+     * Return the first n elements from the list
+     */
+    first?: number | null;
+  }): Promise<PaginatedResponse<FirmhousePlan>> {
+    const response = await this._client.request(AllPlansDocument, params ?? {});
     return {
       total: response.plans?.totalCount ?? 0,
       pageInfo: response.plans?.pageInfo ?? {

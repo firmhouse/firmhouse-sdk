@@ -1,7 +1,7 @@
 /**
  * SDK for interacting with the Firmhouse GraphQL API.
  *
- * @example
+ * @packageDocumentation
  *
  * ## Usage
  *
@@ -37,10 +37,12 @@
  *  invoiceLineItems: true,
  *  payment: true
  * });
- *
- *
  * ```
+ * #### Available Resources
  *
- * @packageDocumentation
+ * {@link SubscriptionsResource} - Interact with Subscriptions
+ * {@link ProductsResource} - Interact with Products
+ * {@link InvoicesResource} - Interact with Invoices
+ * {@link ProjectsResource} - Interact with Projects
  */
 export * from './lib/firmhouse';
