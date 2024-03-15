@@ -1,4 +1,4 @@
-import { InvoiceType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseInvoice } from '@firmhouse/firmhouse-sdk';
 import { ChevronIcon } from '@firmhouse/ui-components';
 import {
   Pill,
@@ -8,14 +8,14 @@ import {
 } from '@firmhouse/ui-components';
 
 export interface InvoiceProps {
-  invoice: InvoiceType;
-  creditInvoice?: InvoiceType;
+  invoice: FirmhouseInvoice;
+  creditInvoice?: FirmhouseInvoice;
   inline?: boolean;
 }
 
 function pillPropsForInvoice(
-  invoice: InvoiceType,
-  creditInvoice?: InvoiceType
+  invoice: FirmhouseInvoice,
+  creditInvoice?: FirmhouseInvoice
 ): PillProps {
   if (invoice.originalInvoice?.status === 'refunded') {
     return pillPropsForInvoice(invoice.originalInvoice, invoice);
