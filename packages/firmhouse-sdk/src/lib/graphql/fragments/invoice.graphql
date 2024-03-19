@@ -16,7 +16,6 @@ fragment InvoiceFields on Invoice {
   phoneNumber
   salutation
   state
-  status
   subscriptionId
   taxPercentage
   totalAmountCents

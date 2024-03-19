@@ -16,8 +16,6 @@ query getCurrentProject(
     productImageUrl
     productName
     projectType
-    shippingCostsCents
-    shippingCostsExclTaxCents
     subscriptionLimitEnabled
     token
     twoStepCancellationEnabled
