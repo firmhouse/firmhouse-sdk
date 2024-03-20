@@ -1,19 +1,7 @@
 import { BaseResource } from '../BaseResource';
-import {
-  GetCurrentProjectQuery,
-  GetCurrentProjectDocument,
-} from './projects.generated';
+import { GetCurrentProjectDocument } from './projects.generated';
 import { NotFoundError } from '../../helpers/errors';
 import { FirmhouseProject } from '../../firmhouse';
-
-export type { GetCurrentProjectQuery };
-/**
- * @public
- * Project
- */
-export type ProjectType = NonNullable<
-  NonNullable<GetCurrentProjectQuery['getCurrentProject']>
->;
 
 /**
  * @public
