@@ -261,7 +261,7 @@ export class SubscriptionsResource extends BaseResource {
     subscriptionId: string,
     input?: {
       /** Time from which the subscription automaticaly resumes again.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       pauseUntil?: string | null;
     }
@@ -335,7 +335,7 @@ export class SubscriptionsResource extends BaseResource {
   /**
    * Add a new product to subscription
    * @param subscriptionToken - Subscription token
-   * @param input - Payload for creating ordered product
+   * @param input - Parameters for the added product
    * @returns Ordered product and subscription
    * @throws {@link ServerError} - When the request fails
    * @throws {@link NotFoundError} - When the product or subscription is not found
@@ -470,7 +470,7 @@ export class SubscriptionsResource extends BaseResource {
     cartToken: string,
     input: {
       /** The time the subscription was activated
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       activatedAt?: string | null;
       /** The customer's address line or street. */
@@ -502,11 +502,11 @@ export class SubscriptionsResource extends BaseResource {
       /** The customer's billing address zip code or postal code. */
       billToZipcode?: string | null;
       /** The time the subscription started the cancellation process (with two-step cancellation)
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       cancellationStartedAt?: string | null;
       /** The time the subscription was (fully) cancelled.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       cancelledAt?: string | null;
       /** The day of the month when the customer is charged. */
@@ -540,7 +540,7 @@ export class SubscriptionsResource extends BaseResource {
       /** The customer's language/locale. Must be enabled on the project. */
       locale?: string | null;
       /** Time time the subscription was marked as non-paying.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       markedAsNonPayingAt?: string | null;
       /** Whether the customer accepted optional marketing communication opt-in. */
@@ -560,7 +560,7 @@ export class SubscriptionsResource extends BaseResource {
       /** The customer's salutation (mr,ms,mx). */
       salutation?: string | null;
       /** The time when the signup was completed.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       signupCompletedAt?: string | null;
       /** Don't automatically activate the subscription on signup. */

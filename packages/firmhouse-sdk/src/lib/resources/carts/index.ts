@@ -92,7 +92,7 @@ export class CartsResource extends BaseResource {
 
   /**
    * Add a product to the cart
-   * @param input - Selected product and quantity
+   * @param input - Parameters for the added product
    * @param cartToken - Cart token
    * @returns subscription after adding the product and the ordered product
    * @throws {@link ServerError} Thrown if the product could not be added to the cart
@@ -303,7 +303,7 @@ export class CartsResource extends BaseResource {
     cartToken: string,
     input: {
       /** The time the subscription was activated
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       activatedAt?: string | null;
       /** The customer's address line or street. */
@@ -335,11 +335,11 @@ export class CartsResource extends BaseResource {
       /** The customer's billing address zip code or postal code. */
       billToZipcode?: string | null;
       /** The time the subscription started the cancellation process (with two-step cancellation)
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       cancellationStartedAt?: string | null;
       /** The time the subscription was (fully) cancelled.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       cancelledAt?: string | null;
       /** The day of the month when the customer is charged. */
@@ -373,7 +373,7 @@ export class CartsResource extends BaseResource {
       /** The customer's language/locale. Must be enabled on the project. */
       locale?: string | null;
       /** Time time the subscription was marked as non-paying.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       markedAsNonPayingAt?: string | null;
       /** Whether the customer accepted optional marketing communication opt-in. */
@@ -393,7 +393,7 @@ export class CartsResource extends BaseResource {
       /** The customer's salutation (mr,ms,mx). */
       salutation?: string | null;
       /** The time when the signup was completed.
-       * @example2024-01-15T00:00:00+01:00
+       * @example 2024-01-15T00:00:00+01:00
        */
       signupCompletedAt?: string | null;
       /** Don't automatically activate the subscription on signup. */
