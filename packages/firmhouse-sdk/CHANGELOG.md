@@ -1,3 +1,11 @@
+# [1.0.0-alpha.6](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.5...firmhouse-sdk-v1.0.0-alpha.6) (2024-03-26)
+
+
+### Bug Fixes
+
+* **nextjs-self-service-center:** fix invoice types ([4dfe37c](https://github.com/firmhouse/firmhouse-sdk/commit/4dfe37c691c4a02f4fe8aed0bbf3e40c1d5a46a3))
+* **nextjs-self-service-center:** remove usage of deprecated field ([4dfe37c](https://github.com/firmhouse/firmhouse-sdk/commit/4dfe37c691c4a02f4fe8aed0bbf3e40c1d5a46a3))
+
 # [1.0.0-alpha.5](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.4...firmhouse-sdk-v1.0.0-alpha.5) (2024-03-04)
 
 
