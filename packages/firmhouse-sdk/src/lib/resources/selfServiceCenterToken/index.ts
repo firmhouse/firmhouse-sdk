@@ -2,6 +2,10 @@ import { ServerError } from '../../helpers/errors';
 import { BaseResource } from '../BaseResource';
 import { CreateSelfServiceCenterLoginTokenDocument } from './selfServiceCenterToken.generated';
 
+/**
+ * @public
+ * Self service center token methods
+ */
 export class SelfServiceCenterTokenResource extends BaseResource {
   /**
    * @public
@@ -9,8 +13,7 @@ export class SelfServiceCenterTokenResource extends BaseResource {
    * @param email - Customer's email address
    * @param returnUrl - Self service center url to use in the email
    * @returns The status of the request
-   * @throws {@link @firmhouse/firmhouse-sdk#ServerError}
-   * Thrown if the request fails
+   * @throws {@link ServerError} - Thrown if the request fails
    */
   public async create(email: string, returnUrl?: string) {
     const response = await this._client.request(

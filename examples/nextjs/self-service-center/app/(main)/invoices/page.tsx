@@ -2,8 +2,8 @@ import { writeAccessFirmhouseClient } from '../../../lib/firmhouse-write';
 import { getSSCSubscriptionToken } from '../../../lib/actions/subscription';
 
 import Invoice from '../../../components/Invoice';
-import { InvoiceType } from '@firmhouse/firmhouse-sdk';
 import { Header } from '../Header';
+import { FirmhouseInvoice } from '@firmhouse/firmhouse-sdk';
 
 export default async function Invoices() {
   const token = await getSSCSubscriptionToken();
@@ -18,7 +18,7 @@ export default async function Invoices() {
       result[invoice.originalInvoice.id] = invoice;
     }
     return result;
-  }, {} as Record<string, InvoiceType>);
+  }, {} as Record<string, FirmhouseInvoice>);
 
   return (
     <>

@@ -19,9 +19,9 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Amsterdam');
 
 /**
- * @public
+ * @internal
  */
-export type { GetSubscriptionQuery };
+export type { GetSubscriptionQuery, GetCartQuery };
 
 /**
  * @internal

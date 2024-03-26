@@ -51,7 +51,20 @@ export interface FirmhouseConfig<T extends Access> {
 /**
  * @public
  * Client for accessing Firmhouse GraphQL api
- * @typeParam TAccess - Access type
+ * @typeParam TAccess - Access type. (Will be inferred from the config)
+ * @groupDescription Resources
+ * Resources for accessing Firmhouse API
+ * @example
+ * ```typescript
+ * import { FirmhouseClient, Access } from '@firmhouse/sdk';
+ * const client = new FirmhouseClient({
+ *  apiToken,
+ *  accessType: Access.write
+ * });
+ *
+ * const products = await client.products.fetchAll();
+ * const invoices = await client.invoices.fetchAll();
+ * ```
  */
 export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   private readonly API_TOKEN: string;
@@ -85,6 +98,12 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Plan methods
+   * @group Resources
+   * @category Available with Storefront Access
+   * @example
+   * ```typescript
+   * const plans = await client.plans.fetchAll();
+   * ```
    */
   public get plans(): PlansResource {
     return this._plans;
@@ -93,6 +112,12 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Product methods
+   * @group Resources
+   * @category Available with Storefront Access
+   * @example
+   * ```typescript
+   * const products = await client.products.fetchAll();
+   * ```
    */
   public get products(): ProductsResource {
     return this._products;
@@ -101,8 +126,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Subscription methods.
-   * @remarks
-   * This resource is only available if the access type is `write`
+   * @group Resources
+   * @category Only Available with Write Access
    */
   public get subscriptions(): TAccess extends Access.write
     ? SubscriptionsResource
@@ -120,6 +145,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Cart methods
+   * @group Resources
+   * @category Available with Storefront Access
    */
   public get carts(): CartsResource {
     return this._carts;
@@ -128,6 +155,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * SelfServiceCenterToken methods
+   * @group Resources
+   * @category Available with Storefront Access
    */
   public get selfServiceCenterToken(): SelfServiceCenterTokenResource {
     return this._selfServiceCenterToken;
@@ -136,8 +165,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Invoice methods
-   * @remarks
-   * This resource is only available if the access type is `write`
+   * @group Resources
+   * @category Only Available with Write Access
    */
   public get invoices(): TAccess extends Access.write
     ? InvoicesResource
@@ -153,8 +182,8 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   /**
    * @public
    * Project methods
-   * @remarks
-   * This resource is only available if the access type is `write`
+   * @group Resources
+   * @category Only Available with Write Access
    */
   public get projects(): TAccess extends Access.write
     ? ProjectsResource

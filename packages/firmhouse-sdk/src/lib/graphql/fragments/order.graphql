@@ -16,7 +16,6 @@ fragment OrderFields on Order {
   snoozeUrl
   status
   totalTaxCents
-  trackAndTraceCode
   trackingCode
   updatedAt
 }

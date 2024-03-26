@@ -7,7 +7,6 @@ fragment PaymentFields on Payment {
   paymentStatus
   paymentType
   retryPaymentUrl
-  status
   token
   updatedAt
   refunds {

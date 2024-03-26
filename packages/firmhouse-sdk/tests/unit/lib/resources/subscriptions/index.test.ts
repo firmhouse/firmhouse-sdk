@@ -1,9 +1,4 @@
-import {
-  SubscriptionsResource,
-  CancelSubscriptionInput,
-  PauseSubscriptionInput,
-  ResumeSubscriptionInput,
-} from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
+import { SubscriptionsResource } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions';
 import {
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionDocument,
@@ -286,12 +281,11 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
   describe('cancel', () => {
     let testResource: SubscriptionsResource;
-    let input: CancelSubscriptionInput;
+    const input = { cancellationNotes: 'note' };
     const subscriptionId = '1';
 
     beforeEach(() => {
       testResource = new SubscriptionsResource(mockGraphQLClient);
-      input = { cancellationNotes: 'note' };
     });
 
     it('should call the correct mutation', async () => {
@@ -355,12 +349,11 @@ describe('lib/resources/subscriptions/index.ts', () => {
 
   describe('pause', () => {
     let testResource: SubscriptionsResource;
-    let input: PauseSubscriptionInput;
+    const input = { pauseUntil: '2025-01-01' };
     const subscriptionId = '1';
 
     beforeEach(() => {
       testResource = new SubscriptionsResource(mockGraphQLClient);
-      input = { pauseUntil: '2025-01-01' };
     });
 
     it('should call the correct mutation', async () => {
@@ -418,11 +411,10 @@ describe('lib/resources/subscriptions/index.ts', () => {
   });
   describe('resume', () => {
     let testResource: SubscriptionsResource;
-    let input: ResumeSubscriptionInput;
+    const input = { resumeFrom: '2025-01-01' };
     const subscriptionId = '1';
     beforeEach(() => {
       testResource = new SubscriptionsResource(mockGraphQLClient);
-      input = { resumeFrom: '2025-01-01' };
     });
 
     it('should call the correct mutation', async () => {

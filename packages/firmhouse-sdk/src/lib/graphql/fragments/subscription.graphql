@@ -91,7 +91,6 @@ fragment CompleteSubscriptionFields on Subscription {
   paymentMethod
   paymentMethodSummary
   paymentMethodTranslated
-  projectId
   pspPaymentMethodDetails
   signupCompletedAt
   skipAutoActivationOnSignup

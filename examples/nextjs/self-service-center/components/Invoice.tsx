@@ -1,4 +1,4 @@
-import { InvoiceType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseInvoice, InvoiceStatusEnum } from '@firmhouse/firmhouse-sdk';
 import { ChevronIcon } from '@firmhouse/ui-components';
 import {
   Pill,
@@ -8,16 +8,16 @@ import {
 } from '@firmhouse/ui-components';
 
 export interface InvoiceProps {
-  invoice: InvoiceType;
-  creditInvoice?: InvoiceType;
+  invoice: FirmhouseInvoice;
+  creditInvoice?: FirmhouseInvoice;
   inline?: boolean;
 }
 
 function pillPropsForInvoice(
-  invoice: InvoiceType,
-  creditInvoice?: InvoiceType
+  invoice: FirmhouseInvoice,
+  creditInvoice?: FirmhouseInvoice
 ): PillProps {
-  if (invoice.originalInvoice?.status === 'refunded') {
+  if (invoice.originalInvoice?.invoiceStatus === InvoiceStatusEnum.Refunded) {
     return pillPropsForInvoice(invoice.originalInvoice, invoice);
   }
   if (creditInvoice) {
@@ -40,23 +40,23 @@ function pillPropsForInvoice(
       ),
     };
   }
-  switch (invoice.status) {
-    case 'cancelled':
+  switch (invoice.invoiceStatus) {
+    case InvoiceStatusEnum.Cancelled:
       return { text: 'Cancelled', color: 'red' };
-    case 'failed':
+    case InvoiceStatusEnum.Failed:
       return { text: 'Failed', color: 'red' };
-    case 'expired':
+    case InvoiceStatusEnum.Expired:
       return { text: 'Expired', color: 'orange' };
-    case 'paid':
+    case InvoiceStatusEnum.Paid:
       return { text: 'Paid', color: 'green' };
-    case 'paidout':
+    case InvoiceStatusEnum.Paidout:
       return { text: 'Paid out', color: 'green' };
-    case 'refunded':
+    case InvoiceStatusEnum.Refunded:
       return { text: 'Refunded', color: 'yellow' };
-    case 'partially_refunded':
+    case InvoiceStatusEnum.PartiallyRefunded:
       return { text: 'Partially refunded', color: 'yellow' };
     default:
-      return { text: invoice.status ?? '', color: 'gray' };
+      return { text: invoice.invoiceStatus ?? '', color: 'gray' };
   }
 }
 export default function Invoice({
@@ -69,7 +69,7 @@ export default function Invoice({
       {creditInvoice && <Pill {...pillPropsForInvoice(invoice, undefined)} />}
       {!(
         invoice.originalInvoice &&
-        invoice.originalInvoice?.status !== 'refunded'
+        invoice.originalInvoice?.invoiceStatus !== InvoiceStatusEnum.Refunded
       ) && <Pill {...pillPropsForInvoice(invoice, creditInvoice)} />}
     </>
   );

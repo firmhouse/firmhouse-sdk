@@ -3,7 +3,6 @@ import {
   CreateOrderedProductDocument,
   DestroyOrderedProductDocument,
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
-  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
   GetSubscriptionDocument,
   PauseSubscriptionDocument,
   ResumeSubscriptionDocument,
@@ -21,143 +20,12 @@ import {
   _formatSubscription,
 } from '../../helpers/subscription';
 import {
-  CreateOrderedProductInput,
   ExtraFieldInput,
-  InputMaybe,
-  Scalars,
+  OrderedProductIntervalUnitOfMeasure,
   SubscriptionStatus,
-  UpdateOrderedProductInput,
 } from '../../graphql/generated';
 import { BaseResource } from '../BaseResource';
 import { FirmhouseSubscription } from '../../firmhouse';
-
-export interface CancelSubscriptionInput {
-  /** Why did this customer decide to cancel? */
-  cancellationNotes?: InputMaybe<Scalars['String']['input']>;
-  /** Skip sending the standard cancellation confirmation email to the customer. */
-  skipCancellationConfirmationEmail?: InputMaybe<Scalars['Boolean']['input']>;
-  /** If a customer cannot be cancelled due to active commitments, this process can be skipped. */
-  skipContractTermsEnforcement?: InputMaybe<Scalars['Boolean']['input']>;
-  /** If two-step cancellation is enabled it can be skipped */
-  skipTwoStepCancellation?: InputMaybe<Scalars['Boolean']['input']>;
-}
-
-export interface ResumeSubscriptionInput {
-  /** Time to resume the subscription from. If not given the subscription will be immediately resumed. */
-  resumeFrom?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-}
-
-export interface PauseSubscriptionInput {
-  /** Time from which the subscription automaticaly resumes again. */
-  pauseUntil?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-}
-
-export interface UpdateSubscriptionInput {
-  /** The time the subscription was activated. */
-  activatedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-  /** The customer's address line or street. */
-  address?: InputMaybe<Scalars['String']['input']>;
-  /** The Adyen shopper reference being used for charges. */
-  adyenShopperReference?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address address line or street. */
-  billToAddress?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address city or town. */
-  billToCity?: InputMaybe<Scalars['String']['input']>;
-  /** The company name of the customer's billing address. */
-  billToCompanyName?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address country code (ISO3661). */
-  billToCountry?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address district. */
-  billToDistrict?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address house, building, or appartment number. */
-  billToHouseNumber?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address last name. */
-  billToLastName?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address first name. */
-  billToName?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address phone number (international format). */
-  billToPhoneNumber?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address salutation (mr,ms,mx). */
-  billToSalutation?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address state or province (ISO3661-2). */
-  billToState?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's billing address zip code or postal code. */
-  billToZipcode?: InputMaybe<Scalars['String']['input']>;
-  /** The time the subscription started the cancellation process (with two-step cancellation) */
-  cancellationStartedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-  /** The time the subscription was (fully) cancelled. */
-  cancelledAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-  /** The day of the month when the customer is charged. */
-  chargeDayOfTheMonth?: InputMaybe<Scalars['Int']['input']>;
-  /** The customer's city or town. */
-  city?: InputMaybe<Scalars['String']['input']>;
-  /** A unique identifier for the client performing the mutation. */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The company name of the customer. */
-  companyName?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's country code (ISO3661). */
-  country?: InputMaybe<Scalars['String']['input']>;
-  /** The field that can be used for your internal reference. For example, internal customer id. */
-  customerReference?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's date of birth (yyyy-mm-dd). */
-  dateOfBirth?: InputMaybe<Scalars['ISO8601Date']['input']>;
-  /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
-  differentBillingAddress?: InputMaybe<Scalars['Boolean']['input']>;
-  /** The customer's district. */
-  district?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's email address. */
-  email?: InputMaybe<Scalars['String']['input']>;
-  /** Extra field values for the subscription. */
-  extraFields?: InputMaybe<Array<ExtraFieldInput>>;
-  /** The customer's house, building, or appartment number. */
-  houseNumber?: InputMaybe<Scalars['String']['input']>;
-  /** Unique ID for an imported subscription. */
-  importedSubscriptionId?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's last name. */
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's language/locale. Must be enabled on the project. */
-  locale?: InputMaybe<Scalars['String']['input']>;
-  /** Time time the subscription was marked as non-paying. */
-  markedAsNonPayingAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-  /** Whether the customer accepted optional marketing communication opt-in. */
-  marketingOptIn?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Metadata that can be used by developers to store additional information on objects. */
-  metadata?: InputMaybe<Scalars['JSON']['input']>;
-  /** The Mollie Customer ID (cst_XXX) */
-  mollieCustomerId?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's first name. */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Notes specific for this subscription */
-  notes?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's phone number (international format). */
-  phoneNumber?: InputMaybe<Scalars['String']['input']>;
-  /** Additional payment service provider specific properties used for payment creation. */
-  pspPaymentProperties?: InputMaybe<Scalars['JSON']['input']>;
-  /** The customer's salutation (mr,ms,mx). */
-  salutation?: InputMaybe<Scalars['String']['input']>;
-  /** The time when the signup was completed. */
-  signupCompletedAt?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
-  /** Don't automatically activate the subscription on signup. */
-  skipAutoActivationOnSignup?: InputMaybe<Scalars['Boolean']['input']>;
-  /** The customer's state or province (ISO3661-2). */
-  state?: InputMaybe<Scalars['String']['input']>;
-  /** The current status of the subscription. (default: inactive) */
-  status?: InputMaybe<SubscriptionStatus>;
-  /** The Stripe Customer ID (cus_XXX) */
-  stripeCustomerId?: InputMaybe<Scalars['String']['input']>;
-  /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
-  stripePaymentMethodId?: InputMaybe<Scalars['String']['input']>;
-  /** Whether the customer accepted the terms and conditions. */
-  termsAccepted?: InputMaybe<Scalars['Boolean']['input']>;
-  /** The token of the subscription to update, or creates a new one if one doesn't exist. */
-  token?: InputMaybe<Scalars['ID']['input']>;
-  /** The number of months before the customer is charged for the first time. */
-  trialPeriodMonths?: InputMaybe<Scalars['Int']['input']>;
-  /** The company VAT number. */
-  vatNumber?: InputMaybe<Scalars['String']['input']>;
-  /** The customer's zip code or postal code. */
-  zipcode?: InputMaybe<Scalars['String']['input']>;
-}
 
 /**
  * @public
@@ -169,29 +37,48 @@ export class SubscriptionsResource extends BaseResource {
    * @param token - Subscription token
    * @param includeRelations - Relations to include
    * @returns Subscription
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
   public async get(
     token: string,
     includeRelations?: {
+      /** Include collectionCases relation */
       collectionCases?: boolean;
+      /** Include verifiedIdentity relation */
       verifiedIdentity?: boolean;
+      /** Parameters for including orders relation */
       orders?: {
+        /** Fetch orders after this cursor */
         after?: string;
+        /** Fetch orders before this cursor */
         before?: string;
+        /** Fetch first n orders */
         first?: number;
+        /** Fetch last n orders */
         last?: number;
+        /** Include relations for orders */
         includeRelations?: {
+          /** Include orderLines relation */
           orderLines?: boolean;
+          /** Include payment relation */
           payment?: boolean;
+          /** Include invoice relation */
           invoice?: boolean;
         };
       };
+      /** Parameters for including invoices relation */
       invoices?: {
+        /** Include collectionCase relation */
         includeRelations?: {
+          /** Include collectionCase relation */
           collectionCase?: boolean;
+          /** Include invoiceReminders relation */
           invoiceReminders?: boolean;
+          /** Include invoiceLineItems relation */
           invoiceLineItems?: boolean;
+          /** Include payment relation */
           payment?: boolean;
+          /** Include originalInvoice relation */
           originalInvoice?: boolean;
         };
       };
@@ -241,11 +128,36 @@ export class SubscriptionsResource extends BaseResource {
    * Update a product in the cart
    * @param input - Payload for fields to update
    * @param subscriptionToken - Subscription token
-   * @returns Updated subscription
+   * @returns Updated subscription and ordered product
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the product is not found
+   * @throws {@link ValidationError} - When there are invalid fields
    */
   public async updateOrderedProduct(
     subscriptionToken: string,
-    input: UpdateOrderedProductInput
+    input: {
+      /** A custom price in cents for this ordered product, if left blank the default product price will be used */
+      customPriceCents?: number | null;
+      /** ID of the ordered product to update */
+      id?: string | null;
+      /** The amount of time in units between shipments of this order */
+      interval?: number | null;
+      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
+      intervalUnitOfMeasure?: string | null;
+      /** The time measure for interval units */
+      intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** ID for the related product */
+      productId?: string | null;
+      /** The quantity for this ordered product. */
+      quantity?: number | null;
+      /**
+       * The next date on which a new order should get initiated
+       * @example 2024-01-01
+       */
+      shipmentDate?: string | null;
+    }
   ) {
     const response = await this._client.request(
       UpdateOrderedProductDocument,
@@ -274,6 +186,7 @@ export class SubscriptionsResource extends BaseResource {
    * Get a subscription by self service center login token
    * @param token - Self service center login token
    * @returns Subscription
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
   public async getBySelfServiceCenterLoginToken(token: string) {
     const response = await this._client.request(
@@ -294,8 +207,23 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionId - ID of the subscription to cancel
    * @param input - Payload for cancellation
    * @returns Cancelled subscription
+   * @throws {@link ValidationError} - When the request is not in cancellable state
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
-  public async cancel(subscriptionId: string, input?: CancelSubscriptionInput) {
+  public async cancel(
+    subscriptionId: string,
+    input?: {
+      /** Why did this customer decide to cancel? */
+      cancellationNotes?: string | null;
+      /** Skip sending the standard cancellation confirmation email to the customer. */
+      skipCancellationConfirmationEmail?: boolean | null;
+      /** If a customer cannot be cancelled due to active commitments, this process can be skipped. */
+      skipContractTermsEnforcement?: boolean | null;
+      /** If two-step cancellation is enabled it can be skipped */
+      skipTwoStepCancellation?: boolean | null;
+    }
+  ) {
     const response = await this._client.request(CancelSubcscriptionDocument, {
       input: {
         ...(input ?? {}),
@@ -325,8 +253,19 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionId - ID of the subscription to pause
    * @param input - Payload for pausing
    * @returns Paused subscription
+   * @throws {@link ValidationError} - When the request is not in pausable state
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
-  public async pause(subscriptionId: string, input?: PauseSubscriptionInput) {
+  public async pause(
+    subscriptionId: string,
+    input?: {
+      /** Time from which the subscription automaticaly resumes again.
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      pauseUntil?: string | null;
+    }
+  ) {
     const response = await this._client.request(PauseSubscriptionDocument, {
       input: {
         ...(input ?? {}),
@@ -356,8 +295,19 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionId - ID of the subscription to resume
    * @param input - Payload for resuming
    * @returns Resumed subscription
+   * @throws {@link ValidationError} - When the request is not in resumable state
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
-  public async resume(subscriptionId: string, input?: ResumeSubscriptionInput) {
+  public async resume(
+    subscriptionId: string,
+    input?: {
+      /** Time to resume the subscription from. If not given the subscription will be immediately resumed.
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      resumeFrom?: string | null;
+    }
+  ) {
     const response = await this._client.request(ResumeSubscriptionDocument, {
       input: {
         ...(input ?? {}),
@@ -385,12 +335,47 @@ export class SubscriptionsResource extends BaseResource {
   /**
    * Add a new product to subscription
    * @param subscriptionToken - Subscription token
-   * @param input - Payload for creating ordered product
+   * @param input - Parameters for the added product
    * @returns Ordered product and subscription
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the product or subscription is not found
    */
   public async addProduct(
     subscriptionToken: string,
-    input: CreateOrderedProductInput
+    input: {
+      /** A custom price in cents for this ordered product, if left blank the default product price will be used */
+      customPriceCents?: number | null;
+      /**
+       * Create a new record even if the same product already exists in subscription.
+       * Without this paramater when you add a new product and if the product already exists
+       * in the subscription, the quantity of the product will be updated.
+       */
+      ensureNewRecord?: boolean | null;
+      /** The amount of time in units between shipments of this order */
+      interval?: number | null;
+      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
+      intervalUnitOfMeasure?: string | null;
+      /** The time measure for interval units */
+      intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** ID for the related product */
+      productId?: string | null;
+      /** The quantity for this ordered product. */
+      quantity?: number | null;
+      /** The next date on which a new order should get initiated
+       * @example 2000-01-01
+       */
+      shipmentDate?: string | null;
+      /** Use this field to look up the associated product based on Shopify Variant ID. */
+      shopifyVariantId?: string | null;
+      /** Use this field to look up the associated product based on SKU. */
+      sku?: string | null;
+      /** Use this field to look up the associated product based on slug. */
+      slug?: string | null;
+      /** ID of the subscription to create this OrderedProduct for. Required if authenticated via a project access token */
+      subscriptionId?: string | null;
+    }
   ) {
     const response = await this._client.request(
       CreateOrderedProductDocument,
@@ -422,6 +407,8 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionToken - Subscription token
    * @param orderedProductId - Ordered product id to destroy
    * @returns Subscription
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the product is not found
    */
   public async removeProduct(
     subscriptionToken: string,
@@ -448,6 +435,8 @@ export class SubscriptionsResource extends BaseResource {
    * @param subscriptionToken - Subscription token
    * @param planSlug - Slug of the plan to update to
    * @returns Updated subscription
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link NotFoundError} - When the plan or subscription is not found
    */
   public async updatePlan(subscriptionToken: string, planSlug: string) {
     const response = await this._client.request(
@@ -473,10 +462,128 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Updated subscription and validation errors
    * @remarks
    * Will return validation error messages for invalid fields.
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link ValidationError} - When there are invalid fields
+   * @throws {@link NotFoundError} - When the subscription is not found
    */
   public async updateSubscription(
     cartToken: string,
-    input: UpdateSubscriptionInput
+    input: {
+      /** The time the subscription was activated
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      activatedAt?: string | null;
+      /** The customer's address line or street. */
+      address?: string | null;
+      /** The Adyen shopper reference being used for charges. */
+      adyenShopperReference?: string | null;
+      /** The customer's billing address address line or street. */
+      billToAddress?: string | null;
+      /** The customer's billing address city or town. */
+      billToCity?: string | null;
+      /** The company name of the customer's billing address. */
+      billToCompanyName?: string | null;
+      /** The customer's billing address country code (ISO3661). */
+      billToCountry?: string | null;
+      /** The customer's billing address district. */
+      billToDistrict?: string | null;
+      /** The customer's billing address house, building, or appartment number. */
+      billToHouseNumber?: string | null;
+      /** The customer's billing address last name. */
+      billToLastName?: string | null;
+      /** The customer's billing address first name. */
+      billToName?: string | null;
+      /** The customer's billing address phone number (international format). */
+      billToPhoneNumber?: string | null;
+      /** The customer's billing address salutation (mr,ms,mx). */
+      billToSalutation?: string | null;
+      /** The customer's billing address state or province (ISO3661-2). */
+      billToState?: string | null;
+      /** The customer's billing address zip code or postal code. */
+      billToZipcode?: string | null;
+      /** The time the subscription started the cancellation process (with two-step cancellation)
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      cancellationStartedAt?: string | null;
+      /** The time the subscription was (fully) cancelled.
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      cancelledAt?: string | null;
+      /** The day of the month when the customer is charged. */
+      chargeDayOfTheMonth?: number | null;
+      /** The customer's city or town. */
+      city?: string | null;
+      /** The company name of the customer. */
+      companyName?: string | null;
+      /** The customer's country code (ISO3661). */
+      country?: string | null;
+      /** The field that can be used for your internal reference. For example, internal customer id. */
+      customerReference?: string | null;
+      /** The customer's date of birth (yyyy-mm-dd).
+       * @example 2000-01-01
+       */
+      dateOfBirth?: string | null;
+      /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
+      differentBillingAddress?: boolean | null;
+      /** The customer's district. */
+      district?: string | null;
+      /** The customer's email address. */
+      email?: string | null;
+      /** Extra field values for the subscription. */
+      extraFields?: ExtraFieldInput[] | null;
+      /** The customer's house, building, or appartment number. */
+      houseNumber?: string | null;
+      /** Unique ID for an imported subscription. */
+      importedSubscriptionId?: string | null;
+      /** The customer's last name. */
+      lastName?: string | null;
+      /** The customer's language/locale. Must be enabled on the project. */
+      locale?: string | null;
+      /** Time time the subscription was marked as non-paying.
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      markedAsNonPayingAt?: string | null;
+      /** Whether the customer accepted optional marketing communication opt-in. */
+      marketingOptIn?: boolean | null;
+      /** Metadata that can be used by developers to store additional information on objects. */
+      metadata?: unknown | null;
+      /** The Mollie Customer ID (cst_XXX) */
+      mollieCustomerId?: string | null;
+      /** The customer's first name. */
+      name?: string | null;
+      /** Notes specific for this subscription */
+      notes?: string | null;
+      /** The customer's phone number (international format). */
+      phoneNumber?: string | null;
+      /** Additional payment service provider specific properties used for payment creation. */
+      pspPaymentProperties?: unknown | null;
+      /** The customer's salutation (mr,ms,mx). */
+      salutation?: string | null;
+      /** The time when the signup was completed.
+       * @example 2024-01-15T00:00:00+01:00
+       */
+      signupCompletedAt?: string | null;
+      /** Don't automatically activate the subscription on signup. */
+      skipAutoActivationOnSignup?: boolean | null;
+      /** The customer's state or province (ISO3661-2). */
+      state?: string | null;
+      /** The current status of the subscription. (default: inactive) */
+      status?: SubscriptionStatus | null;
+      /** The Stripe Customer ID (cus_XXX) */
+      stripeCustomerId?: string | null;
+      /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
+      stripePaymentMethodId?: string | null;
+      /** Whether the customer accepted the terms and conditions. */
+      termsAccepted?: boolean | null;
+      /** The token of the subscription to update, or creates a new one if one doesn't exist. */
+      token?: string | null;
+      /** The number of months before the customer is charged for the first time. */
+      trialPeriodMonths?: number | null;
+      /** The company VAT number. */
+      vatNumber?: string | null;
+      /** The customer's zip code or postal code. */
+      zipcode?: string | null;
+    }
   ) {
     const response = await this._client.request(
       UpdateSubscriptionDocument,
@@ -511,8 +618,3 @@ export class SubscriptionsResource extends BaseResource {
     return { 'X-Subscription-Token': subscriptionToken };
   }
 }
-
-export type {
-  GetSubscriptionBySelfServiceCenterLoginTokenQuery,
-  UpdateOrderedProductInput,
-};

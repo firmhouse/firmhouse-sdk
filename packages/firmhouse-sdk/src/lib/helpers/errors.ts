@@ -38,16 +38,6 @@ export function _formatValidationErrors<
 
 /**
  * @public
- * Type of errors
- */
-export enum ErrorType {
-  NotFound = 'NotFoundError',
-  Server = 'ServerError',
-  Validation = 'ValidationError',
-}
-
-/**
- * @public
  * Not found (404) error
  */
 export class NotFoundError extends Error {
@@ -58,7 +48,7 @@ export class NotFoundError extends Error {
         : `${error.response.errors?.[0]?.message ?? 'Not found'}`;
     super(message);
     Object.setPrototypeOf(this, NotFoundError.prototype);
-    this.name = ErrorType.NotFound;
+    this.name = 'NotFoundError';
   }
 }
 
@@ -74,7 +64,7 @@ export class ServerError extends Error {
         : `${error.response.errors?.[0]?.message ?? 'Server error'}`;
     super(message);
     Object.setPrototypeOf(this, ServerError.prototype);
-    this.name = ErrorType.Server;
+    this.name = 'ServerError';
   }
 }
 
@@ -93,7 +83,7 @@ export class ValidationError extends Error {
     const message = `Validation error`;
     super(message);
     Object.setPrototypeOf(this, ValidationError.prototype);
-    this.name = ErrorType.Validation;
+    this.name = 'ValidationError';
     this.details = _formatValidationErrors(errors);
   }
 }
@@ -101,9 +91,11 @@ export class ValidationError extends Error {
 /**
  * @internal
  * @param error - Client error
- * @returns The error with type as {@link ErrorType}
+ * @returns The error with type as NotFoundError, ServerError or ValidationError
  */
-export function _mapToLibraryErrorTypes(error: ClientError) {
+export function _mapToLibraryErrorTypes(
+  error: ClientError
+): ValidationError | NotFoundError | ServerError {
   if (error.response.errors?.[0]?.extensions?.code === 'RECORD_NOT_FOUND') {
     return new NotFoundError(error);
   }

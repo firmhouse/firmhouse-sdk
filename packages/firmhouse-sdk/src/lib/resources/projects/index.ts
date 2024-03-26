@@ -1,19 +1,7 @@
 import { BaseResource } from '../BaseResource';
-import {
-  GetCurrentProjectQuery,
-  GetCurrentProjectDocument,
-} from './projects.generated';
+import { GetCurrentProjectDocument } from './projects.generated';
 import { NotFoundError } from '../../helpers/errors';
 import { FirmhouseProject } from '../../firmhouse';
-
-export type { GetCurrentProjectQuery };
-/**
- * @public
- * Project
- */
-export type ProjectType = NonNullable<
-  NonNullable<GetCurrentProjectQuery['getCurrentProject']>
->;
 
 /**
  * @public
@@ -26,8 +14,17 @@ export class ProjectsResource extends BaseResource {
    * @returns the current project
    */
   public async getCurrent(includeRelations?: {
+    /**
+     * Include taxRates relation
+     */
     taxRates?: boolean;
+    /**
+     * Include extraFields relation
+     */
     extraFields?: boolean;
+    /**
+     * Include promotions relation
+     */
     promotions?: boolean;
   }): Promise<FirmhouseProject> {
     const response = await this._client.request(GetCurrentProjectDocument, {
