@@ -1,0 +1,17 @@
+query getDiscountCode(
+  $code: ID!
+  $includeAutoSelectPlan: Boolean!
+  $includePromotion: Boolean!
+) {
+  getDiscountCode(code: $code) {
+    ...DiscountCodeFields
+
+    autoSelectPlan @include(if: $includeAutoSelectPlan) {
+      ...PlanFields
+    }
+
+    promotion @include(if: $includePromotion) {
+      ...PromotionFields
+    }
+  }
+}

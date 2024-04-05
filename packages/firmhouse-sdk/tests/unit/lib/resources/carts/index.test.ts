@@ -97,10 +97,24 @@ describe('lib/resources/carts/index.ts', () => {
         createCart: { subscription: { ...subscription, token: 'test' } },
       });
       const testResource = new CartsResource(mockGraphQLClient);
-      await testResource.create();
+      await testResource.create({
+        discountCodes: {
+          includeRelations: {
+            autoSelectPlan: true,
+            promotion: true,
+          },
+        },
+        appliedPromotions: true,
+      });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         CreateCartDocument,
-        { input: {} }
+        {
+          input: {},
+          includeAppliedPromotions: true,
+          includeDiscountCodes: true,
+          includeDiscountCodesAutoSelectPlan: true,
+          includeDiscountCodesPromotion: true,
+        }
       );
     });
     it('should throw error if null response is return from API', async () => {
@@ -171,7 +185,13 @@ describe('lib/resources/carts/index.ts', () => {
       await testResource.get(token);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         GetCartDocument,
-        { token },
+        {
+          token,
+          includeAppliedPromotions: false,
+          includeDiscountCodes: false,
+          includeDiscountCodesAutoSelectPlan: false,
+          includeDiscountCodesPromotion: false,
+        },
         { 'X-Subscription-Token': token }
       );
     });

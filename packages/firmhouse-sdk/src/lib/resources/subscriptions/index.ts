@@ -1,7 +1,9 @@
 import {
-  CancelSubcscriptionDocument,
+  ApplyPromotionDocument,
+  CancelSubscriptionDocument,
   CreateOrderedProductDocument,
   DestroyOrderedProductDocument,
+  GetPromotionAndSubscriptionIdDocument,
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionDocument,
   PauseSubscriptionDocument,
@@ -9,6 +11,8 @@ import {
   UpdateOrderedProductDocument,
   UpdatePlanDocument,
   UpdateSubscriptionDocument,
+  UpdateAppliedPromotionDocument,
+  DeactivateAppliedPromotionDocument,
 } from './subscriptions.generated';
 import {
   NotFoundError,
@@ -25,7 +29,11 @@ import {
   SubscriptionStatus,
 } from '../../graphql/generated';
 import { BaseResource } from '../BaseResource';
-import { FirmhouseSubscription } from '../../firmhouse';
+import {
+  FirmhouseAppliedOrderDiscountPromotion,
+  FirmhouseBillingCyclePromotion,
+  FirmhouseSubscription,
+} from '../../firmhouse';
 
 /**
  * @public
@@ -82,6 +90,26 @@ export class SubscriptionsResource extends BaseResource {
           originalInvoice?: boolean;
         };
       };
+      /** Parameters for including discountCodes Relation */
+      discountCodes?: {
+        /**
+         * Include relations for discountCodes
+         */
+        includeRelations?: {
+          /**
+           * Include the autoSelectPlan relation
+           */
+          autoSelectPlan?: boolean;
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+        };
+      };
+      /**
+       * Include applied promotions
+       */
+      appliedPromotions?: boolean;
     }
   ) {
     const response = await this._client.request(
@@ -115,6 +143,13 @@ export class SubscriptionsResource extends BaseResource {
         invoicesIncludeOriginalInvoice:
           includeRelations?.invoices?.includeRelations?.originalInvoice ??
           false,
+        includeDiscountCodes: !!includeRelations?.discountCodes,
+        includeDiscountCodesAutoSelectPlan:
+          includeRelations?.discountCodes?.includeRelations?.autoSelectPlan ??
+          false,
+        includeDiscountCodesPromotion:
+          includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
+        includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
       },
       this.getSubscriptionTokenHeader(token)
     );
@@ -125,7 +160,7 @@ export class SubscriptionsResource extends BaseResource {
   }
 
   /**
-   * Update a product in the cart
+   * Update a product in the subscription
    * @param input - Payload for fields to update
    * @param subscriptionToken - Subscription token
    * @returns Updated subscription and ordered product
@@ -224,7 +259,7 @@ export class SubscriptionsResource extends BaseResource {
       skipTwoStepCancellation?: boolean | null;
     }
   ) {
-    const response = await this._client.request(CancelSubcscriptionDocument, {
+    const response = await this._client.request(CancelSubscriptionDocument, {
       input: {
         ...(input ?? {}),
         id: subscriptionId,
@@ -457,7 +492,7 @@ export class SubscriptionsResource extends BaseResource {
 
   /**
    * Update a subscription.
-   * @param cartToken - Cart token
+   * @param subscriptionToken - Subscription token
    * @param input - Payload for updating subscription
    * @returns Updated subscription and validation errors
    * @remarks
@@ -467,7 +502,7 @@ export class SubscriptionsResource extends BaseResource {
    * @throws {@link NotFoundError} - When the subscription is not found
    */
   public async updateSubscription(
-    cartToken: string,
+    subscriptionToken: string,
     input: {
       /** The time the subscription was activated
        * @example 2024-01-15T00:00:00+01:00
@@ -590,10 +625,10 @@ export class SubscriptionsResource extends BaseResource {
       {
         input: {
           ...input,
-          token: cartToken,
+          token: subscriptionToken,
         },
       },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(subscriptionToken)
     );
 
     const updateSubscription = response.updateSubscription;
@@ -612,6 +647,142 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return _formatSubscription(subscription);
+  }
+
+  /**
+   * Applies a promotion to a subscription.
+   * @param subscriptionId ID of the subscription to apply the promotion to.
+   * @param promotionId ID of the promotion to apply.
+   * @returns Applied promotion
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link ValidationError} - When there are invalid fields
+   */
+  public async applyPromotion(
+    subscriptionId: string,
+    promotionId: string
+  ): Promise<
+    FirmhouseBillingCyclePromotion | FirmhouseAppliedOrderDiscountPromotion
+  > {
+    const response = await this._client.request(ApplyPromotionDocument, {
+      input: { promotionId, subscriptionId },
+    });
+    const applyPromotion = response?.applyPromotionToSubscription;
+    if (applyPromotion === null || applyPromotion.appliedPromotion === null) {
+      throw new ServerError('Could not apply promotion');
+    }
+    const { errors } = applyPromotion;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+    return applyPromotion.appliedPromotion;
+  }
+
+  /**
+   * @beta
+   * Apply a promotion using a discount code to a subscription
+   * @param subscriptionToken Subscription token
+   * @param code Discount code to apply
+   * @returns Applied promotion
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link ValidationError} - When there are invalid fields
+   * @throws {@link NotFoundError} - When the subscription is not found
+   */
+  public async applyPromotionWithDiscountCode(
+    subscriptionToken: string,
+    code: string
+  ): Promise<
+    FirmhouseBillingCyclePromotion | FirmhouseAppliedOrderDiscountPromotion
+  > {
+    const response = await this._client.request(
+      GetPromotionAndSubscriptionIdDocument,
+      { code, subscriptionToken }
+    );
+    const { id, appliedPromotions } = response?.getSubscription ?? {};
+    const { promotionId } = response?.getDiscountCode ?? {};
+    const existingPromotion = appliedPromotions?.find(
+      (ap) => ap.promotion.id === promotionId
+    );
+    if (existingPromotion?.active) {
+      throw new ValidationError([
+        { attribute: 'code', message: 'Promotion already applied' },
+      ]);
+    }
+    if (!id) {
+      throw new NotFoundError('Subscription not found');
+    }
+    if (!promotionId) {
+      throw new NotFoundError('Promotion not found');
+    }
+
+    if (existingPromotion) {
+      return this.updateAppliedPromotion({
+        id: existingPromotion.id,
+        active: true,
+      });
+    }
+    return this.applyPromotion(id, promotionId);
+  }
+
+  /**
+   * Updates a promotion applied to a subscription
+   * @param subscriptionToken Subscription token
+   * @param input Paramater for updating the applied promotion
+   * @returns Applied promotion
+   * @throws {@link ServerError} - When the request fails
+   * @throws {@link ValidationError} - When there are invalid fields
+   * @throws {@link NotFoundError} - When the subscription is not found
+   */
+  public async updateAppliedPromotion(input: {
+    /**
+     * ID of the applied promotion that needs to be updated.
+     */
+    id: string;
+    /**
+     * The maximum discount amount in cents that this promotion should provide.Only applicable when using the VALUE deactivation strategy.
+     */
+    deactivateAfterAmountIncludingTaxCents?: number | null;
+    /**
+     * After how mamy times used this applied promotion should get deactivated.Only applicable when using the TIMES deactivation strategy.
+     */
+    deactivateAfterTimes?: number | null;
+    /**
+     * Whether this promotion should actively be used for this subscription.
+     */
+    active?: boolean | null;
+  }): Promise<
+    FirmhouseBillingCyclePromotion | FirmhouseAppliedOrderDiscountPromotion
+  > {
+    const response = await this._client.request(
+      UpdateAppliedPromotionDocument,
+      { input }
+    );
+    const result = response?.updateAppliedPromotion;
+    if (result === null || result.appliedPromotion === null) {
+      throw new ServerError('Could not update applied promotion');
+    }
+    const { errors } = result;
+    if (errors && errors.length > 0) {
+      throw new ValidationError(errors);
+    }
+    return result.appliedPromotion;
+  }
+
+  /**
+   * Deactivates an applied promotion
+   * @param appliedPromotionId 	ID of the applied promotion that needs to be deactivated.
+   * @returns Deactivated applied promotion
+   * @throws {@link ServerError} - When the request fails
+   */
+  public async deactivateAppliedPromotion(appliedPromotionId: string) {
+    const response = await this._client.request(
+      DeactivateAppliedPromotionDocument,
+      { input: { id: appliedPromotionId } }
+    );
+    const result = response?.deactivateAppliedPromotion;
+    if (result === null || result.appliedPromotion === null) {
+      throw new ServerError('Could not deactivate applied promotion');
+    }
+    return result.appliedPromotion;
   }
 
   protected getSubscriptionTokenHeader(subscriptionToken: string) {

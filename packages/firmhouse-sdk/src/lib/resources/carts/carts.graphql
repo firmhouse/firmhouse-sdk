@@ -1,24 +1,62 @@
-mutation createCart($input: CreateCartInput!) {
+mutation createCart(
+  $input: CreateCartInput!
+  $includeDiscountCodes: Boolean!
+  $includeDiscountCodesAutoSelectPlan: Boolean!
+  $includeDiscountCodesPromotion: Boolean!
+  $includeAppliedPromotions: Boolean!
+) {
   createCart(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
+      discountCodes @include(if: $includeDiscountCodes) {
+        ...DiscountCodeFields
+        autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
+          ...PlanFields
+        }
+        promotion @include(if: $includeDiscountCodesPromotion) {
+          ...PromotionFields
+        }
+      }
+      appliedPromotions @include(if: $includeAppliedPromotions) {
+        ...AppliedPromotionFields
+      }
     }
   }
 }
 
-query getCart($token: ID!) {
+query getCart(
+  $token: ID!
+  $includeDiscountCodes: Boolean!
+  $includeDiscountCodesAutoSelectPlan: Boolean!
+  $includeDiscountCodesPromotion: Boolean!
+  $includeAppliedPromotions: Boolean!
+) {
   getCart: getSubscription(token: $token) {
-    ...SubscriptionFragment
+    ...SubscriptionFields
+
+    discountCodes @include(if: $includeDiscountCodes) {
+      ...DiscountCodeFields
+      autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
+        ...PlanFields
+      }
+      promotion @include(if: $includeDiscountCodesPromotion) {
+        ...PromotionFields
+      }
+    }
+
+    appliedPromotions @include(if: $includeAppliedPromotions) {
+      ...AppliedPromotionFields
+    }
   }
 }
 
 mutation addToCart($input: CreateOrderedProductInput!) {
   addToCart: createOrderedProduct(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
     }
   }
 }
@@ -26,10 +64,10 @@ mutation addToCart($input: CreateOrderedProductInput!) {
 mutation removeFromCart($input: DestroyOrderedProductInput!) {
   removeFromCart: destroyOrderedProduct(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
     }
   }
 }
@@ -39,10 +77,10 @@ mutation updateOrderedProductInCartQuantity($id: ID, $quantity: Int) {
     input: { orderedProduct: { id: $id, quantity: $quantity } }
   ) {
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
     }
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
   }
 }
@@ -68,9 +106,9 @@ mutation updateOrderedProductInCart(
     }
   ) {
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
       subscription {
-        ...SubscriptionFragment
+        ...SubscriptionFields
       }
     }
   }
@@ -149,10 +187,10 @@ mutation updateAddressDetails(
     }
   ) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
   }
 }
@@ -160,7 +198,7 @@ mutation updateAddressDetails(
 mutation updateCartPlan($input: UpdatePlanInput!) {
   updateCartPlan: updatePlan(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
   }
 }
@@ -168,10 +206,10 @@ mutation updateCartPlan($input: UpdatePlanInput!) {
 mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
   createSubscriptionFromCart(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
     paymentUrl
     returnUrl

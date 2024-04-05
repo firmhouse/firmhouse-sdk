@@ -1,4 +1,4 @@
-fragment ProductFragment on Product {
+fragment ProductFields on Product {
   available
   eligibleForDiscount
   graceCancellationEnabled
@@ -31,7 +31,7 @@ fragment ProductFragment on Product {
   title
 }
 
-fragment CompleteProductFragment on Product {
-  ...ProductFragment
+fragment CompleteProductFields on Product {
+  ...ProductFields
   costPerItemCents
 }

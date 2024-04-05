@@ -1,4 +1,4 @@
-fragment SubscribedPlanFragment on SubscribedPlan {
+fragment SubscribedPlanFields on SubscribedPlan {
   activatedAt
   allowedToCancel
   billingCycleInterval

@@ -531,16 +531,18 @@ export interface FirmhousePlan {
   /**
    * The products that are included in this plan
    */
-  planProducts: {
-    /**
-     * The quantity of the product within the plan
-     */
-    quantity: number;
-    /**
-     * The associated product record for this plan's product
-     */
-    product: FirmhouseProduct;
-  }[];
+  planProducts:
+    | {
+        /**
+         * The quantity of the product within the plan
+         */
+        quantity: number;
+        /**
+         * The associated product record for this plan's product
+         */
+        product: FirmhouseProduct;
+      }[]
+    | null;
 }
 /**
  * @public
@@ -1420,6 +1422,13 @@ export interface FirmhouseCart {
    * List of extra fields and values.
    */
   extraFields: FirmhouseExtraFieldAnswer[];
+  /**
+   * List of all applied promotions for this customer.
+   */
+  appliedPromotions?:
+    | FirmhouseAppliedOrderDiscountPromotion[]
+    | FirmhouseAppliedOrderDiscountPromotion[]
+    | null;
 }
 
 /**
@@ -1716,4 +1725,131 @@ export interface FirmhouseSubscriptionWithUtils
   extends FirmhouseSubscription,
     FirmhouseSubscriptionUtils {
   orderedProducts: FirmhouseOrderedProductWithUtils[] | null;
+}
+
+/**
+ * @public
+ */
+export interface FirmhouseDiscountCode {
+  /**
+   * If set the discount code will auto select this plan
+   */
+  autoSelectPlan?: FirmhousePlan | null;
+
+  /**
+   * The unique code that can be applied to a checkout
+   */
+  code: string;
+
+  /**
+   * When the discount code was created.
+   */
+  createdAt: string;
+
+  /**
+   * Whether the discount code has already expired.
+   */
+  expired: boolean;
+
+  /**
+   * ID to identify the discount code with
+   */
+  id: string;
+
+  /**
+   * The max usage of this discount code
+   */
+  maxTimesUsed?: number | null;
+
+  /**
+   * Metadata makes it possible to store additional information on objects.
+   */
+  metadata?: unknown | null;
+
+  /**
+   * Promotion that is attached to the discount code
+   */
+  promotion?: FirmhousePromotion | null;
+
+  /**
+   * ID of the promotion that is attached to the discount code
+   */
+  promotionId: string;
+
+  /**
+   * Whether the discount code can be redeemed. Returns true only if related Discount is activated and Discount code has not expired.
+   */
+  redeemable: boolean;
+
+  /**
+   * When the discount code was updated last time.
+   */
+  updatedAt: string;
+}
+
+/**
+ * @public
+ */
+export interface FirmhouseAppliedPromotion {
+  /**
+   * Whether or not this promotion is currently active
+   */
+  active: boolean;
+
+  /**
+   * Total amount used, only relevant for promotions with monetary limit
+   */
+  amountUsedIncludingTaxCents: number;
+
+  /**
+   * Total amount used, only relevant for promotions with monetary limit
+   */
+  deactivateAfterAmountIncludingTaxCents: number | null;
+
+  /**
+   * After how many times this promotion is "used up" for a customer
+   */
+  deactivateAfterTimes: number | null;
+
+  /**
+   * Which mechanism will be used to deactivate the applied promotion
+   */
+  deactivationStrategy: AppliedPromotionDeactivationStrategy;
+
+  /**
+   * ID to identify the applied promotion with
+   */
+  id: string;
+
+  /**
+   * The associated promotion
+   */
+  promotion: FirmhousePromotion;
+
+  /**
+   * The amount of times this applied promotion has been used.
+   */
+  timesUsed: number;
+}
+
+/**
+ * @public
+ */
+export interface FirmhouseAppliedOrderDiscountPromotion
+  extends FirmhouseAppliedPromotion {
+  /**
+   * Orders on which this promotion was applied.
+   */
+  orders?: FirmhouseOrder[];
+}
+
+/**
+ * @public
+ */
+export interface FirmhouseBillingCyclePromotion
+  extends FirmhouseAppliedPromotion {
+  /**
+   * Invoices on which this promotion was applied.
+   */
+  invoices?: FirmhouseInvoice[];
 }

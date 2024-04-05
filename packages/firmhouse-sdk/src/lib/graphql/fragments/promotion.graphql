@@ -8,4 +8,10 @@ fragment PromotionFields on Promotion {
   percentDiscount
   publicName
   title
+  ... on BillingCyclePromotion {
+    ...BillingCyclePromotionFields
+  }
+  ... on OrderDiscountPromotion {
+    ...OrderDiscountPromotionFields
+  }
 }

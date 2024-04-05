@@ -3,14 +3,19 @@ import {
   GetSubscriptionBySelfServiceCenterLoginTokenDocument,
   GetSubscriptionDocument,
   UpdateOrderedProductDocument,
-  CancelSubcscriptionDocument,
+  CancelSubscriptionDocument,
   PauseSubscriptionDocument,
   ResumeSubscriptionDocument,
+  ApplyPromotionDocument,
+  GetPromotionAndSubscriptionIdDocument,
+  UpdateAppliedPromotionDocument,
+  DeactivateAppliedPromotionDocument,
 } from '@firmhouse/firmhouse-sdk/lib/resources/subscriptions/subscriptions.generated';
 
 import { _GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 
 import { SubscriptionStatus } from '@firmhouse/firmhouse-sdk/lib/graphql/generated';
+import { ValidationError } from '@firmhouse/firmhouse-sdk';
 
 jest.mock('@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient');
 
@@ -22,7 +27,7 @@ const subscription = {
   extraFields: [],
   orderedProducts: [],
   createdAt: null,
-  id: null,
+  id: '1',
   metadata: undefined,
   updatedAt: null,
   address: null,
@@ -76,6 +81,11 @@ const subscription = {
   ordersV2: undefined,
 };
 
+const appliedPromotion = {
+  active: true,
+  id: 'testId',
+};
+
 describe('lib/resources/subscriptions/index.ts', () => {
   let mockGraphQLClient: _GraphQLClient;
 
@@ -117,6 +127,13 @@ describe('lib/resources/subscriptions/index.ts', () => {
             originalInvoice: true,
           },
         },
+        discountCodes: {
+          includeRelations: {
+            autoSelectPlan: true,
+            promotion: true,
+          },
+        },
+        appliedPromotions: true,
       });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         GetSubscriptionDocument,
@@ -138,6 +155,10 @@ describe('lib/resources/subscriptions/index.ts', () => {
           invoicesIncludeOriginalInvoice: true,
           invoicesIncludeInvoiceReminders: true,
           invoicesIncludeCollectionCase: true,
+          includeDiscountCodes: true,
+          includeDiscountCodesAutoSelectPlan: true,
+          includeDiscountCodesPromotion: true,
+          includeAppliedPromotions: true,
         },
         { 'X-Subscription-Token': token }
       );
@@ -294,7 +315,7 @@ describe('lib/resources/subscriptions/index.ts', () => {
       });
       await testResource.cancel(subscriptionId, input);
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
-        CancelSubcscriptionDocument,
+        CancelSubscriptionDocument,
         {
           input: {
             ...input,
@@ -467,6 +488,228 @@ describe('lib/resources/subscriptions/index.ts', () => {
       });
       expect(testResource.resume(subscriptionId, input)).rejects.toThrow(
         'Could not resume subscription'
+      );
+    });
+  });
+
+  describe('applyPromotion', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyPromotionToSubscription: { appliedPromotion },
+      });
+      const promotionId = '1';
+      const subscriptionId = '12';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      await testResource.applyPromotion(subscriptionId, promotionId);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        ApplyPromotionDocument,
+        { input: { promotionId, subscriptionId } }
+      );
+    });
+
+    it('should return subscription with applied promotion', async () => {
+      const promotionId = '1';
+      const subscriptionId = '12';
+      const response = { appliedPromotion };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyPromotionToSubscription: response,
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotion(subscriptionId, promotionId)
+      ).resolves.toMatchObject(appliedPromotion);
+    });
+
+    it('should throw an error if response is null', async () => {
+      const promotionId = '1';
+      const subscriptionId = '12';
+      const response = null;
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyPromotionToSubscription: response,
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotion(subscriptionId, promotionId)
+      ).rejects.toThrow('Could not apply promotion');
+    });
+
+    it('should throw Validation error if the response contains errors', async () => {
+      const promotionId = '1';
+      const subscriptionId = '12';
+      const response = {
+        errors: [{ message: 'Invalid promotion' }],
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyPromotionToSubscription: response,
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotion(subscriptionId, promotionId)
+      ).rejects.toThrow(ValidationError);
+    });
+  });
+
+  describe('applyPromotionWithDiscountCode', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getSubscription: subscription,
+        getDiscountCode: { promotionId: '123' },
+      });
+      const code = 'test';
+      const subscriptionToken = 'test-token';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      testResource.applyPromotion = jest.fn().mockResolvedValue({
+        appliedPromotion,
+      });
+      await testResource.applyPromotionWithDiscountCode(
+        subscriptionToken,
+        code
+      );
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        GetPromotionAndSubscriptionIdDocument,
+        { code, subscriptionToken }
+      );
+      expect(testResource.applyPromotion).toHaveBeenCalledWith(
+        subscription.id,
+        '123'
+      );
+    });
+
+    it('should throw an error if no discount code found matching the given code', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getDiscountCode: null,
+        getSubscription: subscription,
+      });
+      const code = 'test';
+      const subscriptionToken = 'test-token';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotionWithDiscountCode(subscriptionToken, code)
+      ).rejects.toThrow('Promotion not found');
+    });
+
+    it('should throw an error if no subscription found matching the given token', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getDiscountCode: { promotionId: '123' },
+        getSubscription: null,
+      });
+      const code = 'test';
+      const subscriptionToken = 'test-token';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotionWithDiscountCode(subscriptionToken, code)
+      ).rejects.toThrow('Subscription not found');
+    });
+
+    it('should throw an error if the promotion attached to discount code is already active', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getDiscountCode: { promotionId: '123' },
+        getSubscription: {
+          ...subscription,
+          appliedPromotions: [{ promotion: { id: '123' }, active: true }],
+        },
+      });
+      const code = 'test';
+      const subscriptionToken = 'test-token';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.applyPromotionWithDiscountCode(subscriptionToken, code)
+      ).rejects.toThrow(ValidationError);
+    });
+
+    it('should call updateAppliedPromotion if the promotion attached to discount code is already applied before and deactivated', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        getDiscountCode: { promotionId: '123' },
+        getSubscription: {
+          ...subscription,
+          appliedPromotions: [
+            { id: '10', promotion: { id: '123' }, active: false },
+          ],
+        },
+      });
+      const code = 'test';
+      const subscriptionToken = 'test-token';
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      testResource.updateAppliedPromotion = jest
+        .fn()
+        .mockResolvedValue(appliedPromotion);
+      const result = await testResource.applyPromotionWithDiscountCode(
+        subscriptionToken,
+        code
+      );
+      expect(result).toMatchObject(appliedPromotion);
+      expect(testResource.updateAppliedPromotion).toHaveBeenCalledWith({
+        id: '10',
+        active: true,
+      });
+    });
+  });
+
+  describe('updateAppliedPromotion', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        updateAppliedPromotion: { appliedPromotion },
+      });
+      const input = { id: '1', active: true };
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(testResource.updateAppliedPromotion(input)).resolves.toMatchObject(
+        appliedPromotion
+      );
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        UpdateAppliedPromotionDocument,
+        { input }
+      );
+    });
+
+    it('should throw an error if response is null', async () => {
+      const input = { id: '1', active: true };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        updateAppliedPromotion: null,
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(testResource.updateAppliedPromotion(input)).rejects.toThrow(
+        'Could not update applied promotion'
+      );
+    });
+
+    it('should throw ValidationError if the response contains errors', async () => {
+      const input = { id: '1', active: true };
+      const response = {
+        updateAppliedPromotion: {
+          appliedPromotion,
+          errors: [{ message: 'Promotion cannot be applied' }],
+        },
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue(response);
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(testResource.updateAppliedPromotion(input)).rejects.toThrow(
+        ValidationError
+      );
+    });
+  });
+
+  describe('deactivateAppliedPromotion', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        deactivateAppliedPromotion: { appliedPromotion },
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(
+        testResource.deactivateAppliedPromotion('123')
+      ).resolves.toMatchObject(appliedPromotion);
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        DeactivateAppliedPromotionDocument,
+        { input: { id: '123' } }
+      );
+    });
+
+    it('should throw an error if response is null', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        deactivateAppliedPromotion: null,
+      });
+      const testResource = new SubscriptionsResource(mockGraphQLClient);
+      expect(testResource.deactivateAppliedPromotion('123')).rejects.toThrow(
+        'Could not deactivate applied promotion'
       );
     });
   });

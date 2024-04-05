@@ -26,12 +26,6 @@ query getCurrentProject(
     }
     promotions @include(if: $includePromotions) {
       ...PromotionFields
-      ... on BillingCyclePromotion {
-        ...BillingCyclePromotionFields
-      }
-      ... on OrderDiscountPromotion {
-        ...OrderDiscountPromotionFields
-      }
     }
     taxRates @include(if: $includeTaxRates) {
       ...TaxRateFields

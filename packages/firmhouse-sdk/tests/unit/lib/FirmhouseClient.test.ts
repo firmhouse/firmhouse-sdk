@@ -1,3 +1,4 @@
+import { _GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
   Access,
   FirmhouseClient,
@@ -51,6 +52,37 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.projects).toBeDefined();
         expect(client.projects.getCurrent).toBeDefined();
         expect(client.invoices.fetchAll).toBeDefined();
+      });
+    });
+
+    describe('rawRequest', () => {
+      let mockGraphQLClient: _GraphQLClient;
+
+      beforeEach(() => {
+        mockGraphQLClient = new _GraphQLClient('test', 'http://test.com');
+      });
+      it('should make a request to the Firmhouse API with authentication headers', async () => {
+        const config = {
+          apiToken: 'test',
+          baseUrl: 'https://portal.firmhouse.com/graphql',
+        };
+        mockGraphQLClient.request = jest
+          .fn()
+          .mockResolvedValue({ products: {} });
+        const firmhouseClient = new FirmhouseClient({
+          apiToken: config.apiToken,
+          baseUrl: config.baseUrl,
+        });
+        firmhouseClient['client'] = mockGraphQLClient;
+        const response = await firmhouseClient.rawRequest(
+          'query($first: Int) { products { id } }',
+          { first: 10 }
+        );
+        expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+          'query($first: Int) { products { id } }',
+          { first: 10 }
+        );
+        expect(response).toEqual({ products: {} });
       });
     });
   });

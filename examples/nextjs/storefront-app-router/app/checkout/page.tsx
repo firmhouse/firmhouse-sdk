@@ -2,17 +2,22 @@ import { redirect } from 'next/navigation';
 import {
   getSubscriptionToken,
   isInitialized,
+  applyDiscount,
+  deactivatePromotion,
 } from '../../lib/actions/subscription';
 import { firmhouseClient } from '../../lib/firmhouse';
 import { CheckoutForm } from '../../components/CheckoutForm';
 import { CartProduct } from '@firmhouse/ui-components/server';
-import { Plan, formatCentsToEuros } from '@firmhouse/ui-components';
+import { Input, Plan, formatCentsToEuros } from '@firmhouse/ui-components';
 
 export default async function Index() {
   let subscription = null;
   if (await isInitialized()) {
     subscription = await firmhouseClient.carts.get(
-      await getSubscriptionToken()
+      await getSubscriptionToken(),
+      {
+        appliedPromotions: true,
+      }
     );
   } else {
     redirect('/');
@@ -21,7 +26,9 @@ export default async function Index() {
     orderedProducts,
     monthlyAmountCents,
     amountForStartingSubscriptionCents,
+    appliedPromotions,
   } = subscription;
+  const activePromotions = (appliedPromotions ?? []).filter((ap) => ap.active);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">
       <div className="flex flex-row w-11/12 max-w-5xl bg-white shadow-sm border rounded-md border-gray-100 flex-nowrap m-16">
@@ -68,7 +75,48 @@ export default async function Index() {
               <CartProduct key={orderedProduct.id} {...orderedProduct} />
             ))}
           </div>
-
+          <div className="-mx-6">
+            {activePromotions.length > 0 && (
+              <div className="flex flex-col w-full bg-gray-300 px-6 py-2">
+                <h3 className="text-sm font-bold m-0 py-2">
+                  Applied promotions
+                </h3>
+                <ul className="list-disc list-inside">
+                  {subscription.appliedPromotions?.map((ap) => (
+                    <li
+                      className="flex justify-between items-center"
+                      key={ap.id}
+                    >
+                      <span>{ap?.promotion.publicName}</span>
+                      <form action={deactivatePromotion.bind(null, ap.id)}>
+                        <button
+                          type="submit"
+                          className="text-lg p-2 font-light"
+                        >
+                          x
+                        </button>
+                      </form>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {activePromotions.length === 0 && (
+              <form className="flex items-end px-2" action={applyDiscount}>
+                <Input
+                  name="discountCode"
+                  placeholder="Code"
+                  label="Discount Code"
+                />
+                <button
+                  className="p-2 my-1 bg-black font-semibold text-white rounded-md"
+                  type="submit"
+                >
+                  Apply
+                </button>
+              </form>
+            )}
+          </div>
           <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
             <p className="font-semibold">Subtotal (pay now)</p>
             <p className="font-light">

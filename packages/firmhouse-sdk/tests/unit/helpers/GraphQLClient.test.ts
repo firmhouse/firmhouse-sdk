@@ -1,4 +1,8 @@
-import { ValidationError } from '@firmhouse/firmhouse-sdk';
+import {
+  NotFoundError,
+  ServerError,
+  ValidationError,
+} from '@firmhouse/firmhouse-sdk';
 import { _GraphQLClient as GraphQLClient } from '@firmhouse/firmhouse-sdk/lib/helpers/GraphQLClient';
 import {
   ClientError,
@@ -51,28 +55,31 @@ describe('helpers/GraphQLClient', () => {
         {} as GraphQLResponse,
         {} as GraphQLRequestContext
       );
+      const errors = [
+        {
+          message: 'should be a string',
+          attribute: 'productId',
+          path: [],
+        },
+      ];
       e.response = {
         errors: [
           {
             extensions: {
-              problems: [
-                {
-                  message: 'should be a string',
-                  attribute: 'productId',
-                  path: [],
-                },
-              ],
+              problems: errors,
             },
           } as unknown as GraphQLError,
         ],
         status: 0,
       };
+      let error: ValidationError | null = null;
+      try {
+        client._responseMiddleware(e);
+      } catch (e) {
+        error = e as ValidationError;
+      }
 
-      const response = await client._responseMiddleware(e);
-      expect(response?.name).toBe('ValidationError');
-      expect((response as ValidationError).details).toEqual({
-        productId: 'should be a string',
-      });
+      expect(error).toEqual(new ValidationError(errors));
     });
 
     it('should map not found errors to correct HTTP error', async () => {
@@ -92,10 +99,14 @@ describe('helpers/GraphQLClient', () => {
         ],
         status: 0,
       };
+      let error: NotFoundError | null = null;
+      try {
+        client._responseMiddleware(e);
+      } catch (e) {
+        error = e as NotFoundError;
+      }
 
-      const response = await client._responseMiddleware(e);
-      expect(response?.name).toBe('NotFoundError');
-      expect(response?.message).toBe('Product not found');
+      expect(error).toEqual(new NotFoundError('Product not found'));
     });
 
     it('should map unknown errors as ServerError', async () => {
@@ -112,10 +123,14 @@ describe('helpers/GraphQLClient', () => {
         ],
         status: 0,
       };
+      let error: ServerError | null = null;
+      try {
+        client._responseMiddleware(e);
+      } catch (e) {
+        error = e as ServerError;
+      }
 
-      const response = await client._responseMiddleware(e);
-      expect(response?.name).toBe('ServerError');
-      expect(response?.message).toBe('Unknown error');
+      expect(error).toEqual(new ServerError('Unknown error'));
     });
   });
 });
