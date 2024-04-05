@@ -2,10 +2,12 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { firmhouseClient } from '../firmhouse';
+
 import { revalidatePath } from 'next/cache';
 import { getISO8601Date } from '@firmhouse/ui-components';
 import { redirect } from 'next/navigation';
 import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
+import { writeAccessFirmhouseClient } from '../firmhouse-write';
 
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
 
@@ -124,4 +126,30 @@ export async function updatePlan(data: FormData) {
     planSlug
   );
   revalidatePath('/');
+}
+
+export async function applyDiscount(data: FormData) {
+  const discountCode = data.get('discountCode') as string;
+  const writeAccessClient = await writeAccessFirmhouseClient();
+  try {
+    await writeAccessClient.subscriptions.applyPromotionWithDiscountCode(
+      await getSubscriptionToken(),
+      discountCode
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  revalidatePath('/checkout');
+}
+
+export async function deactivatePromotion(appliedPromotionId: string) {
+  const writeAccessClient = await writeAccessFirmhouseClient();
+  try {
+    await writeAccessClient.subscriptions.deactivateAppliedPromotion(
+      appliedPromotionId
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  revalidatePath('/checkout');
 }

@@ -31,7 +31,7 @@ query allInvoices(
   ) {
     totalCount
     pageInfo {
-      ...PageInfoFragment
+      ...PageInfoFields
     }
     nodes {
       ...InvoiceFields

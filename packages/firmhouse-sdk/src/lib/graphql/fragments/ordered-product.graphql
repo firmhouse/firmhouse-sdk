@@ -1,4 +1,4 @@
-fragment OrderedProductFragment on OrderedProduct {
+fragment OrderedProductFields on OrderedProduct {
   createdAt
   graceCancellationEndsAt
   id
@@ -23,6 +23,6 @@ fragment OrderedProductFragment on OrderedProduct {
     id
   }
   product {
-    ...ProductFragment
+    ...ProductFields
   }
 }

@@ -1,4 +1,4 @@
-fragment SubscriptionFragment on Subscription {
+fragment SubscriptionFields on Subscription {
   address
   amountForStartingSubscriptionCents
   billToAddress
@@ -52,20 +52,20 @@ fragment SubscriptionFragment on Subscription {
   vatNumber
   zipcode
   activePlan {
-    ...PlanFragment
+    ...PlanFields
   }
   subscribedPlan {
-    ...SubscribedPlanFragment
+    ...SubscribedPlanFields
   }
   orderedProducts {
-    ...OrderedProductFragment
+    ...OrderedProductFields
   }
   extraFields {
-    ...ExtraFieldAnswerFragment
+    ...ExtraFieldAnswerFields
   }
 }
 
-fragment ExtraFieldAnswerFragment on ExtraFieldAnswer {
+fragment ExtraFieldAnswerFields on ExtraFieldAnswer {
   extraFieldId
   fieldType
   id

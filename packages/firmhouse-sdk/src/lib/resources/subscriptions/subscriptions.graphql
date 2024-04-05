@@ -1,9 +1,9 @@
 mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
   updateOrderedProduct(input: $input) {
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
       subscription {
-        ...SubscriptionFragment
+        ...SubscriptionFields
         ...CompleteSubscriptionFields
       }
     }
@@ -28,9 +28,13 @@ query getSubscription(
   $invoicesIncludeOriginalInvoice: Boolean!
   $invoicesIncludeInvoiceReminders: Boolean!
   $invoicesIncludeCollectionCase: Boolean!
+  $includeDiscountCodes: Boolean!
+  $includeDiscountCodesAutoSelectPlan: Boolean!
+  $includeDiscountCodesPromotion: Boolean!
+  $includeAppliedPromotions: Boolean!
 ) {
   getSubscription(token: $token) {
-    ...SubscriptionFragment
+    ...SubscriptionFields
     ...CompleteSubscriptionFields
     collectionCases @include(if: $includeCollectionCases) {
       nodes {
@@ -61,7 +65,7 @@ query getSubscription(
         }
       }
       pageInfo {
-        ...PageInfoFragment
+        ...PageInfoFields
       }
       totalCount
     }
@@ -83,24 +87,38 @@ query getSubscription(
         ...CollectionCaseFields
       }
     }
+
+    discountCodes @include(if: $includeDiscountCodes) {
+      ...DiscountCodeFields
+      autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
+        ...PlanFields
+      }
+      promotion @include(if: $includeDiscountCodesPromotion) {
+        ...PromotionFields
+      }
+    }
+
+    appliedPromotions @include(if: $includeAppliedPromotions) {
+      ...AppliedPromotionFields
+    }
   }
 }
 
 query getSubscriptionBySelfServiceCenterLoginToken($token: ID!) {
   getSubscriptionBySelfServiceCenterLoginToken(token: $token) {
-    ...SubscriptionFragment
+    ...SubscriptionFields
     ...CompleteSubscriptionFields
   }
 }
 
-mutation cancelSubcscription($input: CancelSubscriptionInput!) {
+mutation cancelSubscription($input: CancelSubscriptionInput!) {
   cancelSubscription(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
   }
 }
@@ -108,11 +126,11 @@ mutation cancelSubcscription($input: CancelSubscriptionInput!) {
 mutation pauseSubscription($input: PauseSubscriptionInput!) {
   pauseSubscription(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
   }
 }
@@ -120,11 +138,11 @@ mutation pauseSubscription($input: PauseSubscriptionInput!) {
 mutation resumeSubscription($input: ResumeSubscriptionInput!) {
   resumeSubscription(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
   }
 }
@@ -132,11 +150,11 @@ mutation resumeSubscription($input: ResumeSubscriptionInput!) {
 mutation createOrderedProduct($input: CreateOrderedProductInput!) {
   createOrderedProduct(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
     }
   }
 }
@@ -144,11 +162,11 @@ mutation createOrderedProduct($input: CreateOrderedProductInput!) {
 mutation destroyOrderedProduct($input: DestroyOrderedProductInput!) {
   destroyOrderedProduct(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
     }
   }
 }
@@ -156,7 +174,7 @@ mutation destroyOrderedProduct($input: DestroyOrderedProductInput!) {
 mutation updatePlan($input: UpdatePlanInput!) {
   updatePlan(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
   }
@@ -165,11 +183,87 @@ mutation updatePlan($input: UpdatePlanInput!) {
 mutation updateSubscription($input: UpdateSubscriptionInput!) {
   updateSubscription(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
       ...CompleteSubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+query getPromotionAndSubscriptionId($code: ID!, $subscriptionToken: ID!) {
+  getDiscountCode(code: $code) {
+    ...DiscountCodeFields
+  }
+  getSubscription(token: $subscriptionToken) {
+    id
+    appliedPromotions {
+      id
+      promotion {
+        id
+      }
+      active
+    }
+  }
+}
+
+mutation applyPromotion($input: ApplyPromotionToSubscriptionInput!) {
+  applyPromotionToSubscription(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation updateAppliedPromotion($input: UpdateAppliedPromotionInput!) {
+  updateAppliedPromotion(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation deactivateAppliedPromotion($input: DeactivateAppliedPromotionInput!) {
+  deactivateAppliedPromotion(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
     }
   }
 }

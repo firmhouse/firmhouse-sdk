@@ -29,9 +29,37 @@ import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
  * Cart(Draft subscription) methods
  */
 export class CartsResource extends BaseResource {
-  async create(): Promise<FirmhouseCart> {
+  async create(includeRelations?: {
+    /** Parameters for including discountCodes Relation */
+    discountCodes?: {
+      /**
+       * Include relations for discountCodes
+       */
+      includeRelations?: {
+        /**
+         * Include the autoSelectPlan relation
+         */
+        autoSelectPlan?: boolean;
+        /**
+         * Include the promotion relation
+         */
+        promotion?: boolean;
+      };
+    };
+    /**
+     * Include applied promotions
+     */
+    appliedPromotions?: boolean;
+  }): Promise<FirmhouseCart> {
     const response = await this._client.request(CreateCartDocument, {
       input: {},
+      includeDiscountCodes: !!includeRelations?.discountCodes,
+      includeDiscountCodesAutoSelectPlan:
+        includeRelations?.discountCodes?.includeRelations?.autoSelectPlan ??
+        false,
+      includeDiscountCodesPromotion:
+        includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
+      includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
     });
     if (response.createCart === null || response.createCart === undefined) {
       throw new ServerError('Could not create subscription');
@@ -56,13 +84,47 @@ export class CartsResource extends BaseResource {
   /**
    * Get a cart by cart token
    * @param token - Cart token
+   * @param includeRelations - Relations to include
    * @returns Cart
    * @throws {@link NotFoundError} Thrown if the cart is not found
    */
-  public async get(token: string): Promise<FirmhouseCart> {
+  public async get(
+    token: string,
+    includeRelations?: {
+      /** Parameters for including discountCodes Relation */
+      discountCodes?: {
+        /**
+         * Include relations for discountCodes
+         */
+        includeRelations?: {
+          /**
+           * Include the autoSelectPlan relation
+           */
+          autoSelectPlan?: boolean;
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+        };
+      };
+      /**
+       * Include applied promotions
+       */
+      appliedPromotions?: boolean;
+    }
+  ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       GetCartDocument,
-      { token },
+      {
+        token,
+        includeDiscountCodes: !!includeRelations?.discountCodes,
+        includeDiscountCodesAutoSelectPlan:
+          includeRelations?.discountCodes?.includeRelations?.autoSelectPlan ??
+          false,
+        includeDiscountCodesPromotion:
+          includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
+        includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
+      },
       this.getSubscriptionTokenHeader(token)
     );
     if (response.getCart === null) {
@@ -76,10 +138,34 @@ export class CartsResource extends BaseResource {
    * @param token - Cart token
    * @returns Cart if it exists, otherwise a new cart
    */
-  public async getOrCreate(token?: string) {
+  public async getOrCreate(
+    token?: string,
+    includeRelations?: {
+      /** Parameters for including discountCodes Relation */
+      discountCodes?: {
+        /**
+         * Include relations for discountCodes
+         */
+        includeRelations?: {
+          /**
+           * Include the autoSelectPlan relation
+           */
+          autoSelectPlan?: boolean;
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+        };
+      };
+      /**
+       * Include applied promotions
+       */
+      appliedPromotions?: boolean;
+    }
+  ) {
     if (token !== undefined) {
       try {
-        const response = await this.get(token);
+        const response = await this.get(token, includeRelations);
         if (response.status === SubscriptionStatus.Draft) {
           return _formatCart(response);
         }
@@ -87,7 +173,7 @@ export class CartsResource extends BaseResource {
         // ignore
       }
     }
-    return this.create();
+    return this.create(includeRelations);
   }
 
   /**
@@ -417,7 +503,7 @@ export class CartsResource extends BaseResource {
       /** The customer's zip code or postal code. */
       zipcode?: string | null;
     }
-  ) {
+  ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       UpdateAddressDetailsDocument,
       input,

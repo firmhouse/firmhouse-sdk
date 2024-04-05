@@ -8,6 +8,6 @@ fragment OrderLineFields on OrderLine {
   totalAmountExcludingTaxCents
   totalAmountIncludingTaxCents
   product {
-    ...CompleteProductFragment
+    ...CompleteProductFields
   }
 }

@@ -97,6 +97,23 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
 
   /**
    * @public
+   * Sends an authenticated raw request to API. This can be used for custom field selections or bulk queries/mutations.
+   * @param graphQLQuery The GraphQL query
+   * @param variables Variables to use in query
+   * @returns The response from the API
+   * @throws {@link NotFoundError} - When there is an entity not found error in the response
+   * @throws {@link ValidationError} - When there are invalid fields
+   * @throws {@link ServerError} - When the request fails
+   */
+  public async rawRequest(
+    graphQLQuery: string,
+    variables?: Record<string, unknown>
+  ): Promise<unknown> {
+    return this.client.request(graphQLQuery, variables);
+  }
+
+  /**
+   * @public
    * Plan methods
    * @group Resources
    * @category Available with Storefront Access

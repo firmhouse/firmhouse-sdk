@@ -43,9 +43,10 @@ export class _GraphQLClient {
    * @param res - Response
    * @returns Modified response
    */
-  async _responseMiddleware(res: _GraphQLClientResponse) {
+  _responseMiddleware(res: _GraphQLClientResponse) {
     if (res instanceof ClientError) {
-      return _mapToLibraryErrorTypes(res as ClientError);
+      console.log(res);
+      throw _mapToLibraryErrorTypes(res as ClientError);
     }
   }
 }

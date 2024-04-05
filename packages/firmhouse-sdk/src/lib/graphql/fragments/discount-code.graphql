@@ -1,0 +1,11 @@
+fragment DiscountCodeFields on DiscountCode {
+  id
+  promotionId
+  redeemable
+  code
+  createdAt
+  expired
+  maxTimesUsed
+  metadata
+  updatedAt
+}

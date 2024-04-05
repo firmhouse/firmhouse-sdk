@@ -1,4 +1,4 @@
-fragment PlanFragment on Plan {
+fragment PlanFields on Plan {
   available
   currency
   graceCancellationEnabled
@@ -27,7 +27,7 @@ fragment PlanFragment on Plan {
   taxPercentage
   planProducts {
     product {
-      ...ProductFragment
+      ...ProductFields
     }
     quantity
   }
