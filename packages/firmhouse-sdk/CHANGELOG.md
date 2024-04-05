@@ -1,3 +1,10 @@
+# [1.0.0-alpha.7](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.6...firmhouse-sdk-v1.0.0-alpha.7) (2024-04-05)
+
+
+### Features
+
+* **firmhouse-sdk:** add support for promotion and discount code requests ([#25](https://github.com/firmhouse/firmhouse-sdk/issues/25)) ([d43966e](https://github.com/firmhouse/firmhouse-sdk/commit/d43966e530b7285a52d37be47883eaff0316e08c))
+
 # [1.0.0-alpha.6](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.5...firmhouse-sdk-v1.0.0-alpha.6) (2024-03-26)
 
 
