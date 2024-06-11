@@ -32,6 +32,8 @@ query getSubscription(
   $includeDiscountCodesAutoSelectPlan: Boolean!
   $includeDiscountCodesPromotion: Boolean!
   $includeAppliedPromotions: Boolean!
+  $includeAppliedPromotionsDiscountCode: Boolean!
+  $includeAppliedPromotionsPromotion: Boolean!
 ) {
   getSubscription(token: $token) {
     ...SubscriptionFields
@@ -100,6 +102,12 @@ query getSubscription(
 
     appliedPromotions @include(if: $includeAppliedPromotions) {
       ...AppliedPromotionFields
+      discountCode @include(if: $includeAppliedPromotionsDiscountCode) {
+        ...DiscountCodeFields
+      }
+      promotion @include(if: $includeAppliedPromotionsPromotion) {
+        ...PromotionFields
+      }
     }
   }
 }

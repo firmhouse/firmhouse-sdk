@@ -26,7 +26,8 @@ import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
 
 /**
  * @public
- * Cart(Draft subscription) methods
+ * You can use carts for all the necessary operations to manage a customer's cart and implement cart functionality in your application.
+ * You can handle everything related to managing items in the cart before checkout such as adding, removing items, updating quantities, accessing payment and checkout urls and more.
  */
 export class CartsResource extends BaseResource {
   async create(includeRelations?: {
