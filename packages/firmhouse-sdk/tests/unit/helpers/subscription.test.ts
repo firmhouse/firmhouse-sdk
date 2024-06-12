@@ -149,7 +149,7 @@ describe('helpers/subscription', () => {
   describe('formatOrderedProduct', () => {
     it('should format ordered products correctly', () => {
       const input = orderedProduct;
-      const output = _formatOrderedProduct(input, subscription);
+      const output = _formatOrderedProduct(input);
       expect(output).toEqual(formattedOrderedProduct);
     });
 
@@ -158,7 +158,7 @@ describe('helpers/subscription', () => {
         ...orderedProduct,
         intervalUnitOfMeasure: 'only_once',
       };
-      const output = _formatOrderedProduct(input, subscription);
+      const output = _formatOrderedProduct(input);
       expect(output).toEqual({
         ...input,
         intervalUnitOfMeasureType: null,

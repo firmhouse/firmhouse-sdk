@@ -1425,10 +1425,7 @@ export interface FirmhouseCart {
   /**
    * List of all applied promotions for this customer.
    */
-  appliedPromotions?:
-    | FirmhouseAppliedOrderDiscountPromotion[]
-    | FirmhouseAppliedOrderDiscountPromotion[]
-    | null;
+  appliedPromotions?: FirmhouseAppliedPromotion[] | null;
 }
 
 /**

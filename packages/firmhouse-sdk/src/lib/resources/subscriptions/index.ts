@@ -234,7 +234,7 @@ export class SubscriptionsResource extends BaseResource {
       throw new ServerError('Could not update ordered product');
     }
     return {
-      orderedProduct: _formatOrderedProduct(fields, subscription),
+      orderedProduct: _formatOrderedProduct(fields),
       subscription: _formatSubscription(subscription),
     };
   }
@@ -454,7 +454,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
       subscription: _formatSubscription(subscription),
     };
   }

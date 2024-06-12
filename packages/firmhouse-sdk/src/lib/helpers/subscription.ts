@@ -63,8 +63,7 @@ export type OrderedProductType = ResolveObject<
  * @internal
  */
 export function _formatOrderedProduct(
-  orderedProduct: BaseOrderedProductType,
-  subscription: BaseCartType
+  orderedProduct: BaseOrderedProductType
 ): FirmhouseOrderedProduct {
   const { intervalUnitOfMeasure } = orderedProduct;
   const unit = capitalize(intervalUnitOfMeasure ?? '');
@@ -125,7 +124,10 @@ export function _formatCart(subscription: BaseCartType): FirmhouseCart {
     orderedProducts:
       orderedProducts === null
         ? null
-        : orderedProducts.map((op) => _formatOrderedProduct(op, subscription)),
+        : orderedProducts.map((op) => _formatOrderedProduct(op)),
+    appliedPromotions: subscription.appliedPromotions
+      ? arrayFilterNulls(subscription.appliedPromotions)
+      : undefined,
   } as FirmhouseCart;
 }
 
@@ -150,7 +152,7 @@ export function _formatSubscription(
     orderedProducts:
       orderedProducts === null
         ? null
-        : orderedProducts.map((op) => _formatOrderedProduct(op, subscription)),
+        : orderedProducts.map((op) => _formatOrderedProduct(op)),
     ordersV2: subscription.ordersV2
       ? {
           pageInfo: subscription.ordersV2?.pageInfo ?? undefined,
@@ -165,6 +167,9 @@ export function _formatSubscription(
       : undefined,
     invoices: subscription.invoices
       ? arrayFilterNulls(subscription.invoices)
+      : undefined,
+    appliedPromotions: subscription.appliedPromotions
+      ? arrayFilterNulls(subscription.appliedPromotions)
       : undefined,
   } as FirmhouseSubscription;
 }
