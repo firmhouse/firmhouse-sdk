@@ -16,7 +16,12 @@ export default async function Index() {
     subscription = await firmhouseClient.carts.get(
       await getSubscriptionToken(),
       {
-        appliedPromotions: true,
+        appliedPromotions: {
+          includeRelations: {
+            promotion: true,
+            discountCode: true,
+          },
+        },
       }
     );
   } else {
