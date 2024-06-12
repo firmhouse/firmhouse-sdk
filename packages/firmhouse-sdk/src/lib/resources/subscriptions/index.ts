@@ -37,7 +37,8 @@ import {
 
 /**
  * @public
- * Subscription methods
+ * You can use subscriptions to manage the subscriptions in your project.
+ * It's similar to the carts but the difference is that the subscriptions are carts that are already checked out.
  */
 export class SubscriptionsResource extends BaseResource {
   /**
@@ -109,7 +110,22 @@ export class SubscriptionsResource extends BaseResource {
       /**
        * Include applied promotions
        */
-      appliedPromotions?: boolean;
+      appliedPromotions?: {
+        /**
+         * Include relations for applied promotions
+         */
+        includeRelations?: {
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+
+          /**
+           * Include the discountCode relation
+           */
+          discountCode?: boolean;
+        };
+      };
     }
   ) {
     const response = await this._client.request(
@@ -149,7 +165,13 @@ export class SubscriptionsResource extends BaseResource {
           false,
         includeDiscountCodesPromotion:
           includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
-        includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
+        includeAppliedPromotions: !!includeRelations?.appliedPromotions,
+        includeAppliedPromotionsPromotion:
+          includeRelations?.appliedPromotions?.includeRelations?.promotion ??
+          false,
+        includeAppliedPromotionsDiscountCode:
+          includeRelations?.appliedPromotions?.includeRelations?.discountCode ??
+          false,
       },
       this.getSubscriptionTokenHeader(token)
     );
@@ -212,7 +234,7 @@ export class SubscriptionsResource extends BaseResource {
       throw new ServerError('Could not update ordered product');
     }
     return {
-      orderedProduct: _formatOrderedProduct(fields, subscription),
+      orderedProduct: _formatOrderedProduct(fields),
       subscription: _formatSubscription(subscription),
     };
   }
@@ -432,7 +454,7 @@ export class SubscriptionsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
       subscription: _formatSubscription(subscription),
     };
   }
@@ -773,7 +795,11 @@ export class SubscriptionsResource extends BaseResource {
    * @returns Deactivated applied promotion
    * @throws {@link ServerError} - When the request fails
    */
-  public async deactivateAppliedPromotion(appliedPromotionId: string) {
+  public async deactivateAppliedPromotion(
+    appliedPromotionId: string
+  ): Promise<
+    FirmhouseBillingCyclePromotion | FirmhouseAppliedOrderDiscountPromotion
+  > {
     const response = await this._client.request(
       DeactivateAppliedPromotionDocument,
       { input: { id: appliedPromotionId } }

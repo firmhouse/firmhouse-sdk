@@ -1,11 +1,11 @@
 import { BaseResource } from '../BaseResource';
 import { GetDiscountCodeDocument } from './discountCodes.generated';
 import { NotFoundError } from '../../helpers/errors';
-import { FirmhouseDiscountCode, FirmhouseProject } from '../../firmhouse';
+import { FirmhouseDiscountCode } from '../../firmhouse';
 
 /**
  * @public
- * Discount code methods
+ * You can use discountCodes to access all the discount codes you defined in your project
  */
 export class DiscountCodesResource extends BaseResource {
   /**

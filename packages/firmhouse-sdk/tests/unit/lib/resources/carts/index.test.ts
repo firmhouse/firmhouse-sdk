@@ -104,7 +104,12 @@ describe('lib/resources/carts/index.ts', () => {
             promotion: true,
           },
         },
-        appliedPromotions: true,
+        appliedPromotions: {
+          includeRelations: {
+            discountCode: true,
+            promotion: true,
+          },
+        },
       });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         CreateCartDocument,
@@ -114,6 +119,8 @@ describe('lib/resources/carts/index.ts', () => {
           includeDiscountCodes: true,
           includeDiscountCodesAutoSelectPlan: true,
           includeDiscountCodesPromotion: true,
+          includeAppliedPromotionsDiscountCode: true,
+          includeAppliedPromotionsPromotion: true,
         }
       );
     });
@@ -191,6 +198,8 @@ describe('lib/resources/carts/index.ts', () => {
           includeDiscountCodes: false,
           includeDiscountCodesAutoSelectPlan: false,
           includeDiscountCodesPromotion: false,
+          includeAppliedPromotionsDiscountCode: false,
+          includeAppliedPromotionsPromotion: false,
         },
         { 'X-Subscription-Token': token }
       );

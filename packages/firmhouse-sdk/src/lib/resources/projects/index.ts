@@ -5,7 +5,7 @@ import { FirmhouseProject } from '../../firmhouse';
 
 /**
  * @public
- * Project methods
+ * You can use projects to retrieve the details of your project
  */
 export class ProjectsResource extends BaseResource {
   /**

@@ -26,7 +26,8 @@ import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
 
 /**
  * @public
- * Cart(Draft subscription) methods
+ * You can use carts for all the necessary operations to manage a customer's cart and implement cart functionality in your application.
+ * You can handle everything related to managing items in the cart before checkout such as adding, removing items, updating quantities, accessing payment and checkout urls and more.
  */
 export class CartsResource extends BaseResource {
   async create(includeRelations?: {
@@ -49,7 +50,22 @@ export class CartsResource extends BaseResource {
     /**
      * Include applied promotions
      */
-    appliedPromotions?: boolean;
+    appliedPromotions?: {
+      /**
+       * Include relations for applied promotions
+       */
+      includeRelations?: {
+        /**
+         * Include the promotion relation
+         */
+        promotion?: boolean;
+
+        /**
+         * Include the discountCode relation
+         */
+        discountCode?: boolean;
+      };
+    };
   }): Promise<FirmhouseCart> {
     const response = await this._client.request(CreateCartDocument, {
       input: {},
@@ -59,7 +75,13 @@ export class CartsResource extends BaseResource {
         false,
       includeDiscountCodesPromotion:
         includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
-      includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
+      includeAppliedPromotions: !!includeRelations?.appliedPromotions,
+      includeAppliedPromotionsPromotion:
+        includeRelations?.appliedPromotions?.includeRelations?.promotion ??
+        false,
+      includeAppliedPromotionsDiscountCode:
+        includeRelations?.appliedPromotions?.includeRelations?.discountCode ??
+        false,
     });
     if (response.createCart === null || response.createCart === undefined) {
       throw new ServerError('Could not create subscription');
@@ -110,7 +132,22 @@ export class CartsResource extends BaseResource {
       /**
        * Include applied promotions
        */
-      appliedPromotions?: boolean;
+      appliedPromotions?: {
+        /**
+         * Include relations for applied promotions
+         */
+        includeRelations?: {
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+
+          /**
+           * Include the discountCode relation
+           */
+          discountCode?: boolean;
+        };
+      };
     }
   ): Promise<FirmhouseCart> {
     const response = await this._client.request(
@@ -123,7 +160,13 @@ export class CartsResource extends BaseResource {
           false,
         includeDiscountCodesPromotion:
           includeRelations?.discountCodes?.includeRelations?.promotion ?? false,
-        includeAppliedPromotions: includeRelations?.appliedPromotions ?? false,
+        includeAppliedPromotions: !!includeRelations?.appliedPromotions,
+        includeAppliedPromotionsPromotion:
+          includeRelations?.appliedPromotions?.includeRelations?.promotion ??
+          false,
+        includeAppliedPromotionsDiscountCode:
+          includeRelations?.appliedPromotions?.includeRelations?.discountCode ??
+          false,
       },
       this.getSubscriptionTokenHeader(token)
     );
@@ -160,7 +203,22 @@ export class CartsResource extends BaseResource {
       /**
        * Include applied promotions
        */
-      appliedPromotions?: boolean;
+      appliedPromotions?: {
+        /**
+         * Include relations for applied promotions
+         */
+        includeRelations?: {
+          /**
+           * Include the promotion relation
+           */
+          promotion?: boolean;
+
+          /**
+           * Include the discountCode relation
+           */
+          discountCode?: boolean;
+        };
+      };
     }
   ) {
     if (token !== undefined) {
@@ -198,8 +256,6 @@ export class CartsResource extends BaseResource {
       ensureNewRecord?: boolean | null;
       /** The amount of time in units between shipments of this order */
       interval?: number | null;
-      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
-      intervalUnitOfMeasure?: string | null;
       /** The time measure for interval units */
       intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
       /** Metadata that can be used by developers to store additional information on objects. */
@@ -238,7 +294,7 @@ export class CartsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
       subscription: _formatCart(subscription),
     };
   }
@@ -269,8 +325,7 @@ export class CartsResource extends BaseResource {
 
     return {
       orderedProduct: _formatOrderedProduct(
-        orderedProduct,
-        subscription
+        orderedProduct
       ) as FirmhouseOrderedProduct,
       subscription: _formatCart(subscription) as FirmhouseCart,
     };
@@ -308,7 +363,7 @@ export class CartsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(orderedProduct, subscription),
+      orderedProduct: _formatOrderedProduct(orderedProduct),
       subscription: _formatCart(subscription),
     };
   }
@@ -331,8 +386,6 @@ export class CartsResource extends BaseResource {
       customPriceCents?: number | null;
       /** The amount of time in units between shipments of this order */
       interval?: number | null;
-      /** The time measure for interval units. This argument is deprecated. Use intervalUnitOfMeasureType instead. If intervalUnitOfMeasureType passed, this field will be ignored. */
-      intervalUnitOfMeasure?: string | null;
       /** The time measure for interval units */
       intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null;
       /** Metadata that can be used by developers to store additional information on objects. */
@@ -368,7 +421,7 @@ export class CartsResource extends BaseResource {
     }
 
     return {
-      orderedProduct: _formatOrderedProduct(fields, subscription),
+      orderedProduct: _formatOrderedProduct(fields),
       subscription: _formatCart(subscription),
     };
   }

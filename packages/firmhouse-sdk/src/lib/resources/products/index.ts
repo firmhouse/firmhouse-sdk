@@ -6,7 +6,7 @@ import { FirmhouseProduct, PaginatedResponse } from '../../firmhouse';
 
 /**
  * @public
- * Product methods
+ * You can use products to access all products in your project
  */
 export class ProductsResource extends BaseResource {
   /**

@@ -1,11 +1,11 @@
 import { BaseResource } from '../BaseResource';
-import { AllPlansQueryVariables, AllPlansDocument } from './allPlans.generated';
+import { AllPlansDocument } from './allPlans.generated';
 import { arrayFilterNulls } from '../../helpers/utils';
 import { FirmhousePlan, PaginatedResponse } from '../../firmhouse';
 
 /**
  * @public
- * Plan methods
+ * You can use the plans resource to access plans in the Firmhouse API.
  */
 export class PlansResource extends BaseResource {
   /**

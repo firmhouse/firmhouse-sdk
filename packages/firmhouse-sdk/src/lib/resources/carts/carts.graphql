@@ -4,6 +4,8 @@ mutation createCart(
   $includeDiscountCodesAutoSelectPlan: Boolean!
   $includeDiscountCodesPromotion: Boolean!
   $includeAppliedPromotions: Boolean!
+  $includeAppliedPromotionsDiscountCode: Boolean!
+  $includeAppliedPromotionsPromotion: Boolean!
 ) {
   createCart(input: $input) {
     subscription {
@@ -19,6 +21,12 @@ mutation createCart(
       }
       appliedPromotions @include(if: $includeAppliedPromotions) {
         ...AppliedPromotionFields
+        discountCode @include(if: $includeAppliedPromotionsDiscountCode) {
+          ...DiscountCodeFields
+        }
+        promotion @include(if: $includeAppliedPromotionsPromotion) {
+          ...PromotionFields
+        }
       }
     }
   }
@@ -30,6 +38,8 @@ query getCart(
   $includeDiscountCodesAutoSelectPlan: Boolean!
   $includeDiscountCodesPromotion: Boolean!
   $includeAppliedPromotions: Boolean!
+  $includeAppliedPromotionsDiscountCode: Boolean!
+  $includeAppliedPromotionsPromotion: Boolean!
 ) {
   getCart: getSubscription(token: $token) {
     ...SubscriptionFields
@@ -46,6 +56,12 @@ query getCart(
 
     appliedPromotions @include(if: $includeAppliedPromotions) {
       ...AppliedPromotionFields
+      discountCode @include(if: $includeAppliedPromotionsDiscountCode) {
+        ...DiscountCodeFields
+      }
+      promotion @include(if: $includeAppliedPromotionsPromotion) {
+        ...PromotionFields
+      }
     }
   }
 }

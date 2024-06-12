@@ -38,7 +38,7 @@ export function _formatValidationErrors<
 
 /**
  * @public
- * Not found (404) error
+ * Not found (404) error. These errors are thrown when a resource is not found, and the message property indicates what was not found.
  */
 export class NotFoundError extends Error {
   constructor(error: ClientError | string) {
@@ -54,7 +54,7 @@ export class NotFoundError extends Error {
 
 /**
  * @public
- * Server error(5xx)
+ * Server error(5xx). These errors are thrown when the server returns an unexpected error.
  */
 export class ServerError extends Error {
   constructor(error: ClientError | string) {
@@ -70,7 +70,7 @@ export class ServerError extends Error {
 
 /**
  * @public
- * Validation error (400)
+ * Validation error (400). These errors are thrown when you send data in the wrong format or with invalid values.
  */
 export class ValidationError extends Error {
   /**

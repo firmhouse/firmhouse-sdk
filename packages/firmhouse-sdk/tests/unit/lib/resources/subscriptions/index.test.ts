@@ -133,7 +133,12 @@ describe('lib/resources/subscriptions/index.ts', () => {
             promotion: true,
           },
         },
-        appliedPromotions: true,
+        appliedPromotions: {
+          includeRelations: {
+            discountCode: true,
+            promotion: true,
+          },
+        },
       });
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         GetSubscriptionDocument,
@@ -159,6 +164,8 @@ describe('lib/resources/subscriptions/index.ts', () => {
           includeDiscountCodesAutoSelectPlan: true,
           includeDiscountCodesPromotion: true,
           includeAppliedPromotions: true,
+          includeAppliedPromotionsDiscountCode: true,
+          includeAppliedPromotionsPromotion: true,
         },
         { 'X-Subscription-Token': token }
       );

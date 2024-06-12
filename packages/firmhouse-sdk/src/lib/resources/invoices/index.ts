@@ -7,7 +7,7 @@ import { FirmhouseInvoice, PaginatedResponse } from '../../firmhouse';
 
 /**
  * @public
- * Invoice methods
+ * You can use invoices to access all invoices in your project
  */
 export class InvoicesResource extends BaseResource {
   /**

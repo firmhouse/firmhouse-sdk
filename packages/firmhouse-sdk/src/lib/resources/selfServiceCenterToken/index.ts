@@ -4,12 +4,12 @@ import { CreateSelfServiceCenterLoginTokenDocument } from './selfServiceCenterTo
 
 /**
  * @public
- * Self service center token methods
+ * You can use selfServiceCenterToken to create a token for accessing the self service center and sending it to the customer
  */
 export class SelfServiceCenterTokenResource extends BaseResource {
   /**
    * @public
-   * Create self service center token
+   * Create self service center token, and send it to the customer in an email.
    * @param email - Customer's email address
    * @param returnUrl - Self service center url to use in the email
    * @returns The status of the request
