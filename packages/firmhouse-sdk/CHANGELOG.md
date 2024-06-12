@@ -1,3 +1,16 @@
+# [1.0.0-alpha.8](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.7...firmhouse-sdk-v1.0.0-alpha.8) (2024-06-12)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fixes type issues ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+* **nextjs-storefront-app-router:** update example to comply with latest type changes ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+
+
+### Features
+
+* **firmhouse-sdk:** add missing parameters to getSubscription and cleanup resource docs ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+
 # [1.0.0-alpha.7](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.6...firmhouse-sdk-v1.0.0-alpha.7) (2024-04-05)
 
 
