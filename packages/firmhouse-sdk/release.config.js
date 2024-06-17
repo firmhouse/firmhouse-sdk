@@ -9,7 +9,7 @@ module.exports = {
   tagFormat: `${name}-v\${version}`,
   commitPaths: [`${srcRoot}/*`],
   branches: [
-    'main',
+    { name: 'main' },
     { name: 'beta', prerelease: true },
     { name: 'alpha', prerelease: true },
   ],
