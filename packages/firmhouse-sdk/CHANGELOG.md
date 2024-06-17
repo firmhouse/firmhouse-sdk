@@ -1,3 +1,10 @@
+# [1.0.0-alpha.9](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.8...firmhouse-sdk-v1.0.0-alpha.9) (2024-06-17)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix orders relation bug ([346d054](https://github.com/firmhouse/firmhouse-sdk/commit/346d0547b1e2e4f1af07403a2bf9ee4e6608da14))
+
 # [1.0.0-alpha.8](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.7...firmhouse-sdk-v1.0.0-alpha.8) (2024-06-12)
 
 
