@@ -1,4 +1,18 @@
-# firmhouse-sdk
+# Firmhouse SDK
+
+A JavaScript / TypeScript SDK for interacting with the Firmhouse GraphQL API in a structured and type-safe way.
+
+The Firmhouse SDK is designed to make it easier for developers to interact with the Firmhouse API by providing a fully typed interface and handling errors in a structured way.
+
+## Features
+
+- Fully typed SDK with TypeScript, so you don't have to worry about field names and types.
+- Provides smooth IDE experience with auto-completion and type hints.
+- Handles errors in a structured way.
+- Supports both Storefront and Write access tokens and restricts operations based on the access type.
+- Gives you the option to include/exclude related resources in the response, without writing messy GraphQL queries.
+
+## Install
 
 ```bash
 npm install @firmhouse/firmhouse-sdk

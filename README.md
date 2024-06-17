@@ -2,7 +2,7 @@
 
 ## SDK
 
-You can find the SDK documentation [here](./packages/firmhouse-sdk/README.md).
+You can find the SDK project [here](./packages/firmhouse-sdk/README.md).
 
 ## Example Apps
 
