@@ -158,8 +158,8 @@ export function _formatSubscription(
           pageInfo: subscription.ordersV2?.pageInfo ?? undefined,
           total: subscription.ordersV2?.totalCount ?? 0,
           results: subscription.ordersV2?.nodes
-            ? []
-            : arrayFilterNulls(subscription.ordersV2?.nodes),
+            ? subscription.ordersV2?.nodes
+            : [],
         }
       : undefined,
     collectionCases: subscription.collectionCases?.nodes
