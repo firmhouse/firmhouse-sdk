@@ -1,0 +1,13 @@
+fragment OrderLineFields on OrderLine {
+  metadata
+  productSku
+  productTitle
+  productType
+  quantity
+  taxPercentage
+  totalAmountExcludingTaxCents
+  totalAmountIncludingTaxCents
+  product {
+    ...CompleteProductFields
+  }
+}

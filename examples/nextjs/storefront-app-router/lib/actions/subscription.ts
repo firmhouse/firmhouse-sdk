@@ -2,10 +2,12 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { firmhouseClient } from '../firmhouse';
+
 import { revalidatePath } from 'next/cache';
 import { getISO8601Date } from '@firmhouse/ui-components';
 import { redirect } from 'next/navigation';
 import { ServerError, ValidationError } from '@firmhouse/firmhouse-sdk';
+import { writeAccessFirmhouseClient } from '../firmhouse-write';
 
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
 
@@ -24,10 +26,7 @@ export async function clearSubscriptionToken(): Promise<void> {
 export async function initializeCart() {
   const subscriptionToken =
     cookies().get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? undefined;
-  const response =
-    await firmhouseClient.subscriptions.getOrCreateDraftSubscription(
-      subscriptionToken
-    );
+  const response = await firmhouseClient.carts.getOrCreate(subscriptionToken);
   cookies().set(SUBSCRIPTION_TOKEN_COOKIE, response.token);
 }
 
@@ -39,19 +38,16 @@ export async function addToCart(data: FormData) {
   const productId = data.get('productId') as string;
   const quantity = parseInt(data.get('quantity') as string);
   const subscriptionToken = await getSubscriptionToken();
-  await firmhouseClient.subscriptions.addToCart(
-    { productId, quantity },
-    subscriptionToken
-  );
+  await firmhouseClient.carts.addProduct(subscriptionToken, {
+    productId,
+    quantity,
+  });
   revalidatePath('/');
 }
 
 export async function removeFromCart(data: FormData) {
   const id = data.get('orderedProductId') as string;
-  await firmhouseClient.subscriptions.removeFromCart(
-    id,
-    await getSubscriptionToken()
-  );
+  await firmhouseClient.carts.removeProduct(await getSubscriptionToken(), id);
   revalidatePath('/');
 }
 
@@ -59,10 +55,10 @@ export async function updateQuantity(data: FormData) {
   const id = data.get('orderedProductId') as string;
   const quantity = parseInt(data.get('quantity') as string);
 
-  await firmhouseClient.subscriptions.updateOrderedProductQuantity(
+  await firmhouseClient.carts.updateOrderedProductQuantity(
+    await getSubscriptionToken(),
     id,
-    quantity,
-    await getSubscriptionToken()
+    quantity
   );
   revalidatePath('/');
 }
@@ -88,16 +84,15 @@ export async function updateCheckoutDetails(data: FormData) {
   let success = false;
   let paymentUrl;
   try {
-    await firmhouseClient.subscriptions.updateAddressDetails(
-      body,
-      await getSubscriptionToken()
+    await firmhouseClient.carts.updateAddressDetails(
+      await getSubscriptionToken(),
+      body
     );
-    const paymentResponse =
-      await firmhouseClient.subscriptions.createSubscriptionFromCart(
-        '',
-        '',
-        await getSubscriptionToken()
-      );
+    const paymentResponse = await firmhouseClient.carts.createSubscription(
+      await getSubscriptionToken(),
+      '',
+      ''
+    );
     paymentUrl = paymentResponse.paymentUrl;
     if (paymentUrl === null || paymentUrl === undefined) {
       throw new ServerError(
@@ -126,9 +121,35 @@ export async function updateCheckoutDetails(data: FormData) {
 
 export async function updatePlan(data: FormData) {
   const planSlug = data.get('planSlug') as string;
-  await firmhouseClient.subscriptions.updatePlan(
-    planSlug,
-    await getSubscriptionToken()
+  await firmhouseClient.carts.updatePlan(
+    await getSubscriptionToken(),
+    planSlug
   );
   revalidatePath('/');
+}
+
+export async function applyDiscount(data: FormData) {
+  const discountCode = data.get('discountCode') as string;
+  const writeAccessClient = await writeAccessFirmhouseClient();
+  try {
+    await writeAccessClient.subscriptions.applyPromotionWithDiscountCode(
+      await getSubscriptionToken(),
+      discountCode
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  revalidatePath('/checkout');
+}
+
+export async function deactivatePromotion(appliedPromotionId: string) {
+  const writeAccessClient = await writeAccessFirmhouseClient();
+  try {
+    await writeAccessClient.subscriptions.deactivateAppliedPromotion(
+      appliedPromotionId
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  revalidatePath('/checkout');
 }

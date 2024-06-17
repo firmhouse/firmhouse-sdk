@@ -1,4 +1,4 @@
-import { OrderedProductType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseOrderedProduct } from '@firmhouse/firmhouse-sdk';
 
 export function formatCentsToEuros(cents: number, decimalPoints = 2): string {
   return `${(cents / 100).toFixed(decimalPoints)}€`;
@@ -19,7 +19,7 @@ export function formatCentsWithCurrency(
 }
 
 export function getOrderedProductInfo(
-  orderedProduct: OrderedProductType,
+  orderedProduct: FirmhouseOrderedProduct,
   currency = 'EUR',
   locale?: string | null
 ) {
@@ -40,14 +40,42 @@ export function getOrderedProductInfo(
   const billingAndShipping = isPlanBased
     ? shippingText
     : `${shippingText ? `Bills & ` : ''}${shippingText}`;
-
+  const {
+    intervalUnitOfMeasure: activeIntervalUnitOfMeasure,
+    interval: activeInterval,
+  } =
+    orderedProduct.intervalUnitOfMeasure === 'default'
+      ? orderedProduct.product
+      : orderedProduct;
   return {
     billingAndShipping,
     totalPrice: formattedPrice,
+    frequency: getFrequency(activeIntervalUnitOfMeasure, activeInterval),
   };
 }
 
-function getShippingInterval(orderedProduct: OrderedProductType) {
+export function getFrequency(
+  intervalUnitOfMeasure: string | null,
+  interval: number | null
+) {
+  if (
+    intervalUnitOfMeasure === null ||
+    interval === null ||
+    intervalUnitOfMeasure === 'only_once' ||
+    typeof intervalUnitOfMeasure !== 'string' ||
+    typeof interval !== 'number'
+  ) {
+    return '';
+  }
+  if (interval === 1) {
+    // interval units are always plural, so we remove the last character
+    return `${intervalUnitOfMeasure.slice(0, -1)}`;
+  }
+
+  return `${interval} ${intervalUnitOfMeasure}`;
+}
+
+function getShippingInterval(orderedProduct: FirmhouseOrderedProduct) {
   // If the interval is default just get that from product
   const { intervalUnitOfMeasure, interval } =
     orderedProduct.intervalUnitOfMeasure === 'default'

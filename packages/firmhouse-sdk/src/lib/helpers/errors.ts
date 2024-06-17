@@ -1,17 +1,23 @@
 import { ClientError } from 'graphql-request';
 
-export function snakeToCamelCase(str: string) {
+/**
+ * @internal
+ * @param str - String value in snake case
+ * @returns String value in camel case
+ */
+export function _snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
     group.toUpperCase().replace('-', '').replace('_', '')
   );
 }
 
 /**
+ * @internal
  * Formats validation errors as a single object with paths as keys and error messages as values
- * @param errors Validation errors
+ * @param errors - Validation errors
  * @returns Object with paths as keys and error messages as values
  */
-export function formatValidationErrors<
+export function _formatValidationErrors<
   ErrorT extends {
     attribute?: string;
     message?: string;
@@ -22,7 +28,7 @@ export function formatValidationErrors<
   if (errors.length === 0) return null;
   return errors.reduce((res, error) => {
     const properties = error.path?.length ? error.path : [error.attribute];
-    const path = snakeToCamelCase(properties.join('.'));
+    const path = _snakeToCamelCase(properties.join('.'));
     return {
       ...res,
       [path]: error.message ?? error.explanation ?? 'Invalid',
@@ -30,12 +36,10 @@ export function formatValidationErrors<
   }, {});
 }
 
-export enum ErrorType {
-  NotFound = 'NotFoundError',
-  Server = 'ServerError',
-  Validation = 'ValidationError',
-}
-
+/**
+ * @public
+ * Not found (404) error. These errors are thrown when a resource is not found, and the message property indicates what was not found.
+ */
 export class NotFoundError extends Error {
   constructor(error: ClientError | string) {
     const message =
@@ -44,14 +48,14 @@ export class NotFoundError extends Error {
         : `${error.response.errors?.[0]?.message ?? 'Not found'}`;
     super(message);
     Object.setPrototypeOf(this, NotFoundError.prototype);
-    this.name = ErrorType.NotFound;
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, NotFoundError);
-    }
+    this.name = 'NotFoundError';
   }
 }
 
+/**
+ * @public
+ * Server error(5xx). These errors are thrown when the server returns an unexpected error.
+ */
 export class ServerError extends Error {
   constructor(error: ClientError | string) {
     const message =
@@ -60,16 +64,18 @@ export class ServerError extends Error {
         : `${error.response.errors?.[0]?.message ?? 'Server error'}`;
     super(message);
     Object.setPrototypeOf(this, ServerError.prototype);
-    this.name = ErrorType.Server;
-
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, ServerError);
-    }
+    this.name = 'ServerError';
   }
 }
 
+/**
+ * @public
+ * Validation error (400). These errors are thrown when you send data in the wrong format or with invalid values.
+ */
 export class ValidationError extends Error {
+  /**
+   * All validation errors in \{[path]: error\} format
+   */
   public readonly details: Record<string, string> | null;
   constructor(
     errors: { attribute: string; message: string; path?: string[] | null }[]
@@ -77,16 +83,19 @@ export class ValidationError extends Error {
     const message = `Validation error`;
     super(message);
     Object.setPrototypeOf(this, ValidationError.prototype);
-    this.name = ErrorType.Validation;
-    this.details = formatValidationErrors(errors);
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, ValidationError);
-    }
+    this.name = 'ValidationError';
+    this.details = _formatValidationErrors(errors);
   }
 }
 
-export function mapToLibraryErrorTypes(error: ClientError) {
+/**
+ * @internal
+ * @param error - Client error
+ * @returns The error with type as NotFoundError, ServerError or ValidationError
+ */
+export function _mapToLibraryErrorTypes(
+  error: ClientError
+): ValidationError | NotFoundError | ServerError {
   if (error.response.errors?.[0]?.extensions?.code === 'RECORD_NOT_FOUND') {
     return new NotFoundError(error);
   }

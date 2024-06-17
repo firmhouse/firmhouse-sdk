@@ -1,10 +1,10 @@
-import { ExtraFieldAnswerType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseExtraFieldAnswer } from '@firmhouse/firmhouse-sdk';
 import { mapExtraFieldsByFieldId } from '@firmhouse/firmhouse-sdk/lib/helpers/extra-fields';
 
 describe('helpers/extra-fields', () => {
   describe('mapExtraFieldsByFieldId', () => {
     it('should convert a list of extra fields to a map', () => {
-      const input: ExtraFieldAnswerType[] = [
+      const input: FirmhouseExtraFieldAnswer[] = [
         {
           id: '1',
           extraFieldId: '1',
@@ -13,6 +13,8 @@ describe('helpers/extra-fields', () => {
           required: true,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
         {
           id: '2',
@@ -22,6 +24,8 @@ describe('helpers/extra-fields', () => {
           required: false,
           fieldType: 'text',
           visibility: 'public',
+          position: null,
+          selectOptions: null,
         },
       ];
       const output = mapExtraFieldsByFieldId(input);
@@ -32,7 +36,7 @@ describe('helpers/extra-fields', () => {
     });
 
     it('should return an empty object if the list is empty', () => {
-      const input: ExtraFieldAnswerType[] = [];
+      const input: FirmhouseExtraFieldAnswer[] = [];
       expect(mapExtraFieldsByFieldId(input)).toEqual({});
     });
   });

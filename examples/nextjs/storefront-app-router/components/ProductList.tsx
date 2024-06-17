@@ -1,16 +1,16 @@
 'use client';
-import { type ProductType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseProduct } from '@firmhouse/firmhouse-sdk';
 import { startTransition, useState } from 'react';
 import { addToCart } from '../lib/actions/subscription';
 import { Button, Product } from '@firmhouse/ui-components';
 
 export interface ProductListProps {
-  products: ProductType[];
+  products: FirmhouseProduct[];
   endCursor?: string | null;
   hasNextPage?: boolean;
   pageSize: number;
   loadMoreProducts?: (endCursor?: string | null) => Promise<{
-    products: ProductType[];
+    products: FirmhouseProduct[];
     endCursor?: string | null;
     hasNextPage?: boolean;
   }>;

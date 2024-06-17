@@ -1,0 +1,9 @@
+fragment ExtraFieldFields on ExtraField {
+  fieldType
+  id
+  name
+  position
+  required
+  selectOptions
+  visibility
+}

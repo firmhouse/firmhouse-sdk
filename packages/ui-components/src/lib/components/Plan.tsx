@@ -1,6 +1,6 @@
 import { formatCentsWithCurrency } from '../utils/price';
-import { PlanType } from '@firmhouse/firmhouse-sdk';
-export interface PlanProps extends PlanType {
+import { FirmhousePlan } from '@firmhouse/firmhouse-sdk';
+export interface PlanProps extends FirmhousePlan {
   children?: React.ReactNode;
   locale?: string | null;
   isActive?: boolean;

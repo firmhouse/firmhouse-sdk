@@ -20,10 +20,10 @@ query allProducts(
   ) {
     totalCount
     pageInfo {
-      ...PageInfoFragment
+      ...PageInfoFields
     }
     nodes {
-      ...ProductFragment
+      ...ProductFields
     }
   }
 }

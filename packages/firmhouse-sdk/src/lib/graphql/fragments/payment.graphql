@@ -1,0 +1,15 @@
+fragment PaymentFields on Payment {
+  amountCents
+  amountWithSymbol
+  createdAt
+  id
+  paymentId
+  paymentStatus
+  paymentType
+  retryPaymentUrl
+  token
+  updatedAt
+  refunds {
+    ...RefundFields
+  }
+}

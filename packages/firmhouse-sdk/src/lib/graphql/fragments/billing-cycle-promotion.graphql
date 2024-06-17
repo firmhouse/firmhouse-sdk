@@ -1,0 +1,11 @@
+fragment BillingCyclePromotionFields on BillingCyclePromotion {
+  activated
+  autoApply
+  deactivateAfterAmountIncludingTaxCents
+  deactivateAfterTimes
+  deactivationStrategy
+  id
+  percentDiscount
+  publicName
+  title
+}

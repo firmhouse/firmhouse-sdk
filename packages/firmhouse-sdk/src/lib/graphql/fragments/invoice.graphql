@@ -1,0 +1,24 @@
+fragment InvoiceFields on Invoice {
+  city
+  companyName
+  country
+  createdAt
+  currency
+  description
+  detailsUrl
+  externalUrl
+  fullAddress
+  fullName
+  id
+  invoiceNumber
+  invoiceStatus
+  invoicedAt
+  phoneNumber
+  salutation
+  state
+  subscriptionId
+  taxPercentage
+  totalAmountCents
+  totalTaxAmountCents
+  zipcode
+}

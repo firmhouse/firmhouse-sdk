@@ -1,0 +1,45 @@
+name: Publish to registry
+on:
+  push:
+    branches:
+      - main
+      - alpha
+      - beta
+
+env:
+  HUSKY: 0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    permissions:
+      actions: read # to be able to check action statuses
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+      packages: write # to be able to publish to GitHub Packages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://npm.pkg.github.com/
+          scope: '@firmhouse'
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      - uses: nrwl/nx-set-shas@v3
+      - run: npx nx format:check
+      - run: npx nx affected -t lint --parallel=3
+      - run: npx nx affected -t test --parallel=3
+      - name: Release
+        run: npx nx affected --target release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,11 @@
+mutation CreateSelfServiceCenterLoginToken(
+  $email: String!
+  $returnUrl: String!
+) {
+  createSelfServiceCenterLoginToken(
+    input: { email: $email, returnUrl: $returnUrl }
+  ) {
+    error
+    status
+  }
+}

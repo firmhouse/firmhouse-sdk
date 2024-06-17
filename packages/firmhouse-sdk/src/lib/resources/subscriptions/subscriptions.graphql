@@ -1,88 +1,277 @@
-mutation createCart($input: CreateCartInput!) {
-  createCart(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-  }
-}
-
-query getSubscription($token: ID!) {
-  getSubscription(token: $token) {
-    ...SubscriptionFragment
-  }
-}
-
-mutation addToCart($input: CreateOrderedProductInput!) {
-  createOrderedProduct(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-  }
-}
-
-mutation removeFromCart($input: DestroyOrderedProductInput!) {
-  destroyOrderedProduct(input: $input) {
-    subscription {
-      ...SubscriptionFragment
-    }
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-  }
-}
-
-mutation updateOrderedProductQuantity(
-  $input: UpdateOrderedProductQuantityInput!
-) {
-  updateOrderedProductQuantity(input: $input) {
-    orderedProduct {
-      ...OrderedProductFragment
-    }
-    subscription {
-      ...SubscriptionFragment
-    }
-  }
-}
-
 mutation updateOrderedProduct($input: UpdateOrderedProductInput!) {
   updateOrderedProduct(input: $input) {
     orderedProduct {
-      ...OrderedProductFragment
+      ...OrderedProductFields
+      subscription {
+        ...SubscriptionFields
+        ...CompleteSubscriptionFields
+      }
     }
   }
 }
 
-mutation updateAddressDetails($input: UpdateAddressDetailsInput!) {
-  updateAddressDetails(input: $input) {
-    subscription {
-      ...SubscriptionFragment
+query getSubscription(
+  $token: ID!
+  $includeVerifiedIdentity: Boolean!
+  $includeCollectionCases: Boolean!
+  $includeOrders: Boolean!
+  $ordersAfter: String
+  $ordersBefore: String
+  $ordersFirst: Int
+  $ordersLast: Int
+  $ordersIncludeOrderLines: Boolean!
+  $ordersIncludePayment: Boolean!
+  $ordersIncludeInvoice: Boolean!
+  $includeInvoices: Boolean!
+  $invoicesIncludeInvoiceLineItems: Boolean!
+  $invoicesIncludePayment: Boolean!
+  $invoicesIncludeOriginalInvoice: Boolean!
+  $invoicesIncludeInvoiceReminders: Boolean!
+  $invoicesIncludeCollectionCase: Boolean!
+  $includeDiscountCodes: Boolean!
+  $includeDiscountCodesAutoSelectPlan: Boolean!
+  $includeDiscountCodesPromotion: Boolean!
+  $includeAppliedPromotions: Boolean!
+  $includeAppliedPromotionsDiscountCode: Boolean!
+  $includeAppliedPromotionsPromotion: Boolean!
+) {
+  getSubscription(token: $token) {
+    ...SubscriptionFields
+    ...CompleteSubscriptionFields
+    collectionCases @include(if: $includeCollectionCases) {
+      nodes {
+        ...CollectionCaseFields
+      }
     }
-    errors {
-      ...ModelValidationErrorFragment
+
+    verifiedIdentity @include(if: $includeVerifiedIdentity) {
+      ...SubscriptionIdentityFields
+    }
+
+    ordersV2(
+      after: $ordersAfter
+      before: $ordersBefore
+      first: $ordersFirst
+      last: $ordersLast
+    ) @include(if: $includeOrders) {
+      nodes {
+        ...OrderFields
+        orderLines @include(if: $ordersIncludeOrderLines) {
+          ...OrderLineFields
+        }
+        invoice @include(if: $ordersIncludeInvoice) {
+          ...InvoiceFields
+        }
+        payment @include(if: $ordersIncludePayment) {
+          ...PaymentFields
+        }
+      }
+      pageInfo {
+        ...PageInfoFields
+      }
+      totalCount
+    }
+    invoices @include(if: $includeInvoices) {
+      ...InvoiceFields
+      invoiceLineItems @include(if: $invoicesIncludeInvoiceLineItems) {
+        ...InvoiceLineItemFields
+      }
+      payment @include(if: $invoicesIncludePayment) {
+        ...PaymentFields
+      }
+      originalInvoice @include(if: $invoicesIncludeOriginalInvoice) {
+        ...InvoiceFields
+      }
+      invoiceReminders @include(if: $invoicesIncludeInvoiceReminders) {
+        ...InvoiceReminderFields
+      }
+      collectionCase @include(if: $invoicesIncludeCollectionCase) {
+        ...CollectionCaseFields
+      }
+    }
+
+    discountCodes @include(if: $includeDiscountCodes) {
+      ...DiscountCodeFields
+      autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
+        ...PlanFields
+      }
+      promotion @include(if: $includeDiscountCodesPromotion) {
+        ...PromotionFields
+      }
+    }
+
+    appliedPromotions @include(if: $includeAppliedPromotions) {
+      ...AppliedPromotionFields
+      discountCode @include(if: $includeAppliedPromotionsDiscountCode) {
+        ...DiscountCodeFields
+      }
+      promotion @include(if: $includeAppliedPromotionsPromotion) {
+        ...PromotionFields
+      }
     }
   }
 }
 
-mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
-  createSubscriptionFromCart(input: $input) {
+query getSubscriptionBySelfServiceCenterLoginToken($token: ID!) {
+  getSubscriptionBySelfServiceCenterLoginToken(token: $token) {
+    ...SubscriptionFields
+    ...CompleteSubscriptionFields
+  }
+}
+
+mutation cancelSubscription($input: CancelSubscriptionInput!) {
+  cancelSubscription(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
     }
     errors {
-      ...ModelValidationErrorFragment
+      ...ModelValidationErrorFields
     }
-    paymentUrl
-    returnUrl
+  }
+}
+
+mutation pauseSubscription($input: PauseSubscriptionInput!) {
+  pauseSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation resumeSubscription($input: ResumeSubscriptionInput!) {
+  resumeSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation createOrderedProduct($input: CreateOrderedProductInput!) {
+  createOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+    orderedProduct {
+      ...OrderedProductFields
+    }
+  }
+}
+
+mutation destroyOrderedProduct($input: DestroyOrderedProductInput!) {
+  destroyOrderedProduct(input: $input) {
+    subscription {
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+    orderedProduct {
+      ...OrderedProductFields
+    }
   }
 }
 
 mutation updatePlan($input: UpdatePlanInput!) {
   updatePlan(input: $input) {
     subscription {
-      ...SubscriptionFragment
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+  }
+}
+
+mutation updateSubscription($input: UpdateSubscriptionInput!) {
+  updateSubscription(input: $input) {
+    subscription {
+      ...SubscriptionFields
+      ...CompleteSubscriptionFields
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+query getPromotionAndSubscriptionId($code: ID!, $subscriptionToken: ID!) {
+  getDiscountCode(code: $code) {
+    ...DiscountCodeFields
+  }
+  getSubscription(token: $subscriptionToken) {
+    id
+    appliedPromotions {
+      id
+      promotion {
+        id
+      }
+      active
+    }
+  }
+}
+
+mutation applyPromotion($input: ApplyPromotionToSubscriptionInput!) {
+  applyPromotionToSubscription(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation updateAppliedPromotion($input: UpdateAppliedPromotionInput!) {
+  updateAppliedPromotion(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation deactivateAppliedPromotion($input: DeactivateAppliedPromotionInput!) {
+  deactivateAppliedPromotion(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+      ... on AppliedBillingCyclePromotion {
+        invoices {
+          ...InvoiceFields
+        }
+      }
+      ... on AppliedOrderDiscountPromotion {
+        orders {
+          ...OrderFields
+        }
+      }
     }
   }
 }

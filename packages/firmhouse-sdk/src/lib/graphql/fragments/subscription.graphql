@@ -1,4 +1,4 @@
-fragment SubscriptionFragment on Subscription {
+fragment SubscriptionFields on Subscription {
   address
   amountForStartingSubscriptionCents
   billToAddress
@@ -15,8 +15,6 @@ fragment SubscriptionFragment on Subscription {
   billToSalutation
   billToState
   billToZipcode
-  cancellationStartedAt
-  cancelledAt
   chargeDayOfTheMonth
   checkoutUrl
   city
@@ -43,32 +41,31 @@ fragment SubscriptionFragment on Subscription {
   name
   phoneNumber
   salutation
-  signupCompletedAt
-  skipAutoActivationOnSignup
   startDate
   state
   status
-  stoppedAt
   termsAccepted
   termsAcceptedOn
   token
   trialPeriodMonths
-  updatePaymentMethodUrl
   updatedAt
   vatNumber
   zipcode
   activePlan {
-    ...PlanFragment
+    ...PlanFields
+  }
+  subscribedPlan {
+    ...SubscribedPlanFields
   }
   orderedProducts {
-    ...OrderedProductFragment
+    ...OrderedProductFields
   }
   extraFields {
-    ...ExtraFieldAnswerFragment
+    ...ExtraFieldAnswerFields
   }
 }
 
-fragment ExtraFieldAnswerFragment on ExtraFieldAnswer {
+fragment ExtraFieldAnswerFields on ExtraFieldAnswer {
   extraFieldId
   fieldType
   id
@@ -78,4 +75,26 @@ fragment ExtraFieldAnswerFragment on ExtraFieldAnswer {
   selectOptions
   value
   visibility
+}
+
+fragment CompleteSubscriptionFields on Subscription {
+  activatedAt
+  cancellationStartedAt
+  cancelledAt
+  identityVerificationUrl
+  inTrialPeriod
+  markedAsNonPayingAt
+  notes
+  paidAmount
+  pausedAt
+  pausedUntil
+  paymentMethod
+  paymentMethodSummary
+  paymentMethodTranslated
+  pspPaymentMethodDetails
+  signupCompletedAt
+  skipAutoActivationOnSignup
+  stoppedAt
+  updatePaymentMethodUrl
+  updatedAt
 }

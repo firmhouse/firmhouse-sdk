@@ -1,0 +1,6 @@
+import * as Types from '../generated';
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type ExtraFieldFieldsFragment = { fieldType: string, id: string, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, visibility: string };
+
+export const ExtraFieldFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExtraFieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExtraField"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fieldType"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"required"}},{"kind":"Field","name":{"kind":"Name","value":"selectOptions"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}}]}}]} as unknown as DocumentNode<ExtraFieldFieldsFragment, unknown>;

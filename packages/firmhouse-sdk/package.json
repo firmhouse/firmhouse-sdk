@@ -1,7 +1,27 @@
 {
   "name": "@firmhouse/firmhouse-sdk",
-  "version": "0.0.1",
+  "version": "0.0.0-semantic-release",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/firmhouse/firmhouse-sdk",
+    "directory": "packages/firmhouse-sdk"
+  },
+  "keywords": [
+    "firmhouse",
+    "sdk"
+  ],
+  "author": {
+    "name": "firmhouse",
+    "email": "info@firmhouse.com",
+    "url": "https://firmhouse.com/"
+  },
   "scripts": {
     "generate": "graphql-codegen --config ./graphql.config.yml"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

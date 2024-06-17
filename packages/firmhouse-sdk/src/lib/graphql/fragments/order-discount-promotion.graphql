@@ -1,0 +1,11 @@
+fragment OrderDiscountPromotionFields on OrderDiscountPromotion {
+  activated
+  autoApply
+  deactivateAfterAmountIncludingTaxCents
+  deactivateAfterTimes
+  deactivationStrategy
+  id
+  percentDiscount
+  publicName
+  title
+}

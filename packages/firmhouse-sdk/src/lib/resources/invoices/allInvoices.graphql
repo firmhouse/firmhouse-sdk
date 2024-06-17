@@ -1,0 +1,55 @@
+query allInvoices(
+  $invoicedSince: ISO8601DateTime
+  $invoicedUntil: ISO8601DateTime
+  $updatedSince: ISO8601DateTime
+  $updatedUntil: ISO8601DateTime
+  $subscriptionId: ID
+  $paymentTypes: [PaymentTypeEnum!]
+  $statuses: [InvoiceStatusEnum!]
+  $after: String
+  $before: String
+  $last: Int
+  $first: Int
+  $includeCollectionCases: Boolean!
+  $includeInvoiceReminders: Boolean!
+  $includeInvoiceLineItems: Boolean!
+  $includePayment: Boolean!
+  $includeOriginalInvoice: Boolean!
+) {
+  invoices(
+    invoicedSince: $invoicedSince
+    invoicedUntil: $invoicedUntil
+    updatedSince: $updatedSince
+    updatedUntil: $updatedUntil
+    subscriptionId: $subscriptionId
+    paymentTypes: $paymentTypes
+    statuses: $statuses
+    after: $after
+    before: $before
+    last: $last
+    first: $first
+  ) {
+    totalCount
+    pageInfo {
+      ...PageInfoFields
+    }
+    nodes {
+      ...InvoiceFields
+      collectionCase @include(if: $includeCollectionCases) {
+        ...CollectionCaseFields
+      }
+      invoiceLineItems @include(if: $includeInvoiceLineItems) {
+        ...InvoiceLineItemFields
+      }
+      invoiceReminders @include(if: $includeInvoiceReminders) {
+        ...InvoiceReminderFields
+      }
+      originalInvoice @include(if: $includeOriginalInvoice) {
+        ...InvoiceFields
+      }
+      payment @include(if: $includePayment) {
+        ...PaymentFields
+      }
+    }
+  }
+}

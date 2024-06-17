@@ -25,7 +25,7 @@ export function Select({
         {label}
       </label>
       <select
-        className="border-2 bg-white border-gray-200 rounded-lg w-full focus:outline-1 focus:outline-blue-100 px-2 pt-1.5 pb-[7px] text-md required:invalid:text-gray-400"
+        className="border-2 bg-white border-gray-200 rounded-lg w-full focus:outline-1 focus:outline-blue-100 px-2 pt-1.5 pb-[7px] text-md required:invalid:text-gray-400 disabled:bg-gray-400 disabled:cursor-default"
         {...props}
         defaultValue={props.defaultValue ?? ''}
       >

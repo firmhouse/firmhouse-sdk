@@ -1,4 +1,4 @@
-fragment ProductFragment on Product {
+fragment ProductFields on Product {
   available
   eligibleForDiscount
   graceCancellationEnabled
@@ -29,4 +29,9 @@ fragment ProductFragment on Product {
   taxAmountCents
   taxPercentage
   title
+}
+
+fragment CompleteProductFields on Product {
+  ...ProductFields
+  costPerItemCents
 }

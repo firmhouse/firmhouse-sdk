@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function getISO8601Date(dateString: string | null) {
   if (dateString === null) return undefined;
   try {
@@ -7,4 +9,16 @@ export function getISO8601Date(dateString: string | null) {
     console.error(e);
   }
   return undefined;
+}
+
+export function formatShortDate(date: string | number | Date): string {
+  return dayjs(date).format('DD MMM HH:mm');
+}
+
+export function formatLongDate(date: string | number | Date): string {
+  return dayjs(date).format('MMMM DD, YYYY');
+}
+
+export function isPastDate(date: string | number | Date): boolean {
+  return dayjs(date).isBefore();
 }

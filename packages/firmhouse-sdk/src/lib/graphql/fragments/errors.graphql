@@ -1,4 +1,4 @@
-fragment ModelValidationErrorFragment on ModelValidationError {
+fragment ModelValidationErrorFields on ModelValidationError {
   attribute
   message
   path

@@ -1,9 +1,9 @@
-import { SubscriptionType } from '@firmhouse/firmhouse-sdk';
+import { FirmhouseCart } from '@firmhouse/firmhouse-sdk';
 import { formatCentsToEuros } from '@firmhouse/ui-components';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import Link from 'next/link';
 export interface CartProps {
-  subscription?: SubscriptionType | null;
+  subscription?: FirmhouseCart | null;
   onRemove: (data: FormData) => void;
   onUpdateQuantity: (data: FormData) => void;
 }

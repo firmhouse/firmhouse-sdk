@@ -1,0 +1,137 @@
+# [1.0.0-alpha.9](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.8...firmhouse-sdk-v1.0.0-alpha.9) (2024-06-17)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix orders relation bug ([346d054](https://github.com/firmhouse/firmhouse-sdk/commit/346d0547b1e2e4f1af07403a2bf9ee4e6608da14))
+
+# [1.0.0-alpha.8](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.7...firmhouse-sdk-v1.0.0-alpha.8) (2024-06-12)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fixes type issues ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+* **nextjs-storefront-app-router:** update example to comply with latest type changes ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+
+
+### Features
+
+* **firmhouse-sdk:** add missing parameters to getSubscription and cleanup resource docs ([e877ae9](https://github.com/firmhouse/firmhouse-sdk/commit/e877ae98fc9efa3847354b705c78a8b859fe76e0))
+
+# [1.0.0-alpha.7](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.6...firmhouse-sdk-v1.0.0-alpha.7) (2024-04-05)
+
+
+### Features
+
+* **firmhouse-sdk:** add support for promotion and discount code requests ([#25](https://github.com/firmhouse/firmhouse-sdk/issues/25)) ([d43966e](https://github.com/firmhouse/firmhouse-sdk/commit/d43966e530b7285a52d37be47883eaff0316e08c))
+
+# [1.0.0-alpha.6](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.5...firmhouse-sdk-v1.0.0-alpha.6) (2024-03-26)
+
+
+### Bug Fixes
+
+* **nextjs-self-service-center:** fix invoice types ([4dfe37c](https://github.com/firmhouse/firmhouse-sdk/commit/4dfe37c691c4a02f4fe8aed0bbf3e40c1d5a46a3))
+* **nextjs-self-service-center:** remove usage of deprecated field ([4dfe37c](https://github.com/firmhouse/firmhouse-sdk/commit/4dfe37c691c4a02f4fe8aed0bbf3e40c1d5a46a3))
+
+# [1.0.0-alpha.5](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.4...firmhouse-sdk-v1.0.0-alpha.5) (2024-03-04)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix imports from nodejs repos ([bdea63b](https://github.com/firmhouse/firmhouse-sdk/commit/bdea63b5ca66e1bdd8abab42a88bb22acc8d45cb))
+* **firmhouse-sdk:** remove cross-fetch from bundle ([bdea63b](https://github.com/firmhouse/firmhouse-sdk/commit/bdea63b5ca66e1bdd8abab42a88bb22acc8d45cb))
+
+# [1.0.0-alpha.4](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.3...firmhouse-sdk-v1.0.0-alpha.4) (2024-02-23)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix  the closest upcoming order logic ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix edge runtime error on node environment ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix external library default import issue ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix missing parameters for format ordered product ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix ordered product utils bug ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix the assignOrderedProductUtils method ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** fix type issues ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** use Amsterdam timezone for checking if the date is same ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** fix  redirection links ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** fix cancellation for dynamic subscription projects ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** fix example to reflect typing changes ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** fix project picker chevron location ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** fix shipment date issues ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** make auth flow more secure ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** add link to back button on mobile SSC ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** fix app router example to support type changes ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** update the example to reflect typing changes ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-pages-router:** update example to reflect typing changes ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+
+
+### Features
+
+* **firmhouse-sdk:** add edge runtime support ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add invoices relation to subscription.getWith ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add invoices resource ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add subscribed plan ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add suport for getCurrentProject query with relations ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add support for cancel/pause/resume subscription mutations ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add support for orders relation to subscription.getWith ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** add utility methods to subscription and ordered products ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** filter out null subscription orders ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** support getSubscriptionBySSCT ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **firmhouse-sdk:** update type interface completely ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** add ordered product adjustment page to SSC ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-self-service-center:** allow changing projects ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** add cancellation page ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** add latest invoices to SSC subscription page ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** add navigation links to mobile SSC ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+* **nextjs-storefront-app-router:** add recent orders to SSC subscription page ([8f30b74](https://github.com/firmhouse/firmhouse-sdk/commit/8f30b741ee3cae8446b9f7dbc9454a4006544576))
+
+# [1.0.0-alpha.3](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.2...firmhouse-sdk-v1.0.0-alpha.3) (2023-12-08)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix build ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+
+
+### Features
+
+* **firmhouse-sdk:** add write access support ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+* **firmhouse-sdk:** customize field access ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+* **firmhouse-sdk:** modify updateOrderedProduct ([ab07908](https://github.com/firmhouse/firmhouse-sdk/commit/ab07908c793018ad08bbc73c40101bb292b3096a))
+
+# [1.0.0-alpha.2](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0-alpha.1...firmhouse-sdk-v1.0.0-alpha.2) (2023-11-21)
+
+
+### Bug Fixes
+
+* **firmhouse-sdk:** fix the resource name for ssc ([223599a](https://github.com/firmhouse/firmhouse-sdk/commit/223599a8ccfc31ab92713314c0275097c74166cc))
+
+
+### Features
+
+* **firmhouse-sdk:** add create ssc token support ([223599a](https://github.com/firmhouse/firmhouse-sdk/commit/223599a8ccfc31ab92713314c0275097c74166cc))
+
+# 1.0.0-alpha.1 (2023-11-15)
+
+
+### Bug Fixes
+
+* fix package-lock.json ([011d0ae](https://github.com/firmhouse/firmhouse-sdk/commit/011d0ae22d714e4752bbf91b9f43db4ef678822c))
+
+
+### Features
+
+* initial release ([011d0ae](https://github.com/firmhouse/firmhouse-sdk/commit/011d0ae22d714e4752bbf91b9f43db4ef678822c))
+
+# 1.0.0-alpha.1 (2023-11-15)
+
+
+### Bug Fixes
+
+* fix package-lock.json ([011d0ae](https://github.com/firmhouse/firmhouse-sdk/commit/011d0ae22d714e4752bbf91b9f43db4ef678822c))
+
+
+### Features
+
+* initial release ([011d0ae](https://github.com/firmhouse/firmhouse-sdk/commit/011d0ae22d714e4752bbf91b9f43db4ef678822c))
