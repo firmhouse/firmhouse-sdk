@@ -15,7 +15,69 @@ module.exports = {
   ],
   plugins: [
     // Wraps commit-analyzer and release-notes-generator plguins to support squash and merge
-    'semantic-release-unsquash',
+    [
+      'semantic-release-unsquash',
+      {
+        commitAnalyzerConfig: {
+          preset: 'angular',
+          releaseRules: [
+            {
+              type: 'feat',
+              release: 'minor',
+            },
+            {
+              type: 'build',
+              release: 'patch',
+            },
+            {
+              type: 'ci',
+              release: 'patch',
+            },
+            {
+              type: 'chore',
+              release: 'patch',
+            },
+            {
+              type: 'docs',
+              release: 'patch',
+            },
+            {
+              type: 'refactor',
+              release: 'patch',
+            },
+            {
+              type: 'style',
+              release: 'patch',
+            },
+            {
+              type: 'test',
+              release: 'patch',
+            },
+            {
+              scope: '!firmhouse-sdk',
+              release: false,
+            },
+          ],
+        },
+        notesGeneratorConfig: {
+          preset: 'conventionalcommits',
+          presetConfig: {
+            types: [
+              { type: 'feat', section: 'Features' },
+              { type: 'fix', section: 'Bug Fixes' },
+              { type: 'chore', hidden: true },
+              { type: 'docs', hidden: true },
+              { type: 'ci', hidden: true },
+              { type: 'style', hidden: true },
+              { type: 'refactor', hidden: true },
+              { type: 'perf', hidden: true },
+              { type: 'test', hidden: true },
+              { type: 'build', hidden: true },
+            ],
+          },
+        },
+      },
+    ],
     [
       '@semantic-release/changelog',
       {

@@ -62,6 +62,7 @@ export interface FirmhouseConfig<T extends Access> {
  *  accessType: Access.write
  * });
  *
+ * const cart = await client.carts.getOrCreate();
  * const products = await client.products.fetchAll();
  * const invoices = await client.invoices.fetchAll();
  * ```
