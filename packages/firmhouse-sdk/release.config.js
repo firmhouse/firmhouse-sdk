@@ -19,8 +19,12 @@ module.exports = {
       'semantic-release-unsquash',
       {
         commitAnalyzerConfig: {
-          preset: 'conventionalcommits',
+          preset: 'angular',
           releaseRules: [
+            {
+              type: 'feat',
+              release: 'minor',
+            },
             {
               type: 'build',
               release: 'patch',
@@ -57,6 +61,20 @@ module.exports = {
         },
         notesGeneratorConfig: {
           preset: 'conventionalcommits',
+          presetConfig: {
+            types: [
+              { type: 'feat', section: 'Features' },
+              { type: 'fix', section: 'Bug Fixes' },
+              { type: 'chore', hidden: true },
+              { type: 'docs', hidden: true },
+              { type: 'ci', hidden: true },
+              { type: 'style', hidden: true },
+              { type: 'refactor', hidden: true },
+              { type: 'perf', hidden: true },
+              { type: 'test', hidden: true },
+              { type: 'build', hidden: true },
+            ],
+          },
         },
       },
     ],
