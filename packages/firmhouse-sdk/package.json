@@ -4,6 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/firmhouse/firmhouse-sdk",
