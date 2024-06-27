@@ -1,3 +1,5 @@
+## [1.0.1-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1-alpha.1) (2024-06-27)
+
 ## 1.0.0 (2024-06-26)
 
 ## 1.0.0-alpha.1 (2024-06-26)
