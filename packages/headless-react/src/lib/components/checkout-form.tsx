@@ -147,7 +147,6 @@ export function CheckoutForm({ className, fields }: CheckoutFormProps) {
         ) : null;
       }),
     [
-      fields,
       fieldGroups,
       differentBillingAddress,
       setDifferentBillingAddress,

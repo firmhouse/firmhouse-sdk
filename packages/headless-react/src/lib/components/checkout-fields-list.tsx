@@ -104,10 +104,12 @@ export interface CheckoutFieldsListProps {
 const getDefaultProps = (
   name: string,
   tr: TranslationFunction,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: Record<string, any>,
   locale = 'en'
 ) => {
   const t = (key: string) => tr?.(`checkout.fields.${key}`);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getProps = (name: string, customProps: Record<string, any> = {}) => {
     return {
       label: t(`${name}.label`),
@@ -201,6 +203,7 @@ const getDefaultProps = (
 function getProps<T extends PartialInputProps>(
   field: CheckoutField,
   t: TranslationFunction,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: Record<string, any>,
   cart?: FirmhouseCart | null,
   inputClassName?: string
@@ -305,98 +308,102 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
   const Submit = SubmitButtonComponent ?? SubmitButton;
 
   const fieldComponents = useMemo(
-    () =>
-      fields.map((field, index) => {
-        return getFieldType(field) === 'break' ? (
-          <div key={`${field}-${index}`} className={styles.break} />
-        ) : (
-          <React.Fragment key={`${field.name}-${index}`}>
-            {getFieldType(field) === 'text' ? (
-              <Text
-                {...getProps<TextInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'email' ? (
-              <Email
-                type="email"
-                {...getProps<TextInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'tel' ? (
-              <PhoneNumber
-                type="tel"
-                {...getProps<TextInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'dropdown' ? (
-              <Dropdown
-                {...getProps<DropdownInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'checkbox' ? (
-              <Checkbox
-                {...getProps<CheckboxInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'date' ? (
-              <Date
-                {...getProps<DateInputProps>(
-                  field,
-                  t,
-                  config,
-                  cart,
-                  inputClassName
-                )}
-                error={errors?.[field.name]}
-              />
-            ) : null}
-            {getFieldType(field) === 'hidden' ? (
-              <input type="hidden" {...getProps(field, t, config, cart)} />
-            ) : null}
-            {getFieldType(field) === 'submit' ? (
-              <Submit
-                disabled={loading}
-                {...getProps(field, t, config, cart)}
-              />
-            ) : null}
-          </React.Fragment>
-        );
-      }),
+    () => (
+      <>
+        {fields.map((field, index) => {
+          return getFieldType(field) === 'break' ? (
+            <div key={`${field}-${index}`} className={styles.break} />
+          ) : (
+            <React.Fragment key={`${field.name}-${index}`}>
+              {getFieldType(field) === 'text' ? (
+                <Text
+                  {...getProps<TextInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'email' ? (
+                <Email
+                  type="email"
+                  {...getProps<TextInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'tel' ? (
+                <PhoneNumber
+                  type="tel"
+                  {...getProps<TextInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'dropdown' ? (
+                <Dropdown
+                  {...getProps<DropdownInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'checkbox' ? (
+                <Checkbox
+                  {...getProps<CheckboxInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'date' ? (
+                <Date
+                  {...getProps<DateInputProps>(
+                    field,
+                    t,
+                    config,
+                    cart,
+                    inputClassName
+                  )}
+                  error={errors?.[field.name]}
+                />
+              ) : null}
+              {getFieldType(field) === 'hidden' ? (
+                <input type="hidden" {...getProps(field, t, config, cart)} />
+              ) : null}
+              {getFieldType(field) === 'submit' ? (
+                <Submit
+                  disabled={loading}
+                  {...getProps(field, t, config, cart)}
+                />
+              ) : null}
+            </React.Fragment>
+          );
+        })}
+      </>
+    ),
+
     [
       fields,
       cart,
@@ -404,6 +411,7 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
       inputClassName,
       config,
       t,
+      loading,
       Checkbox,
       Text,
       Dropdown,
@@ -417,5 +425,5 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
   if (!cart || !t) {
     return null;
   }
-  return <>{fieldComponents}</>;
+  return fieldComponents;
 }

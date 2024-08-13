@@ -1,4 +1,4 @@
-import { useFirmhouseCart } from '@firmhouse/headless-react';
+import { useFirmhouseCart } from '../hooks';
 import { formatCentsWithCurrency, getOrderCalculations } from '../utils';
 import { OrderSummaryUI, OrderSummaryUIProps } from './order-summary-ui';
 

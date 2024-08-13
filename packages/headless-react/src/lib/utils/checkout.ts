@@ -1,7 +1,4 @@
-import {
-  FirmhouseCart,
-  FirmhouseExtraFieldInput,
-} from '@firmhouse/firmhouse-sdk';
+import { FirmhouseCart } from '@firmhouse/firmhouse-sdk';
 
 export function getCheckoutDetailsFromForm(
   event: React.FormEvent<HTMLFormElement>,
@@ -12,7 +9,7 @@ export function getCheckoutDetailsFromForm(
   const formData = new FormData(event.currentTarget);
   const addressDetails: Record<
     string,
-    string | boolean | FirmhouseExtraFieldInput
+    string | boolean | { id?: string; extraFieldId: string; value: string }
   > = {};
   const billingFields =
     fields.filter((field) => field.startsWith('billTo')) ?? [];

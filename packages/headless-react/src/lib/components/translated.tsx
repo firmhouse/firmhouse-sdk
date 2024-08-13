@@ -8,5 +8,5 @@ export interface TranslatedProps {
 
 export function Translated({ key, options, defaultValue }: TranslatedProps) {
   const { t } = useFirmhouseCart();
-  return <>{options ? t?.(key, options) : t?.(key)}</>;
+  return options ? t?.(key, options) : t?.(key);
 }

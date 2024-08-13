@@ -1,7 +1,29 @@
 # headless-react
 
-This library was generated with [Nx](https://nx.dev).
+This package is a set of fully customizable React components that can be used to build a headless UI for a Firmhouse Storefront.
 
-## Running unit tests
+You can find the full documentation at [https://developer.firmhouse.com/sdks/headless-react](https://developer.firmhouse.com/sdks/headless-react)
 
-Run `nx test headless-react` to execute the unit tests via [Jest](https://jestjs.io).
+## Installation
+
+```bash
+npm install @firmhouse/firmhouse-sdk @firmhouse/headless-react
+```
+
+## Usage
+
+```jsx
+import { CheckoutForm, FirmhouseCartProvider, OrderedProductsList, OrderSummary } from '@firmhouse/headless-react';
+
+<FirmhouseCartProvider apiToken={apiToken}>
+  <div>
+    <CheckoutForm />
+  </div>
+  <div>
+    <OrderedProductsList onlyOneTimeProducts />
+    <br />
+    <OrderedProductsList onlyRecurringProducts />
+    <OrderSummary />
+  </div>
+</FirmhouseCartProvider>;
+```

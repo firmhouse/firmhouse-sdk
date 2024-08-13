@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, createContext } from 'react';
+import { useContext, useEffect, useState, createContext, useMemo } from 'react';
 import {
   CartsResource,
   FirmhouseCart,
@@ -154,9 +154,13 @@ export function useCart(
   translations?: Partial<CheckoutTranslations>,
   availableCountries?: string[]
 ) {
-  const firmhouseClient = new FirmhouseClient({
-    apiToken: firmhouseAccessToken,
-  });
+  const firmhouseClient = useMemo(
+    () =>
+      new FirmhouseClient({
+        apiToken: firmhouseAccessToken,
+      }),
+    [firmhouseAccessToken]
+  );
   const { t, i18n } = useTranslation();
   const [cart, setCart] = useState(
     (initialCart ?? null) as FirmhouseCart | null
@@ -192,7 +196,7 @@ export function useCart(
     if (cart?.locale) {
       i18n.changeLanguage(cart.locale);
     }
-  }, [cart?.locale, i18n, cart?.locale]);
+  }, [cart?.locale, i18n]);
 
   useEffect(() => {
     Object.keys(translations ?? {}).forEach((key) => {

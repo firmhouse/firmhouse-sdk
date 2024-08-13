@@ -11,3 +11,4 @@ export * from './text-input';
 export * from './dropdown-input';
 export * from './date-input';
 export * from './submit-button';
+export * from './translated';

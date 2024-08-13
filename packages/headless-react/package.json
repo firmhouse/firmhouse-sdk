@@ -1,4 +1,30 @@
 {
   "name": "@firmhouse/headless-react",
-  "version": "0.0.1"
+  "description": "React components for building custom Firmhouse storefronts in a headless way",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/firmhouse/headless-react",
+    "directory": "packages/headless-react"
+  },
+  "keywords": [
+    "firmhouse",
+    "react",
+    "headless",
+    "components",
+    "sdk",
+    "headless-react"
+  ],
+  "author": {
+    "name": "firmhouse",
+    "email": "info@firmhouse.com",
+    "url": "https://firmhouse.com/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
