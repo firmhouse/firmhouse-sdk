@@ -22,15 +22,16 @@ export class _GraphQLClient {
   private client: GraphQLClientBase;
 
   public request: InstanceType<typeof GraphQLClientBase>['request'];
-
   constructor(
     apiToken: string,
-    baseUrl = 'https://portal.firmhouse.com/graphql'
+    baseUrl = 'https://portal.firmhouse.com/graphql',
+    fetchParameters: RequestInit = {}
   ) {
     this.API_TOKEN = apiToken;
     this.BASE_URL = baseUrl;
     this.client = new GraphQLClientBase(this.BASE_URL, {
-      fetch: globalThis.fetch,
+      fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+        globalThis.fetch(input, { ...fetchParameters, ...init }),
       headers: {
         'X-Project-Access-Token': this.API_TOKEN,
       },

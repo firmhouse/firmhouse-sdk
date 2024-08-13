@@ -46,6 +46,14 @@ export interface FirmhouseConfig<T extends Access> {
    * Default value is `Access.storefront`
    */
   readonly accessType?: T;
+
+  /**
+   * Request initialization parameters for fetch
+   * @remarks
+   * This can be used to pass additional headers or other parameters to the fetch request.
+   * This can be particularly useful when you want to pass next.js cache tags to the request.
+   */
+  readonly fetchParameters?: RequestInit;
 }
 
 /**
