@@ -1,0 +1,11 @@
+.tax {
+  /* make it smaller and lighter */
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+
+.total {
+  font-weight: 500;
+  font-size: 1.25rem;
+  margin: 0.25rem 0;
+}
