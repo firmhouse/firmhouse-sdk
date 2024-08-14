@@ -90,8 +90,8 @@ export type CheckoutField =
 
 export interface CheckoutFieldsListProps {
   fields: CheckoutField[];
-  containerClassName?: string;
   inputClassName?: string;
+  fallback?: React.ReactNode;
   TextInputComponent?: React.ComponentType<TextInputProps>;
   CheckboxComponent?: React.ComponentType<CheckboxInputProps>;
   DropdownComponent?: React.ComponentType<DropdownInputProps>;
@@ -121,19 +121,15 @@ const getDefaultProps = (
   // eslint-disable no-fallthrough
   switch (name) {
     case 'differentBillingAddress':
+    case 'termsAccepted':
     case 'companyName':
     case 'vatNumber':
     case 'name':
     case 'lastName':
-
     case 'address':
-
     case 'zipcode':
-
     case 'houseNumber':
-
     case 'city':
-
     case 'state':
     case 'district':
     case 'billToCompanyName':
@@ -206,11 +202,17 @@ function getProps<T extends PartialInputProps>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: Record<string, any>,
   cart?: FirmhouseCart | null,
-  inputClassName?: string
+  inputClassName?: string,
+  locale?: string
 ): T {
   const { name, inputProps, label } = field;
   const isExtraField = (field as ExtraField).id !== undefined;
-  const defaultProps = getDefaultProps(name, t, config);
+  const defaultProps = getDefaultProps(
+    name,
+    t,
+    config,
+    locale ?? cart?.locale ?? 'en'
+  );
   const className = [inputClassName, inputProps?.className]
     .filter(Boolean)
     .join(' ');
@@ -286,19 +288,21 @@ function getFieldType(field: CheckoutField): CheckoutFieldType {
   }
 }
 
-export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
-  const { errors, config, cart, t, loading } = useFirmhouseCart();
-  const {
-    fields,
-    inputClassName,
-    CheckboxComponent,
-    TextInputComponent,
-    DropdownComponent,
-    EmailInputComponent,
-    PhoneNumberInputComponent,
-    DateInputComponent,
-    SubmitButtonComponent,
-  } = props;
+export function CheckoutFieldsList({
+  fields,
+  inputClassName,
+  fallback,
+  CheckboxComponent,
+  TextInputComponent,
+  DropdownComponent,
+  EmailInputComponent,
+  PhoneNumberInputComponent,
+  DateInputComponent,
+  SubmitButtonComponent,
+}: CheckoutFieldsListProps) {
+  const { errors, config, cart, t, loading, actionInProgress, locale } =
+    useFirmhouseCart();
+
   const Checkbox = CheckboxComponent ?? CheckboxInput;
   const Text = TextInputComponent ?? TextInput;
   const Dropdown = DropdownComponent ?? DropdownInput;
@@ -322,7 +326,8 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
@@ -335,7 +340,8 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
@@ -348,7 +354,8 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
@@ -360,7 +367,8 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
@@ -372,7 +380,8 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
@@ -384,18 +393,22 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
                     t,
                     config,
                     cart,
-                    inputClassName
+                    inputClassName,
+                    locale
                   )}
                   error={errors?.[field.name]}
                 />
               ) : null}
               {getFieldType(field) === 'hidden' ? (
-                <input type="hidden" {...getProps(field, t, config, cart)} />
+                <input
+                  type="hidden"
+                  {...getProps(field, t, config, cart, undefined, locale)}
+                />
               ) : null}
               {getFieldType(field) === 'submit' ? (
                 <Submit
-                  disabled={loading}
-                  {...getProps(field, t, config, cart)}
+                  disabled={actionInProgress}
+                  {...getProps(field, t, config, cart, undefined, locale)}
                 />
               ) : null}
             </React.Fragment>
@@ -411,7 +424,6 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
       inputClassName,
       config,
       t,
-      loading,
       Checkbox,
       Text,
       Dropdown,
@@ -419,11 +431,12 @@ export function CheckoutFieldsList(props: CheckoutFieldsListProps) {
       PhoneNumber,
       Date,
       Submit,
+      actionInProgress,
     ]
   );
 
-  if (!cart || !t) {
-    return null;
+  if (!cart || !t || loading) {
+    return fallback ?? null;
   }
   return fieldComponents;
 }

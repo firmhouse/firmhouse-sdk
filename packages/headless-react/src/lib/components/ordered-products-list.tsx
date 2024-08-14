@@ -1,7 +1,7 @@
 import { FirmhouseOrderedProduct } from '@firmhouse/firmhouse-sdk';
 import { useFirmhouseCart } from '../hooks';
 import { OrderedProductProps, OrderedProduct } from './ordered-product';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { getOrderedProductInfo } from '../utils';
 import {
   OrderedProductsGroup,
@@ -21,6 +21,9 @@ export interface OrderedProductsListProps {
   onlyRecurringProducts?: boolean;
   className?: string;
   itemClassName?: string;
+  children?: React.ReactNode;
+  header?: React.ReactNode;
+  fallback?: React.ReactNode;
 }
 
 export function OrderedProductsList({
@@ -32,8 +35,11 @@ export function OrderedProductsList({
   onlyOneTimeProducts,
   onlyRecurringProducts,
   itemClassName,
+  header,
+  children,
+  fallback,
 }: OrderedProductsListProps) {
-  const { cart, t } = useFirmhouseCart();
+  const { cart, t, loading } = useFirmhouseCart();
 
   const productFilter = useCallback(
     (op: FirmhouseOrderedProduct) => {
@@ -52,22 +58,26 @@ export function OrderedProductsList({
     },
     [onlyOneTimeProducts, onlyRecurringProducts, filter, cart, t]
   );
+
+  const filteredOrderedProducts = useMemo(() => {
+    if (!cart) {
+      return [];
+    }
+    return cart.orderedProducts?.filter(productFilter) ?? [];
+  }, [cart, productFilter]);
   const groups = useMemo(() => {
     if (!groupBy || !cart) {
       return null;
     }
     const groupsObject =
-      cart?.orderedProducts
-        ?.filter(productFilter)
-        .sort((a, b) => a.id.localeCompare(b.id))
-        .reduce((acc, orderedProduct) => {
-          const group = groupBy(orderedProduct, t);
-          if (!acc[group]) {
-            acc[group] = [];
-          }
-          acc[group].push(orderedProduct);
-          return acc;
-        }, {} as Record<string, FirmhouseOrderedProduct[]>) ?? {};
+      filteredOrderedProducts.reduce((acc, orderedProduct) => {
+        const group = groupBy(orderedProduct, t);
+        if (!acc[group]) {
+          acc[group] = [];
+        }
+        acc[group].push(orderedProduct);
+        return acc;
+      }, {} as Record<string, FirmhouseOrderedProduct[]>) ?? {};
 
     return Object.entries(groupsObject).map(([groupName, orderedProducts]) => (
       <OrderedProductsGroupComponent key={groupName} name={groupName}>
@@ -85,7 +95,7 @@ export function OrderedProductsList({
     ));
   }, [
     cart,
-    productFilter,
+    filteredOrderedProducts,
     groupBy,
     itemClassName,
     OrderedProductComponent,
@@ -98,24 +108,32 @@ export function OrderedProductsList({
   }
 
   if (groups) {
-    return <div className={className}>{groups}</div>;
+    return (
+      <div className={className}>
+        {header}
+        {groups}
+        {children}
+      </div>
+    );
   }
 
-  return (
+  if (!cart || !t || loading) {
+    return fallback || null;
+  }
+  return filteredOrderedProducts.length > 0 ? (
     <div className={`${className}`}>
-      {cart.orderedProducts
-        ?.filter(productFilter)
-        .sort((a, b) => a.id.localeCompare(b.id))
-        .map((orderedProduct) => (
-          <OrderedProductComponent
-            className={itemClassName}
-            key={orderedProduct.id}
-            orderedProduct={orderedProduct}
-            cart={cart}
-            t={t}
-            {...getOrderedProductInfo(orderedProduct, cart, t)}
-          />
-        ))}
+      {header}
+      {filteredOrderedProducts.map((orderedProduct) => (
+        <OrderedProductComponent
+          className={itemClassName}
+          key={orderedProduct.id}
+          orderedProduct={orderedProduct}
+          cart={cart}
+          t={t}
+          {...getOrderedProductInfo(orderedProduct, cart, t)}
+        />
+      ))}
+      {children}
     </div>
-  );
+  ) : null;
 }

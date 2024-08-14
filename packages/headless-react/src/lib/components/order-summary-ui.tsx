@@ -15,6 +15,7 @@ export interface OrderSummaryUIProps {
   cart: FirmhouseCart | null;
   children?: React.ReactNode;
   t?: TranslationFunction;
+  locale?: string;
 }
 
 export function OrderSummaryUI({
@@ -25,6 +26,7 @@ export function OrderSummaryUI({
   children,
   currency,
   t,
+  locale,
 }: OrderSummaryUIProps) {
   return (
     <div className={className}>
@@ -38,7 +40,7 @@ export function OrderSummaryUI({
             amount: formatCentsWithCurrency(
               totalTaxAmount ?? 0,
               currency,
-              cart?.locale
+              locale ?? cart?.locale
             ),
           })}
         </p>

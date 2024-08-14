@@ -17,6 +17,7 @@ i18n.use(initReactI18next).init({
   resources: defaultTranslations,
   fallbackLng: 'en',
   lng: 'en',
+  defaultNS: 'translation',
   interpolation: {
     escapeValue: false,
   },
@@ -34,11 +35,21 @@ export const FirmhouseCartContext = createContext<{
   errors: Record<string, string> | null;
   setLoading?: (loading: boolean) => void;
   loading: boolean;
+  setActionInProgress?: (actionInProgress: boolean) => void;
+  actionInProgress: boolean;
   setConfig?: (config: Record<string, string>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: Record<string, any>;
   t: TranslationFunction | null;
-}>({ cart: null, errors: null, loading: true, config: {}, t: null });
+  locale?: string;
+}>({
+  cart: null,
+  errors: null,
+  loading: true,
+  actionInProgress: false,
+  config: {},
+  t: null,
+});
 export const useFirmhouseCart = () => {
   const {
     cart,
@@ -50,13 +61,25 @@ export const useFirmhouseCart = () => {
     loading,
     config,
     t,
+    actionInProgress,
+    setActionInProgress,
+    locale,
   } = useContext(FirmhouseCartContext);
   return {
     cart,
     errors,
     loading,
+    actionInProgress,
     config,
-    ...actions(config, firmhouseClient, cart, setCart, setErrors, setLoading),
+    locale,
+    ...actions(
+      config,
+      firmhouseClient,
+      cart,
+      setCart,
+      setErrors,
+      setActionInProgress
+    ),
     t,
   };
 };
@@ -67,7 +90,7 @@ function actions(
   cart?: FirmhouseCart | null,
   setCart?: (cart: FirmhouseCart) => void,
   setErrors?: (errors: Record<string, string> | null) => void,
-  setLoading?: (loading: boolean) => void
+  setActionInProgress?: (actionInProgress: boolean) => void
 ) {
   if (!cart || !firmhouseClient || !setCart) {
     return {};
@@ -76,7 +99,7 @@ function actions(
   return {
     loadCart: async (cartToken: string) => {
       try {
-        setLoading?.(true);
+        setActionInProgress?.(true);
         const response = await firmhouseClient.carts.getOrCreate(cartToken);
         setCart({
           ...response,
@@ -86,7 +109,7 @@ function actions(
           error: error instanceof Error ? error.message : 'An error occurred',
         });
       }
-      setLoading?.(false);
+      setActionInProgress?.(false);
     },
     updateAddressDetails: async (
       addressDetails: (typeof CartsResource.prototype.updateAddressDetails.arguments)[1],
@@ -95,7 +118,7 @@ function actions(
       let success = true;
       try {
         setErrors?.(null);
-        setLoading?.(true);
+        setActionInProgress?.(true);
         const response = await firmhouseClient.carts.updateAddressDetails(
           cart.token,
           addressDetails
@@ -116,12 +139,12 @@ function actions(
           });
         }
       }
-      setLoading?.(false);
+      setActionInProgress?.(false);
       return success;
     },
     createSubscription: async () => {
       try {
-        setLoading?.(true);
+        setActionInProgress?.(true);
         const response = await firmhouseClient.carts.createSubscription(
           cart.token,
           config?.paymentPageUrl ?? '',
@@ -140,7 +163,7 @@ function actions(
           });
         }
       }
-      setLoading?.(false);
+      setActionInProgress?.(false);
     },
   };
 }
@@ -152,7 +175,8 @@ export function useCart(
   cartToken?: string,
   initialCart?: FirmhouseCart | null,
   translations?: Partial<CheckoutTranslations>,
-  availableCountries?: string[]
+  availableCountries?: string[],
+  locale?: string
 ) {
   const firmhouseClient = useMemo(
     () =>
@@ -167,6 +191,8 @@ export function useCart(
   );
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [actionInProgress, setActionInProgress] = useState(false);
+
   useEffect(() => {
     const token =
       cartToken ??
@@ -193,17 +219,20 @@ export function useCart(
   }, [cart, cartToken, firmhouseClient]);
 
   useEffect(() => {
-    if (cart?.locale) {
-      i18n.changeLanguage(cart.locale);
+    const lang = locale ?? cart?.locale ?? 'en';
+    if (locale || cart?.locale) {
+      i18n.changeLanguage(lang);
     }
-  }, [cart?.locale, i18n]);
+  }, [locale, cart?.locale, i18n]);
 
   useEffect(() => {
+    i18n.reloadResources();
     Object.keys(translations ?? {}).forEach((key) => {
       i18n.addResourceBundle(
         key,
         'translation',
         translations?.[key as SupportedLanguages] ?? {},
+        true,
         true
       );
     });
@@ -218,5 +247,8 @@ export function useCart(
     loading: loading,
     config: { paymentPageUrl, returnUrl, availableCountries },
     t,
+    setActionInProgress,
+    actionInProgress,
+    locale,
   };
 }

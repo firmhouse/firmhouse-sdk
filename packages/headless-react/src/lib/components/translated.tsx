@@ -1,12 +1,12 @@
 import { useFirmhouseCart } from '../hooks';
 
 export interface TranslatedProps {
-  key: string;
+  value: string;
   options?: Record<string, string | number>;
   defaultValue?: string;
 }
 
-export function Translated({ key, options, defaultValue }: TranslatedProps) {
+export function Translated({ value, options }: TranslatedProps) {
   const { t } = useFirmhouseCart();
-  return options ? t?.(key, options) : t?.(key);
+  return options ? t?.(value, options) : t?.(value);
 }

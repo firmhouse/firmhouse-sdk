@@ -1,7 +1,7 @@
 {
   "name": "@firmhouse/headless-react",
   "description": "React components for building custom Firmhouse storefronts in a headless way",
-  "version": "0.0.1",
+  "version": "0.0.0-semantic-release",
   "publishConfig": {
     "access": "public"
   },
@@ -26,5 +26,18 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@firmhouse/firmhouse-sdk": "^1"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": false
+    }
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./index.esm.js",
+    "./styles.css": "./styles.css"
   }
 }

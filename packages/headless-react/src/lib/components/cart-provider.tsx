@@ -12,30 +12,38 @@ export interface CartProviderProps {
   translations?: Partial<CheckoutTranslations>;
   initialFirmhouseCart?: FirmhouseCart | null;
   cartToken?: string;
+  locale?: string;
+  fallback?: React.ReactNode;
 }
-export function FirmhouseCartProvider(props: CartProviderProps) {
-  const {
-    children,
-    paymentPageUrl,
-    paymentSuccessPageUrl,
-    availableCountries,
-    translations,
-    initialFirmhouseCart,
-    cartToken,
-  } = props;
+export function FirmhouseCartProvider({
+  children,
+  apiToken,
+  paymentPageUrl,
+  paymentSuccessPageUrl,
+  availableCountries,
+  translations,
+  initialFirmhouseCart,
+  cartToken,
+  locale,
+  fallback,
+}: CartProviderProps) {
   const cartAndActions = useCart(
-    props.apiToken,
+    apiToken,
     paymentPageUrl ?? '',
     paymentSuccessPageUrl ?? '',
     cartToken,
     initialFirmhouseCart,
     translations ?? {},
-    availableCountries ?? defaultCountries
+    availableCountries ?? defaultCountries,
+    locale
   );
 
   return (
     <FirmhouseCartContext.Provider value={cartAndActions}>
-      {children}
+      {fallback &&
+      (!cartAndActions.cart || !cartAndActions.t || cartAndActions.loading)
+        ? fallback
+        : children}
     </FirmhouseCartContext.Provider>
   );
 }

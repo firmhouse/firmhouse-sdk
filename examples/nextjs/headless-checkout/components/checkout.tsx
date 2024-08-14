@@ -35,6 +35,7 @@ export default function Checkout({ apiToken }: CheckoutProps) {
   return (
     <FirmhouseCartProvider
       apiToken={apiToken}
+      locale="en"
       translations={{
         en: {
           opGroups: {
