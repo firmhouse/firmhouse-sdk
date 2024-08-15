@@ -3,7 +3,6 @@ import { useFirmhouseCart } from '../hooks';
 export interface TranslatedProps {
   value: string;
   options?: Record<string, string | number>;
-  defaultValue?: string;
 }
 
 export function Translated({ value, options }: TranslatedProps) {

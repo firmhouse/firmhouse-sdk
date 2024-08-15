@@ -2,7 +2,9 @@
 
 This package is a set of fully customizable React components that can be used to build a headless UI for a Firmhouse Storefront.
 
-You can find the full documentation at [https://developer.firmhouse.com/sdks/headless-react](https://developer.firmhouse.com/sdks/headless-react)
+You can find the full documentation at [https://developer.firmhouse.com/sdks/headless-react](https://developer.firmhouse.com/~/changes/1JxsjBJuo94JOj1BO5j9/sdks/headless-react)
+
+> **Note:** This package is still in development and can be subject to breaking changes.
 
 ## Installation
 

@@ -23,9 +23,6 @@ export interface OrderedProductProps {
   t?: TranslationFunction;
 }
 
-export interface OrderedProductCopy {
-  includedInPlan: string;
-}
 export function OrderedProduct({
   orderedProduct,
   cart,
