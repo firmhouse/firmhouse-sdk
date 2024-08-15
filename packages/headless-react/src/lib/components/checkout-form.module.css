@@ -67,6 +67,10 @@
   }
 }
 
+.form :global(.checkboxContainer) {
+  grid-column: span 6 / span 6;
+}
+
 .form input[type='checkbox'] {
   min-width: auto;
   flex: 0;

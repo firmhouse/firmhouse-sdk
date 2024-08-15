@@ -26,12 +26,15 @@ export function getCheckoutDetailsFromForm(
   }
 
   allFields.forEach((field) => {
-    addressDetails[field] =
+    let value =
       field === 'differentBillingAddress'
         ? differentBillingAddress
-        : (formData.get(field) as string); // Assign values to addressDetails properties
+        : (formData.get(field) as string);
+    if (['marketingOptIn', 'termsAccepted'].includes(field)) {
+      value = formData.get(field) === 'on';
+    }
+    addressDetails[field] = value;
   });
-  console.log(extraFields);
   extraFields.forEach((field) => {
     const existingAnswerId = cart?.extraFields?.find(
       (extraField) => extraField.extraFieldId === field

@@ -57,7 +57,6 @@ export const useFirmhouseCart = () => {
     setCart,
     setErrors,
     errors,
-    setLoading,
     loading,
     config,
     t,
@@ -78,7 +77,8 @@ export const useFirmhouseCart = () => {
       cart,
       setCart,
       setErrors,
-      setActionInProgress
+      setActionInProgress,
+      locale
     ),
     t,
   };
@@ -90,7 +90,8 @@ function actions(
   cart?: FirmhouseCart | null,
   setCart?: (cart: FirmhouseCart) => void,
   setErrors?: (errors: Record<string, string> | null) => void,
-  setActionInProgress?: (actionInProgress: boolean) => void
+  setActionInProgress?: (actionInProgress: boolean) => void,
+  locale?: string
 ) {
   if (!cart || !firmhouseClient || !setCart) {
     return {};
@@ -117,6 +118,9 @@ function actions(
     ) => {
       let success = true;
       try {
+        if (!addressDetails.locale && locale) {
+          addressDetails.locale = locale;
+        }
         setErrors?.(null);
         setActionInProgress?.(true);
         const response = await firmhouseClient.carts.updateAddressDetails(

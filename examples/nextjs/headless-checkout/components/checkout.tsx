@@ -11,24 +11,44 @@ export interface CheckoutProps {
   apiToken: string;
 }
 
-const fields = [...defaultCheckoutFields];
-fields[0].fields = [
-  ...fields[0].fields,
+const fields = [
   {
-    id: '1568',
-    name: '1568',
-    type: 'dropdown',
-    label: 'How did you find us?',
-    inputProps: {
-      options: [
-        { label: 'Friends', value: 'Friends' },
-        { label: 'Social Media', value: 'Social Media' },
-        { label: 'Email', value: 'Email' },
-        { label: 'Search Engine', value: 'Search Engine' },
-        { label: 'Ads', value: 'Ads' },
-      ],
-    },
+    ...defaultCheckoutFields[0],
+    fields: [
+      ...defaultCheckoutFields[0].fields,
+      {
+        id: '1568',
+        name: '1568',
+        type: 'dropdown',
+        label: 'How did you find us?',
+        inputProps: {
+          options: [
+            { label: 'Friends', value: 'Friends' },
+            { label: 'Social Media', value: 'Social Media' },
+            { label: 'Email', value: 'Email' },
+            { label: 'Search Engine', value: 'Search Engine' },
+            { label: 'Ads', value: 'Ads' },
+          ],
+        },
+      },
+    ],
   },
+  ...defaultCheckoutFields.slice(1, defaultCheckoutFields.length - 2),
+  {
+    fields: [
+      {
+        name: 'marketingOptIn',
+        type: 'checkbox',
+        label: 'I want to receive marketing emails',
+      },
+      {
+        name: 'termsAccepted',
+        type: 'checkbox',
+        label: 'I accept the terms and conditions',
+      },
+    ],
+  },
+  ...defaultCheckoutFields.slice(defaultCheckoutFields.length - 2),
 ];
 
 export default function Checkout({ apiToken }: CheckoutProps) {

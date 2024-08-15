@@ -17,7 +17,11 @@ export function CheckboxInput({
 }: CheckboxInputProps) {
   const id = useId();
   return (
-    <div className={`${styles.inputContainer} ${className ?? ''}`}>
+    <div
+      className={`${styles.inputContainer} checkboxContainer ${
+        className ?? ''
+      }`}
+    >
       <input
         id={id}
         className={styles.inputCheckbox}
@@ -27,7 +31,7 @@ export function CheckboxInput({
       <label htmlFor={id} className={styles.label}>
         {label}
       </label>
-
+      <br />
       {error && <label className={styles.labelError}>{error}</label>}
     </div>
   );

@@ -4,6 +4,7 @@
   align-items: center;
   width: 100%;
   flex-basis: 100%;
+  flex-wrap: wrap;
 }
 
 .inputCheckbox {
@@ -29,7 +30,8 @@
   font-size: 0.875rem;
   width: 100%;
   color: #f87171;
-  padding: 0.5rem;
+  padding: 0 0.5rem;
+  margin-left: 0.7rem;
 }
 
 .label {

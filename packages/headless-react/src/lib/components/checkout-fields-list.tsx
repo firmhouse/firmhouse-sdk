@@ -122,6 +122,7 @@ const getDefaultProps = (
   switch (name) {
     case 'differentBillingAddress':
     case 'termsAccepted':
+    case 'marketingOptIn':
     case 'companyName':
     case 'vatNumber':
     case 'name':
@@ -278,6 +279,7 @@ function getFieldType(field: CheckoutField): CheckoutFieldType {
       return 'dropdown';
     case 'termsAccepted':
     case 'differentBillingAddress':
+    case 'marketingOptIn':
       return 'checkbox';
     case 'break':
       return 'break';
