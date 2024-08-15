@@ -1,3 +1,10 @@
+## [1.0.0-alpha.2](https://github.com/firmhouse/firmhouse-sdk/compare/headless-react-v1.0.0-alpha.1...headless-react-v1.0.0-alpha.2) (2024-08-15)
+
+
+### Bug Fixes
+
+* **headless-react:** fix checkbox styles and alignment ([57a194d](https://github.com/firmhouse/firmhouse-sdk/commit/57a194d0eb60b9b8e3f02d95748bcb288faf76c4))
+
 ## 1.0.0-alpha.1 (2024-08-15)
 
 
