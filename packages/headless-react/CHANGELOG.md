@@ -1,3 +1,10 @@
+## [1.0.0-alpha.3](https://github.com/firmhouse/firmhouse-sdk/compare/headless-react-v1.0.0-alpha.2...headless-react-v1.0.0-alpha.3) (2024-08-15)
+
+
+### Bug Fixes
+
+* **headless-react:** remove unnecessary exports and update docs url ([476bb74](https://github.com/firmhouse/firmhouse-sdk/commit/476bb74a16ce9d2d82bc4921522f0c754b1979ab))
+
 ## [1.0.0-alpha.2](https://github.com/firmhouse/firmhouse-sdk/compare/headless-react-v1.0.0-alpha.1...headless-react-v1.0.0-alpha.2) (2024-08-15)
 
 
