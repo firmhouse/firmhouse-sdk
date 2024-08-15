@@ -1,3 +1,10 @@
+## [1.1.0-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.1...firmhouse-sdk-v1.1.0-alpha.1) (2024-08-15)
+
+
+### Features
+
+* **firmhouse-sdk:** allow passing request initialization parameters to fetch instance ([6d80c6d](https://github.com/firmhouse/firmhouse-sdk/commit/6d80c6de48700801937a24676ca2212b8417b71c))
+
 ## [1.0.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1) (2024-06-27)
 
 ## [1.0.1-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1-alpha.1) (2024-06-27)
