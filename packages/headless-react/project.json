@@ -68,7 +68,7 @@
     "release": {
       "executor": "nx:run-commands",
       "outputs": [],
-      "dependsOn": ["api-extractor"],
+      "dependsOn": ["build"],
       "options": {
         "command": "npx semantic-release-plus --extends ./packages/headless-react/release.config.js",
         "parallel": false

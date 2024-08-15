@@ -432,6 +432,7 @@ export function CheckoutFieldsList({
       Date,
       Submit,
       actionInProgress,
+      locale,
     ]
   );
 
