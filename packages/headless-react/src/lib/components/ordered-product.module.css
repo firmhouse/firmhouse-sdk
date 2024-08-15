@@ -1,0 +1,38 @@
+.product {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.product > img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.product > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0.25rem;
+}
+
+.product :global(.opTitle) {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.product :global(.opPrice) {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.product :global(.opFrequency) {
+  font-weight: 600;
+}
+
+.product :global(.billingShipping) {
+  font-size: 0.875rem;
+  color: #6b7280;
+}

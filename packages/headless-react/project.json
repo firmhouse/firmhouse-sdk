@@ -1,0 +1,78 @@
+{
+  "name": "headless-react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/headless-react/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/headless-react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "main": "packages/headless-react/src/index.ts",
+        "outputPath": "dist/packages/headless-react",
+        "tsConfig": "packages/headless-react/tsconfig.lib.json",
+        "deleteOutputPath": true,
+        "project": "packages/headless-react/package.json",
+        "entryFile": "packages/headless-react/src/index.ts",
+        "extractCss": "styles.css",
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "external": [
+          "react",
+          "react-dom",
+          "react/jsx-runtime",
+          "@firmhouse/firmhouse-sdk"
+        ],
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "packages/headless-react/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": true,
+          "extractLicenses": true,
+          "vendorChunk": true,
+          "minify": true
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/headless-react/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "dependsOn": ["api-extractor"],
+      "options": {
+        "command": "npx semantic-release-plus --extends ./packages/headless-react/release.config.js",
+        "parallel": false
+      }
+    }
+  }
+}

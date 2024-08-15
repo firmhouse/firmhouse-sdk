@@ -1,0 +1,72 @@
+{
+  "name": "nextjs-headless-checkout",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "examples/nextjs/headless-checkout",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/examples/nextjs/headless-checkout",
+        "postcssConfig": "examples/nextjs/headless-checkout/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "examples/nextjs/headless-checkout"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nextjs-headless-checkout:build",
+        "dev": true,
+        "postcssConfig": "examples/nextjs/headless-checkout/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nextjs-headless-checkout:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "nextjs-headless-checkout:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "nextjs-headless-checkout:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "examples/nextjs/headless-checkout/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "examples/nextjs/headless-checkout/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
