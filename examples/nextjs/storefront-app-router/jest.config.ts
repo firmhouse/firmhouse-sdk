@@ -1,5 +1,4 @@
-/* eslint-disable */
-export default {
+module.exports = {
   displayName: 'nextjs-storefront-app-router',
   preset: '../../../jest.preset.js',
   transform: {

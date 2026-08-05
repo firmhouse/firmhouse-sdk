@@ -9,14 +9,15 @@ import ShipmentDateForm from './Form';
 export default async function ShipmentDate({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const token = await getSSCSubscriptionToken();
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
-  const updateShipment = updateShipmentDate.bind(null, token, params.id);
+  const updateShipment = updateShipmentDate.bind(null, token, id);
   const orderedProduct = subscription.orderedProducts?.find(
-    (orderedProduct) => orderedProduct.id === params.id
+    (orderedProduct) => orderedProduct.id === id
   );
   if (!orderedProduct) {
     return notFound();

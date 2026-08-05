@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { hasValidSSCAuthToken } from './lib/actions/subscription';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const sscResponse = selfServiceCenterMiddleware(request);
   if (sscResponse) {
     return sscResponse;

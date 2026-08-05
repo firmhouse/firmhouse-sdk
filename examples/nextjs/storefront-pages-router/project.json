@@ -3,13 +3,15 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "examples/nextjs/storefront-pages-router",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/examples/nextjs/storefront-pages-router"
+        "outputPath": "dist/examples/nextjs/storefront-pages-router",
+        "webpack": true
       },
       "configurations": {
         "development": {
@@ -52,6 +54,5 @@
         ]
       }
     }
-  },
-  "tags": []
+  }
 }

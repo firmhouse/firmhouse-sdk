@@ -29,7 +29,7 @@ export async function createSSCSubscriptionCookie(
       await client.subscriptions.getBySelfServiceCenterLoginToken(
         selfServiceCenterLoginToken
       );
-    cookies().set(
+    (await cookies()).set(
       await getSSCSubscriptionTokenCookieKey(),
       await createAuthToken(subscription.token)
     );
@@ -66,7 +66,7 @@ export async function updateSubscription(path: string, data: FormData) {
 
 export async function hasValidSSCAuthToken() {
   const jwtToken =
-    cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+    (await cookies()).get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
   if (!jwtToken) {
     return false;
   }
@@ -80,7 +80,7 @@ export async function hasValidSSCAuthToken() {
 export async function getSSCSubscriptionToken(): Promise<string> {
   try {
     const jwtToken =
-      cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+      (await cookies()).get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
     return verifyAndDecodeAuthToken(jwtToken);
   } catch (e) {
     clearSSCSubscriptionToken();
@@ -89,7 +89,7 @@ export async function getSSCSubscriptionToken(): Promise<string> {
 }
 
 export async function clearSSCSubscriptionToken(): Promise<void> {
-  cookies().delete(await getSSCSubscriptionTokenCookieKey());
+  (await cookies()).delete(await getSSCSubscriptionTokenCookieKey());
 }
 
 export async function cancelSubscription(): Promise<void> {

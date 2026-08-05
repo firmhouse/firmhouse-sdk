@@ -10,18 +10,19 @@ import CustomFrequency from './CustomFrequency';
 export default async function Frequency({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const token = await getSSCSubscriptionToken();
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
   const updateInterval = updateOrderedProductInterval.bind(
     null,
     token,
-    params.id
+    id
   );
   const orderedProduct = subscription.orderedProducts?.find(
-    (orderedProduct) => orderedProduct.id === params.id
+    (orderedProduct) => orderedProduct.id === id
   );
   if (!orderedProduct) {
     return notFound();

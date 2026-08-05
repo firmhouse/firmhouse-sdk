@@ -69,13 +69,10 @@
         }
       }
     },
-    "release": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "dependsOn": ["api-extractor"],
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
       "options": {
-        "command": "npx semantic-release-plus --extends ./packages/firmhouse-sdk/release.config.js",
-        "parallel": false
+        "packageRoot": "dist/packages/firmhouse-sdk"
       }
     },
     "api-extractor": {
@@ -85,6 +82,13 @@
       "options": {
         "command": "npx api-extractor run --local --diagnostics -c ./packages/firmhouse-sdk/api-extractor.json"
       }
+    }
+  },
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
     }
   }
 }

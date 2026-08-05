@@ -8,7 +8,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Header } from '../../Header';
 
-export default async function Order({ params }: { params: { id: string } }) {
+export default async function Order({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const token = await getSSCSubscriptionToken();
 
   const firmhouseClient = await writeAccessFirmhouseClient();
@@ -16,7 +21,7 @@ export default async function Order({ params }: { params: { id: string } }) {
     orders: { includeRelations: { orderLines: true } },
   });
   const orders = subscription.ordersV2?.results ?? [];
-  const order = orders.find((order) => order?.id === params.id);
+  const order = orders.find((order) => order?.id === id);
   if (!order) {
     return notFound();
   }

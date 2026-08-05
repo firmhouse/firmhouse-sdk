@@ -71,6 +71,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: ValidationError | null = null;
       try {
@@ -98,6 +100,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: NotFoundError | null = null;
       try {
@@ -122,6 +126,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: ServerError | null = null;
       try {

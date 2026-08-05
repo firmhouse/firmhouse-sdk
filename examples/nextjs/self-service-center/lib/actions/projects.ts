@@ -11,12 +11,12 @@ export async function saveProjectTypeCookie(
   projectType: Project,
   path: string
 ) {
-  cookies().set(PROJECT_TYPE_COOKIE, projectType.toString());
+  (await cookies()).set(PROJECT_TYPE_COOKIE, projectType.toString());
   revalidatePath(path);
 }
 
 export async function getActiveProjectType(): Promise<Project> {
-  const activeProjectValue = cookies().get(PROJECT_TYPE_COOKIE)?.value;
+  const activeProjectValue = (await cookies()).get(PROJECT_TYPE_COOKIE)?.value;
   switch (activeProjectValue) {
     case Project.OrderBased:
       return Project.OrderBased;

@@ -6,8 +6,10 @@ import {
   ValidationError,
   _mapToLibraryErrorTypes,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/errors';
-import { ClientError } from 'graphql-request';
-import { GraphQLError } from 'graphql-request/build/esm/types';
+import { ClientError, type ResponseMiddleware } from 'graphql-request';
+
+type GraphQLClientResponse = Exclude<Parameters<ResponseMiddleware>[0], Error>;
+type GraphQLError = NonNullable<GraphQLClientResponse['errors']>[0];
 
 describe('helpers/errors', () => {
   describe('snakeToCamelCase', () => {
@@ -48,6 +50,8 @@ describe('helpers/errors', () => {
             { message, locations: [], path: [] } as unknown as GraphQLError,
           ],
           status: 200,
+          headers: new Headers(),
+          body: '',
         },
         { query: '' }
       );
@@ -66,6 +70,8 @@ describe('helpers/errors', () => {
             { message, locations: [], path: [] } as unknown as GraphQLError,
           ],
           status: 200,
+          headers: new Headers(),
+          body: '',
         },
         { query: '' }
       );
@@ -99,6 +105,8 @@ describe('helpers/errors', () => {
             } as unknown as GraphQLError,
           ],
           status: 200,
+          headers: new Headers(),
+          body: '',
         },
         { query: '' }
       );
@@ -123,6 +131,8 @@ describe('helpers/errors', () => {
             } as unknown as GraphQLError,
           ],
           status: 200,
+          headers: new Headers(),
+          body: '',
         },
         { query: '' }
       );
@@ -136,7 +146,12 @@ describe('helpers/errors', () => {
     it('should return a ServerError if the error is not matched with any type', () => {
       const message = 'Test';
       const clientError = new ClientError(
-        { errors: [{ message } as unknown as GraphQLError], status: 200 },
+        {
+          errors: [{ message } as unknown as GraphQLError],
+          status: 200,
+          headers: new Headers(),
+          body: '',
+        },
         { query: '' }
       );
       const error = _mapToLibraryErrorTypes(clientError);

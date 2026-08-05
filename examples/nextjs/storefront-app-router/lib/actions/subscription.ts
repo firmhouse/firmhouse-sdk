@@ -12,22 +12,22 @@ import { writeAccessFirmhouseClient } from '../firmhouse-write';
 const SUBSCRIPTION_TOKEN_COOKIE = 'firmhouse:subscription';
 
 export async function isInitialized(): Promise<boolean> {
-  return cookies().get(SUBSCRIPTION_TOKEN_COOKIE) !== undefined;
+  return (await cookies()).get(SUBSCRIPTION_TOKEN_COOKIE) !== undefined;
 }
 
 export async function getSubscriptionToken(): Promise<string> {
-  return cookies().get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
+  return (await cookies()).get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? '';
 }
 
 export async function clearSubscriptionToken(): Promise<void> {
-  cookies().delete(SUBSCRIPTION_TOKEN_COOKIE);
+  (await cookies()).delete(SUBSCRIPTION_TOKEN_COOKIE);
 }
 
 export async function initializeCart() {
   const subscriptionToken =
-    cookies().get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? undefined;
+    (await cookies()).get(SUBSCRIPTION_TOKEN_COOKIE)?.value ?? undefined;
   const response = await firmhouseClient.carts.getOrCreate(subscriptionToken);
-  cookies().set(SUBSCRIPTION_TOKEN_COOKIE, response.token);
+  (await cookies()).set(SUBSCRIPTION_TOKEN_COOKIE, response.token);
 }
 
 export async function addToCart(data: FormData) {

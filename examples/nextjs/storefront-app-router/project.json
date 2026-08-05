@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "examples/nextjs/storefront-app-router",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/next:build",
@@ -10,7 +11,8 @@
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/examples/nextjs/storefront-app-router",
-        "postcssConfig": "examples/nextjs/storefront-app-router/postcss.config.js"
+        "postcssConfig": "examples/nextjs/storefront-app-router/postcss.config.js",
+        "webpack": true
       },
       "configurations": {
         "development": {
@@ -53,6 +55,5 @@
         ]
       }
     }
-  },
-  "tags": []
+  }
 }

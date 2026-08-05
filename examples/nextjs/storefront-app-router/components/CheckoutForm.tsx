@@ -28,12 +28,12 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
           {
             extraFieldId: '1243',
             value: referrer,
-            ...({ id: extraFields['1243']?.id } ?? {}),
+            id: extraFields['1243']?.id,
           },
           {
             extraFieldId: '1251',
             value: isGift,
-            ...({ id: extraFields['1251']?.id } ?? {}),
+            id: extraFields['1251']?.id,
           },
         ])
       );

@@ -5,8 +5,6 @@ import type { Metadata, Viewport } from 'next';
 import { ProjectPicker } from './ProjectPicker';
 import { getActiveProjectType } from '../lib/actions/projects';
 
-export const runtime = 'edge';
-
 export const metadata: Metadata = {
   title: 'Firmhouse Self Service Center Example App',
 };
