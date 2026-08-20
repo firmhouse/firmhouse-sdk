@@ -3,6 +3,7 @@ import {
   getSubscriptionToken,
   isInitialized,
   applyDiscount,
+  removeDiscount,
   deactivatePromotion,
 } from '../../lib/actions/subscription';
 import { firmhouseClient } from '../../lib/firmhouse';
@@ -130,7 +131,13 @@ export default async function Index() {
                       key={ap.id}
                     >
                       <span>{ap?.promotion.publicName}</span>
-                      <form action={deactivatePromotion.bind(null, ap.id)}>
+                      <form
+                        action={
+                          ap.discountCode
+                            ? removeDiscount
+                            : deactivatePromotion.bind(null, ap.id)
+                        }
+                      >
                         <button
                           type="submit"
                           className="text-lg p-2 font-light"

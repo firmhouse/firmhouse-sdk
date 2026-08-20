@@ -7,6 +7,7 @@ import {
   GetCartDocument,
   AddToCartDocument,
   ApplyDiscountCodeToCartDocument,
+  RemoveDiscountCodeFromCartDocument,
   RemoveFromCartDocument,
   UpdateOrderedProductInCartDocument,
   UpdateAddressDetailsDocument,
@@ -356,6 +357,62 @@ describe('lib/resources/carts/index.ts', () => {
       await expect(
         testResource.applyDiscountCode('testToken', 'WELCOME10'),
       ).rejects.toThrow('Could not apply discount code');
+    });
+  });
+
+  describe('removeDiscountCode', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: { cart: { token: 'testToken' }, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await testResource.removeDiscountCode('testToken');
+
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        RemoveDiscountCodeFromCartDocument,
+        { input: {} },
+        { 'X-Subscription-Token': 'testToken' },
+      );
+    });
+
+    it('should throw validation errors returned by the API', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: {
+          cart: null,
+          errors: [{ attribute: 'discount_code', message: 'Code is invalid' }],
+        },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toMatchObject({
+        name: 'ValidationError',
+        details: { discountCode: 'Code is invalid' },
+      });
+    });
+
+    it('should throw a server error when the mutation returns no result', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: null,
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toThrow('Could not remove discount code');
+    });
+
+    it('should throw a server error when no cart is returned', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: { cart: null, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toThrow('Could not remove discount code');
     });
   });
 

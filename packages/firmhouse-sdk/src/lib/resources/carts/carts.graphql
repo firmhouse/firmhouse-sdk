@@ -88,6 +88,17 @@ mutation applyDiscountCodeToCart($input: ApplyDiscountCodeInput!) {
   }
 }
 
+mutation removeDiscountCodeFromCart($input: ClearDiscountCodeInput!) {
+  removeDiscountCode: clearDiscountCode(input: $input) {
+    cart {
+      token
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
 mutation addToCart($input: CreateOrderedProductInput!) {
   addToCart: createOrderedProduct(input: $input) {
     subscription {

@@ -141,6 +141,17 @@ export async function applyDiscount(data: FormData) {
   revalidatePath('/checkout');
 }
 
+export async function removeDiscount() {
+  try {
+    await firmhouseClient.carts.removeDiscountCode(
+      await getSubscriptionToken(),
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  revalidatePath('/checkout');
+}
+
 export async function deactivatePromotion(appliedPromotionId: string) {
   const writeAccessClient = await writeAccessFirmhouseClient();
   try {

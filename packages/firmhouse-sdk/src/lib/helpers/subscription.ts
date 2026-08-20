@@ -89,7 +89,7 @@ export function _formatOrderedProduct(
  */
 function followsPlanSchedule(
   orderedProduct: BaseOrderedProductType,
-  subscription: BaseCartType,
+  subscription: Pick<FirmhouseCart, 'subscribedPlan'>,
 ) {
   return (
     orderedProduct.product.intervalUnitOfMeasure === 'on_billing_cycle' &&

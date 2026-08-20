@@ -1836,6 +1836,11 @@ export interface FirmhouseAppliedPromotion {
   deactivationStrategy: AppliedPromotionDeactivationStrategy;
 
   /**
+   * The discount code that applied this promotion, when present.
+   */
+  discountCode?: FirmhouseDiscountCode | null;
+
+  /**
    * ID to identify the applied promotion with
    */
   id: string;

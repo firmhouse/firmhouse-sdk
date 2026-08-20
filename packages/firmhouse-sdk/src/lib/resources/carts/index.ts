@@ -11,6 +11,7 @@ import {
   CreateCartDocument,
   CreateSubscriptionFromCartDocument,
   GetCartDocument,
+  RemoveDiscountCodeFromCartDocument,
   RemoveFromCartDocument,
   UpdateAddressDetailsDocument,
   UpdateCartPlanDocument,
@@ -230,7 +231,7 @@ export class CartsResource extends BaseResource {
       try {
         const response = await this.get(token, includeRelations);
         if (response.status === SubscriptionStatus.Draft) {
-          return _formatCart(response);
+          return response;
         }
       } catch (error) {
         // ignore
@@ -268,6 +269,30 @@ export class CartsResource extends BaseResource {
       throw new ServerError('Could not apply discount code');
     }
     return result.appliedPromotion;
+  }
+
+  /**
+   * Remove the discount code applied to a cart.
+   * @param cartToken - Cart token
+   * @throws {@link ValidationError} Thrown when the discount code could not be removed
+   * @throws {@link ServerError} Thrown when the API returns no cart
+   */
+  public async removeDiscountCode(cartToken: string): Promise<void> {
+    const response = await this._client.request(
+      RemoveDiscountCodeFromCartDocument,
+      { input: {} },
+      this.getSubscriptionTokenHeader(cartToken),
+    );
+    const result = response.removeDiscountCode;
+    if (result === null) {
+      throw new ServerError('Could not remove discount code');
+    }
+    if (result.errors.length > 0) {
+      throw new ValidationError(result.errors);
+    }
+    if (result.cart === null) {
+      throw new ServerError('Could not remove discount code');
+    }
   }
 
   /**
