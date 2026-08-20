@@ -17,7 +17,7 @@ export default async function ShipmentDate({
   const subscription = await firmhouseClient.subscriptions.get(token);
   const updateShipment = updateShipmentDate.bind(null, token, id);
   const orderedProduct = subscription.orderedProducts?.find(
-    (orderedProduct) => orderedProduct.id === id
+    (orderedProduct) => orderedProduct.id === id,
   );
   if (!orderedProduct) {
     return notFound();

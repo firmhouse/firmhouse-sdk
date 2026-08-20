@@ -12,7 +12,7 @@ export interface CartProps {
   onUpdateInterval?: (
     orderedProductId: string,
     interval: number,
-    type: OrderedProductIntervalUnitOfMeasure
+    type: OrderedProductIntervalUnitOfMeasure,
   ) => void;
 }
 
@@ -21,7 +21,7 @@ function billingCycleDiscountCents(subscription: FirmhouseCart) {
   const promotion = subscription.appliedPromotions?.find(
     (appliedPromotion) =>
       appliedPromotion.active &&
-      appliedPromotion.promotion.__typename === 'BillingCyclePromotion'
+      appliedPromotion.promotion.__typename === 'BillingCyclePromotion',
   )?.promotion;
 
   if (!promotion) return 0;
@@ -46,11 +46,11 @@ export default function Cart({
   } = subscription;
   const discountCents = Math.max(
     orderCalculation?.discountInclTaxCents ?? 0,
-    billingCycleDiscountCents(subscription)
+    billingCycleDiscountCents(subscription),
   );
   const totalCents = Math.max(
     0,
-    (amountForStartingSubscriptionCents ?? 0) - discountCents
+    (amountForStartingSubscriptionCents ?? 0) - discountCents,
   );
   return (
     <div className="flex h-full w-full align-middle flex-col p-8">
@@ -105,7 +105,7 @@ export default function Cart({
           <p className="font-light text-sm">
             {formatCentsWithCurrency(
               amountForStartingSubscriptionCents ?? 0,
-              'EUR'
+              'EUR',
             )}
           </p>
         </div>
@@ -124,11 +124,7 @@ export default function Cart({
         <div className="flex flex-row justify-between">
           <p className="font-light">Total</p>
           <p className="font-light">
-            {formatCentsWithCurrency(
-              totalCents,
-              'EUR'
-            )}{' '}
-            + Shipping
+            {formatCentsWithCurrency(totalCents, 'EUR')} + Shipping
           </p>
         </div>
         {subscription.checkoutUrl && (

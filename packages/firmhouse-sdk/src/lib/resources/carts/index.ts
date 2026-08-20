@@ -153,7 +153,7 @@ export class CartsResource extends BaseResource {
           discountCode?: boolean;
         };
       };
-    }
+    },
   ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       GetCartDocument,
@@ -173,7 +173,7 @@ export class CartsResource extends BaseResource {
           includeRelations?.appliedPromotions?.includeRelations?.discountCode ??
           false,
       },
-      this.getSubscriptionTokenHeader(token)
+      this.getSubscriptionTokenHeader(token),
     );
     if (response.getCart === null) {
       throw new NotFoundError('Cart not found');
@@ -224,7 +224,7 @@ export class CartsResource extends BaseResource {
           discountCode?: boolean;
         };
       };
-    }
+    },
   ) {
     if (token !== undefined) {
       try {
@@ -250,12 +250,12 @@ export class CartsResource extends BaseResource {
    */
   public async applyDiscountCode(
     cartToken: string,
-    discountCode: string
+    discountCode: string,
   ): Promise<FirmhouseAppliedPromotion> {
     const response = await this._client.request(
       ApplyDiscountCodeToCartDocument,
       { input: { discountCode } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const result = response.applyDiscountCode;
     if (result === null) {
@@ -312,12 +312,12 @@ export class CartsResource extends BaseResource {
       slug?: string | null;
       /** ID of the subscription to create this OrderedProduct for. Required if authenticated via a project access token */
       subscriptionId?: string | null;
-    }
+    },
   ) {
     const response = await this._client.request(
       AddToCartDocument,
       { input },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const addToCart = response.addToCart ?? null;
     if (addToCart === null) {
@@ -347,7 +347,7 @@ export class CartsResource extends BaseResource {
     const response = await this._client.request(
       RemoveFromCartDocument,
       { input: { id: orderedProductId } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const removeFromCart = response.removeFromCart ?? null;
     if (removeFromCart === null) {
@@ -361,7 +361,7 @@ export class CartsResource extends BaseResource {
 
     return {
       orderedProduct: _formatOrderedProduct(
-        orderedProduct
+        orderedProduct,
       ) as FirmhouseOrderedProduct,
       subscription: _formatCart(subscription) as FirmhouseCart,
     };
@@ -380,12 +380,12 @@ export class CartsResource extends BaseResource {
   public async updateOrderedProductQuantity(
     cartToken: string,
     orderedProductId: string,
-    quantity: number
+    quantity: number,
   ) {
     const response = await this._client.request(
       UpdateOrderedProductInCartQuantityDocument,
       { id: orderedProductId, quantity },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const updateOrderedProductQuantity =
       response.updateOrderedProductInCartQuantity ?? null;
@@ -435,12 +435,12 @@ export class CartsResource extends BaseResource {
        * @example 2024-01-01
        */
       shipmentDate?: string | null;
-    }
+    },
   ) {
     const response = await this._client.request(
       UpdateOrderedProductInCartDocument,
       input,
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const updateOrderedProduct = response.updateOrderedProductInCart ?? null;
     if (updateOrderedProduct === null) {
@@ -591,12 +591,12 @@ export class CartsResource extends BaseResource {
       vatNumber?: string | null;
       /** The customer's zip code or postal code. */
       zipcode?: string | null;
-    }
+    },
   ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       UpdateAddressDetailsDocument,
       input,
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
 
     const updateAddressDetails = response.updateAddressDetails;
@@ -630,12 +630,12 @@ export class CartsResource extends BaseResource {
   public async createSubscription(
     cartToken: string,
     paymentPageUrl: string,
-    returnUrl: string
+    returnUrl: string,
   ) {
     const response = await this._client.request(
       CreateSubscriptionFromCartDocument,
       { input: { paymentPageUrl, returnUrl } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const { createSubscriptionFromCart } = response;
 
@@ -671,7 +671,7 @@ export class CartsResource extends BaseResource {
     const response = await this._client.request(
       UpdateCartPlanDocument,
       { input: { planSlug } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const { updateCartPlan } = response;
 

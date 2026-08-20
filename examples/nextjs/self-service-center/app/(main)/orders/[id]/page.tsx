@@ -62,7 +62,7 @@ export default async function Order({
                     <span>
                       {formatCentsWithCurrency(
                         orderLine.totalAmountExcludingTaxCents,
-                        'EUR'
+                        'EUR',
                       )}
                     </span>
                   )}
@@ -78,7 +78,7 @@ export default async function Order({
               <p className="text-right">
                 {formatCentsWithCurrency(
                   order.amountCents - order.totalTaxCents,
-                  'EUR'
+                  'EUR',
                 )}
               </p>
               <p>Tax</p>
@@ -91,7 +91,7 @@ export default async function Order({
               <p className="text-right">
                 {formatCentsWithCurrency(
                   order.discountExclTaxCents ?? 0,
-                  'EUR'
+                  'EUR',
                 )}
               </p>
               <p className="font-bold">Total</p>

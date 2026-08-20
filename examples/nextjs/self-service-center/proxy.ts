@@ -14,7 +14,7 @@ async function selfServiceCenterMiddleware(request: NextRequest) {
   const hasValidToken = await hasValidSSCAuthToken();
   if (
     ['login', 'status', 'token-login'].every(
-      (path) => `/${path}` !== request.nextUrl.pathname
+      (path) => `/${path}` !== request.nextUrl.pathname,
     )
   ) {
     if (!hasValidToken) {

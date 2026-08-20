@@ -53,7 +53,7 @@ describe('helpers/errors', () => {
           headers: new Headers(),
           body: '',
         },
-        { query: '' }
+        { query: '' },
       );
       const notFoundError = new NotFoundError(clientError);
       expect(notFoundError.name).toBe('NotFoundError');
@@ -73,7 +73,7 @@ describe('helpers/errors', () => {
           headers: new Headers(),
           body: '',
         },
-        { query: '' }
+        { query: '' },
       );
       const serverError = new ServerError(clientError);
       expect(serverError.name).toBe('ServerError');
@@ -108,7 +108,7 @@ describe('helpers/errors', () => {
           headers: new Headers(),
           body: '',
         },
-        { query: '' }
+        { query: '' },
       );
       expect(_mapToLibraryErrorTypes(clientError).name).toBe('NotFoundError');
     });
@@ -134,7 +134,7 @@ describe('helpers/errors', () => {
           headers: new Headers(),
           body: '',
         },
-        { query: '' }
+        { query: '' },
       );
       const error = _mapToLibraryErrorTypes(clientError);
       expect(error.name).toBe('ValidationError');
@@ -152,7 +152,7 @@ describe('helpers/errors', () => {
           headers: new Headers(),
           body: '',
         },
-        { query: '' }
+        { query: '' },
       );
       const error = _mapToLibraryErrorTypes(clientError);
       expect(error.name).toBe('ServerError');

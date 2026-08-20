@@ -16,13 +16,9 @@ export default async function Frequency({
   const token = await getSSCSubscriptionToken();
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
-  const updateInterval = updateOrderedProductInterval.bind(
-    null,
-    token,
-    id
-  );
+  const updateInterval = updateOrderedProductInterval.bind(null, token, id);
   const orderedProduct = subscription.orderedProducts?.find(
-    (orderedProduct) => orderedProduct.id === id
+    (orderedProduct) => orderedProduct.id === id,
   );
   if (!orderedProduct) {
     return notFound();
@@ -43,7 +39,7 @@ export default async function Frequency({
           <CustomFrequency
             frequency={getFrequency(
               product.intervalUnitOfMeasure,
-              product.interval
+              product.interval,
             )}
             interval={orderedProduct.interval}
             unitOfMeasure={orderedProduct.intervalUnitOfMeasureType}

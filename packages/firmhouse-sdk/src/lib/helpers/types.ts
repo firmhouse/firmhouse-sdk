@@ -1185,8 +1185,7 @@ export interface FirmhouseOrderedProduct {
  * @public
  */
 export interface FirmhouseOrderedProductWithUtils
-  extends FirmhouseOrderedProduct,
-    FirmhouseOrderedProductUtils {}
+  extends FirmhouseOrderedProduct, FirmhouseOrderedProductUtils {}
 
 /**
  * @public
@@ -1743,8 +1742,7 @@ export interface FirmhouseSubscription extends FirmhouseCart {
  * @public
  */
 export interface FirmhouseSubscriptionWithUtils
-  extends FirmhouseSubscription,
-    FirmhouseSubscriptionUtils {
+  extends FirmhouseSubscription, FirmhouseSubscriptionUtils {
   orderedProducts: FirmhouseOrderedProductWithUtils[] | null;
 }
 
@@ -1856,8 +1854,7 @@ export interface FirmhouseAppliedPromotion {
 /**
  * @public
  */
-export interface FirmhouseAppliedOrderDiscountPromotion
-  extends FirmhouseAppliedPromotion {
+export interface FirmhouseAppliedOrderDiscountPromotion extends FirmhouseAppliedPromotion {
   /**
    * Orders on which this promotion was applied.
    */
@@ -1867,8 +1864,7 @@ export interface FirmhouseAppliedOrderDiscountPromotion
 /**
  * @public
  */
-export interface FirmhouseBillingCyclePromotion
-  extends FirmhouseAppliedPromotion {
+export interface FirmhouseBillingCyclePromotion extends FirmhouseAppliedPromotion {
   /**
    * Invoices on which this promotion was applied.
    */

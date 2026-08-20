@@ -10,7 +10,7 @@ const SUBSCRIPTION_TOKEN_KEY = 'Firmhouse.cartToken';
 async function addToCart(
   subscriptionToken: string,
   productId: string,
-  quantity: number
+  quantity: number,
 ) {
   return firmhouseClient.carts.addProduct(subscriptionToken, {
     productId,
@@ -20,33 +20,33 @@ async function addToCart(
 
 async function removeFromCart(
   subscriptionToken: string,
-  orderedProductId: string
+  orderedProductId: string,
 ) {
   return firmhouseClient.carts.removeProduct(
     orderedProductId,
-    subscriptionToken
+    subscriptionToken,
   );
 }
 
 async function updateOrderedProductQuantity(
   subscriptionToken: string,
   orderedProductId: string,
-  quantity: number
+  quantity: number,
 ) {
   return firmhouseClient.carts.updateOrderedProductQuantity(
     subscriptionToken,
     orderedProductId,
-    quantity
+    quantity,
   );
 }
 
 async function applyDiscountCode(
   subscriptionToken: string,
-  discountCode: string
+  discountCode: string,
 ) {
   await firmhouseClient.carts.applyDiscountCode(
     subscriptionToken,
-    discountCode
+    discountCode,
   );
   return firmhouseClient.carts.get(subscriptionToken, {
     appliedPromotions: { includeRelations: { promotion: true } },
@@ -55,7 +55,7 @@ async function applyDiscountCode(
 
 export function useSubscription() {
   const [subscription, setSubscription] = useState(
-    null as FirmhouseCart | null
+    null as FirmhouseCart | null,
   );
   useEffect(() => {
     const token =
@@ -65,7 +65,7 @@ export function useSubscription() {
     const initialize = async (subscriptionToken?: string) => {
       const response = await firmhouseClient.carts.getOrCreate(
         subscriptionToken,
-        { appliedPromotions: { includeRelations: { promotion: true } } }
+        { appliedPromotions: { includeRelations: { promotion: true } } },
       );
       setSubscription(response);
       localStorage.setItem(SUBSCRIPTION_TOKEN_KEY, response.token);
@@ -121,7 +121,7 @@ export function useSubscription() {
     },
     updateOrderedProductQuantity: (
       orderedProductId: string,
-      quantity: number
+      quantity: number,
     ) => {
       if (subscription === null) {
         return;
@@ -129,7 +129,7 @@ export function useSubscription() {
       updateOrderedProductQuantity(
         subscription.token,
         orderedProductId,
-        quantity
+        quantity,
       )
         .then((response) => {
           if (
@@ -159,7 +159,7 @@ export function useSubscription() {
     updateOrderedProductInterval: (
       orderedProductId: string,
       interval: number,
-      intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure
+      intervalUnitOfMeasureType: OrderedProductIntervalUnitOfMeasure,
     ) => {
       if (subscription === null) {
         return;
@@ -186,7 +186,7 @@ export function useSubscription() {
                     return updatedOrderedProduct;
                   }
                   return { ...op, intervalUnitOfMeasureType: null };
-                }
+                },
               ) ?? [],
           });
         })

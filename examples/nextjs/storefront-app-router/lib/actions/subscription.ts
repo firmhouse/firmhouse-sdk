@@ -58,7 +58,7 @@ export async function updateQuantity(data: FormData) {
   await firmhouseClient.carts.updateOrderedProductQuantity(
     await getSubscriptionToken(),
     id,
-    quantity
+    quantity,
   );
   revalidatePath('/');
 }
@@ -78,25 +78,25 @@ export async function updateCheckoutDetails(data: FormData) {
       termsAccepted: data.get('termsAccepted ') === 'on',
       extraFields: JSON.parse((data.get('extraFields') as string) ?? '[]'),
     }).filter(
-      ([, value]) => value !== undefined && value !== null && value !== ''
-    )
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    ),
   );
   let success = false;
   let paymentUrl;
   try {
     await firmhouseClient.carts.updateAddressDetails(
       await getSubscriptionToken(),
-      body
+      body,
     );
     const paymentResponse = await firmhouseClient.carts.createSubscription(
       await getSubscriptionToken(),
       '',
-      ''
+      '',
     );
     paymentUrl = paymentResponse.paymentUrl;
     if (paymentUrl === null || paymentUrl === undefined) {
       throw new ServerError(
-        'Cannot proceed with the payment now. Please try again later.'
+        'Cannot proceed with the payment now. Please try again later.',
       );
     }
     success = true;
@@ -123,7 +123,7 @@ export async function updatePlan(data: FormData) {
   const planSlug = data.get('planSlug') as string;
   await firmhouseClient.carts.updatePlan(
     await getSubscriptionToken(),
-    planSlug
+    planSlug,
   );
   revalidatePath('/');
 }
@@ -133,7 +133,7 @@ export async function applyDiscount(data: FormData) {
   try {
     await firmhouseClient.carts.applyDiscountCode(
       await getSubscriptionToken(),
-      discountCode
+      discountCode,
     );
   } catch (e) {
     console.error(e);
@@ -145,7 +145,7 @@ export async function deactivatePromotion(appliedPromotionId: string) {
   const writeAccessClient = await writeAccessFirmhouseClient();
   try {
     await writeAccessClient.subscriptions.deactivateAppliedPromotion(
-      appliedPromotionId
+      appliedPromotionId,
     );
   } catch (e) {
     console.error(e);

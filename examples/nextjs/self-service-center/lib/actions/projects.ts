@@ -9,7 +9,7 @@ const PROJECT_TYPE_COOKIE = 'firmhouse:project';
 
 export async function saveProjectTypeCookie(
   projectType: Project,
-  path: string
+  path: string,
 ) {
   (await cookies()).set(PROJECT_TYPE_COOKIE, projectType.toString());
   revalidatePath(path);
@@ -37,7 +37,7 @@ export async function getAccessTokenForProject(): Promise<string> {
     !NEXT_PLAN_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN
   ) {
     throw new Error(
-      'NEXT_ORDER_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN and NEXT_PLAN_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN env variables should be defined.'
+      'NEXT_ORDER_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN and NEXT_PLAN_BASED_FIRMHOUSE_WRITE_ACCESS_TOKEN env variables should be defined.',
     );
   }
   switch (project) {

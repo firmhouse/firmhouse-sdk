@@ -14,12 +14,12 @@ function billingCycleDiscountCents(
   amountCents: number,
   appliedPromotions: NonNullable<
     Awaited<ReturnType<typeof firmhouseClient.carts.get>>['appliedPromotions']
-  >
+  >,
 ) {
   const promotion = appliedPromotions.find(
     (appliedPromotion) =>
       appliedPromotion.active &&
-      appliedPromotion.promotion.__typename === 'BillingCyclePromotion'
+      appliedPromotion.promotion.__typename === 'BillingCyclePromotion',
   )?.promotion;
 
   if (!promotion) return 0;
@@ -42,7 +42,7 @@ export default async function Index() {
             discountCode: true,
           },
         },
-      }
+      },
     );
   } else {
     redirect('/');
@@ -60,15 +60,15 @@ export default async function Index() {
   const orderDiscountCents = orderCalculation?.discountInclTaxCents ?? 0;
   const checkoutDiscountCents = Math.max(
     orderDiscountCents,
-    billingCycleDiscountCents(checkoutAmountCents, activePromotions)
+    billingCycleDiscountCents(checkoutAmountCents, activePromotions),
   );
   const monthlyDiscountCents = Math.max(
     orderDiscountCents,
-    billingCycleDiscountCents(monthlyAmount, activePromotions)
+    billingCycleDiscountCents(monthlyAmount, activePromotions),
   );
   const checkoutTotalCents = Math.max(
     0,
-    checkoutAmountCents - checkoutDiscountCents
+    checkoutAmountCents - checkoutDiscountCents,
   );
   const monthlyTotalCents = Math.max(0, monthlyAmount - monthlyDiscountCents);
   return (
