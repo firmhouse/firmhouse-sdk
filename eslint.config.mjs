@@ -30,6 +30,11 @@ export default [
     },
   },
   {
-    ignores: ['**/*.json', '**/.next/**', '**/next-env.d.ts'],
+    ignores: [
+      '**/*.json',
+      '**/*.generated.ts',
+      '**/.next/**',
+      '**/next-env.d.ts',
+    ],
   },
 ];

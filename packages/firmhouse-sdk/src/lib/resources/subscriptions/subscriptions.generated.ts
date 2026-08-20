@@ -1,126 +1,1556 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import * as Types from '../../graphql/generated';
 
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
-export type UpdateOrderedProductMutationVariables = Types.Exact<{
+export type AdyenPaymentMethodVariant =
+  /** Abrapetite */
+  | 'ABRAPETITE'
+  /** Abrapetite credit card */
+  | 'ABRAPETITE_CREDIT'
+  /** Abrapetite debit card */
+  | 'ABRAPETITE_DEBIT'
+  /** Abrapetite prepaid card */
+  | 'ABRAPETITE_PREPAID'
+  /** Accel */
+  | 'ACCEL'
+  /** ACH US Direct Debit */
+  | 'ACH'
+  /** Affirm */
+  | 'AFFIRM'
+  /** Affirm for POS */
+  | 'AFFIRM_POS'
+  /** Afterpay */
+  | 'AFTERPAYTOUCH'
+  /** Afterpay for POS */
+  | 'AFTERPAYTOUCH_POS'
+  /** Alelo */
+  | 'ALELO'
+  /** Alipay */
+  | 'ALIPAY'
+  /** AntFinancial OSP Offline */
+  | 'ALIPAY_CONNECT'
+  /** Alipay HK */
+  | 'ALIPAY_HK'
+  /** Alipay SG POS */
+  | 'ALIPAY_SG_POS'
+  /** Alipay WAP */
+  | 'ALIPAY_WAP'
+  /** Amazon Pay */
+  | 'AMAZONPAY'
+  /** American Express */
+  | 'AMEX'
+  /** American Express Commercial Credit Card */
+  | 'AMEXCOMMERCIAL'
+  /** American Express Consumer Credit Card */
+  | 'AMEXCONSUMER'
+  /** American Express Corporate Credit Card */
+  | 'AMEXCORPORATE'
+  /** American Express Debit Card */
+  | 'AMEXDEBIT'
+  /** American Express Prepaid Card */
+  | 'AMEXPREPAID'
+  /** American Express Prepaid-Reloadable Card */
+  | 'AMEXPREPAIDRELOADABLE'
+  /** American Express Small Business Credit Card */
+  | 'AMEXSMALLBUSINESS'
+  /** Amazon Pay – American Express */
+  | 'AMEX_AMAZONPAY'
+  /** Apple Pay - American Express */
+  | 'AMEX_APPLEPAY'
+  /** Google Pay - American Express */
+  | 'AMEX_GOOGLEPAY'
+  /** MobilePay - American Express */
+  | 'AMEX_MOBILEPAY'
+  /** Samsung Pay - American Express */
+  | 'AMEX_SAMSUNGPAY'
+  /** Vipps - American Express */
+  | 'AMEX_VIPPS'
+  /** Auriga gift card */
+  | 'AURIGA'
+  /** Baby gift card */
+  | 'BABYGIFTCARD'
+  /** Banese card */
+  | 'BANESE_CARD'
+  /** Banese credit card */
+  | 'BANESE_CARD_CREDIT'
+  /** Banese debit card */
+  | 'BANESE_CARD_DEBIT'
+  /** Banese prepaid card */
+  | 'BANESE_CARD_PREPAID'
+  /** BankAxept */
+  | 'BANKAXEPT'
+  /** Bancontact */
+  | 'BCMC'
+  /** Bancontact app */
+  | 'BCMC_MOBILE'
+  /** Blik */
+  | 'BLIK'
+  /** Bloemen Giftcard */
+  | 'BLOEMENGIFTCARD'
+  /** Boleto */
+  | 'BOLETO'
+  /** Carnet */
+  | 'CARNET'
+  /** Carte Bancaire */
+  | 'CARTEBANCAIRE'
+  /** Cashcom gift card */
+  | 'CASHCOMGIFTCARD'
+  /** Cellulant */
+  | 'CELLULANT'
+  /** Clearpay */
+  | 'CLEARPAY'
+  /** CredTODOS */
+  | 'CREDTODOS'
+  /** CredTODOS private credit */
+  | 'CREDTODOS_PRIVATE_CREDIT'
+  /** CredTODOS private debit */
+  | 'CREDTODOS_PRIVATE_DEBIT'
+  /** China UnionPay card payment */
+  | 'CUP'
+  /** China UnionPay credit */
+  | 'CUPCREDIT'
+  /** China UnionPay debit */
+  | 'CUPDEBIT'
+  /** China UnionPay prepaid */
+  | 'CUPPREPAID'
+  /** Dana payment method Indonesia */
+  | 'DANA'
+  /** Dankort */
+  | 'DANKORT'
+  /** MobilePay - Dankort */
+  | 'DANKORT_MOBILEPAY'
+  /** Diners */
+  | 'DINERS'
+  /** BACS Direct Debit (Direct Debit Great Britain) */
+  | 'DIRECTDEBIT_GB'
+  /** Discover */
+  | 'DISCOVER'
+  /** Amazon Pay - Discover */
+  | 'DISCOVER_AMAZONPAY'
+  /** Apple Pay - Discover */
+  | 'DISCOVER_APPLEPAY'
+  /** Google Pay - Discover */
+  | 'DISCOVER_GOOGLEPAY'
+  /** Samsung Pay - Discover */
+  | 'DISCOVER_SAMSUNGPAY'
+  /** DOKU */
+  | 'DOKU'
+  /** Alfamart via DOKU */
+  | 'DOKU_ALFAMART'
+  /** ID Bank Transfer */
+  | 'DOKU_BCA_VA'
+  /** ID Bank Transfer */
+  | 'DOKU_BNI_VA'
+  /** ID Bank Transfer */
+  | 'DOKU_BRI_VA'
+  /** ID Bank Transfer */
+  | 'DOKU_CIMB_VA'
+  /** ID Bank Transfer */
+  | 'DOKU_DANAMON_VA'
+  /** Indomaret */
+  | 'DOKU_INDOMARET'
+  /** ID Bank Transfer */
+  | 'DOKU_MANDIRI_VA'
+  /** OVO */
+  | 'DOKU_OVO'
+  /** ID Bank Transfer */
+  | 'DOKU_PERMATA_LITE_ATM'
+  /** ID Bank Transfer */
+  | 'DOKU_SINARMAS_VA'
+  /** DOKU wallet */
+  | 'DOKU_WALLET'
+  /** Dragonpay */
+  | 'DRAGONPAY'
+  /** Dragonpay ebanking */
+  | 'DRAGONPAY_EBANKING'
+  /** Dragonpay OTC/ATM Philippines */
+  | 'DRAGONPAY_OTC_BANKING'
+  /** Dragonpay international OTC */
+  | 'DRAGONPAY_OTC_INTERNATIONAL'
+  /** Dragonpay OTC non-bank */
+  | 'DRAGONPAY_OTC_NON_BANKING'
+  /** Dragonpay convenience stores Philippines */
+  | 'DRAGONPAY_OTC_PHILIPPINES'
+  /** 7-Eleven Philippines */
+  | 'DRAGONPAY_SEVENELEVEN'
+  /** Eagle Eye gift card */
+  | 'EAGLEEYE_VOUCHER'
+  /** Electronic Bank Transfer Finland */
+  | 'EBANKING_FI'
+  /** eContext PayEasy ATM */
+  | 'ECONTEXT_ATM'
+  /** eContext PayEasy online banking */
+  | 'ECONTEXT_ONLINE'
+  /** eContext 7-Eleven */
+  | 'ECONTEXT_SEVEN_ELEVEN'
+  /** eContext convenience stores */
+  | 'ECONTEXT_STORES'
+  /** eftpos Australia */
+  | 'EFTPOS_AUSTRALIA'
+  /** eftpos Australia - CHQ account type */
+  | 'EFTPOS_AUSTRALIA_CHQ'
+  /** eftpos Australia - SAV account type */
+  | 'EFTPOS_AUSTRALIA_SAV'
+  /** eftpos New Zealand */
+  | 'EFTPOS_NEWZEALAND'
+  /** Visa Electron */
+  | 'ELECTRON'
+  /** Amazon Pay - Visa Electron */
+  | 'ELECTRON_AMAZONPAY'
+  /** Apple Pay - Visa Electron */
+  | 'ELECTRON_APPLEPAY'
+  /** MobilePay - Visa Electron */
+  | 'ELECTRON_MOBILEPAY'
+  /** Samsung Pay - Visa Electron */
+  | 'ELECTRON_SAMSUNGPAY'
+  /** Vipps - Visa Electron */
+  | 'ELECTRON_VIPPS'
+  /** Elo */
+  | 'ELO'
+  /** EnterCard gift card */
+  | 'ENTERCARD'
+  /** Electronic Payment Service (EPS) */
+  | 'EPS'
+  /** Expert Cadeaukaart gift card */
+  | 'EXPERTGIFTCARD'
+  /** 3x4xOney */
+  | 'FACILYPAY'
+  /** Fashioncheque gift card */
+  | 'FASHIONCHEQUE'
+  /** FijnCadeau gift card */
+  | 'FIJNCADEAU'
+  /** Fleurop Bloemenbon */
+  | 'FLEUROPBLOEMENBON'
+  /** fonQ Giftcard */
+  | 'FONQGIFTCARD'
+  /** Forbrugsforeningen gift card */
+  | 'FORBRUGSFORENINGEN'
+  /** Gall & Gall gift card */
+  | 'GALLGALL'
+  /** GCash Payment Method Philippines */
+  | 'GCASH'
+  /** Girocard */
+  | 'GIROCARD'
+  /** Girocard - Apple Pay */
+  | 'GIROCARD_APPLEPAY'
+  /** Givex gift card */
+  | 'GIVEX'
+  /** Google Pay */
+  | 'GOOGLEPAY'
+  /** GoPay Wallet */
+  | 'GOPAY_WALLET'
+  /** GrabPay MY */
+  | 'GRABPAY_MY'
+  /** GrabPay PH */
+  | 'GRABPAY_PH'
+  /** GrabPay for POS */
+  | 'GRABPAY_POS'
+  /** GrabPay SG */
+  | 'GRABPAY_SG'
+  /** Hallmark gift card */
+  | 'HALLMARKCARD'
+  /** Hipercard */
+  | 'HIPERCARD'
+  /** iDEAL | Wero */
+  | 'IDEAL'
+  /** iGive gift card */
+  | 'IGIVE'
+  /** Ikano gift card */
+  | 'IKANO'
+  /** Interac(online banking) */
+  | 'INTERAC'
+  /** Apple Pay - Interac (in-app) */
+  | 'INTERAC_APPLEPAY'
+  /** Interac Debit for POS */
+  | 'INTERAC_CARD'
+  /** Google Pay - Interac (in-app) */
+  | 'INTERAC_GOOGLEPAY'
+  /** JCB */
+  | 'JCB'
+  /** JCB credit */
+  | 'JCBCREDIT'
+  /** JCB debit */
+  | 'JCBDEBIT'
+  /** JCB prepaid */
+  | 'JCBPREPAID'
+  /** JCB prepaid anonymous */
+  | 'JCBPREPAIDANONYMOUS'
+  /** Apple Pay - JCB credit card */
+  | 'JCB_APPLEPAY'
+  /** KadoWereld gift card */
+  | 'KADOWERELD'
+  /** KakaoPay payment method */
+  | 'KAKAOPAY'
+  /** Korean Bank Transfer */
+  | 'KCP_BANKTRANSFER'
+  /** PayCo */
+  | 'KCP_PAYCO'
+  /** KidsCadeau gift card */
+  | 'KIDSCADEAU'
+  /** Kindpas gift card */
+  | 'KINDPAS'
+  /** Klarna Pay Later */
+  | 'KLARNA'
+  /** Klarna Pay over time */
+  | 'KLARNA_ACCOUNT'
+  /** Klarna Pay Now */
+  | 'KLARNA_PAYNOW'
+  /** Leisure Voucher gift card */
+  | 'LEISURECARD'
+  /** Maestro */
+  | 'MAESTRO'
+  /** Maestro UK */
+  | 'MAESTROUK'
+  /** Amazon Pay - Maestro */
+  | 'MAESTRO_AMAZONPAY'
+  /** Apple Pay - Maestro */
+  | 'MAESTRO_APPLEPAY'
+  /** Google Pay - Maestro */
+  | 'MAESTRO_GOOGLEPAY'
+  /** MobilePay - Maestro */
+  | 'MAESTRO_MOBILEPAY'
+  /** Samsung Pay - Maestro */
+  | 'MAESTRO_SAMSUNGPAY'
+  /** Maestro USA */
+  | 'MAESTRO_USA'
+  /** Vipps - Maestro */
+  | 'MAESTRO_VIPPS'
+  /** MB WAY */
+  | 'MBWAY'
+  /** Mastercard */
+  | 'MC'
+  /** Mastercard Alpha Bank Bonus */
+  | 'MCALPHABANKBONUS'
+  /** Mastercard ATM */
+  | 'MCATM'
+  /** Mastercard Commercial Credit */
+  | 'MCCOMMERCIALCREDIT'
+  /** Mastercard Commercial Debit */
+  | 'MCCOMMERCIALDEBIT'
+  /** Mastercard Commercial Premium Credit */
+  | 'MCCOMMERCIALPREMIUMCREDIT'
+  /** Mastercard Commercial Premium Debit */
+  | 'MCCOMMERCIALPREMIUMDEBIT'
+  /** Mastercard Corporate */
+  | 'MCCORPORATE'
+  /** Mastercard Corporate Credit */
+  | 'MCCORPORATECREDIT'
+  /** Mastercard Corporate Debit */
+  | 'MCCORPORATEDEBIT'
+  /** Mastercard Credit */
+  | 'MCCREDIT'
+  /** Mastercard Debit */
+  | 'MCDEBIT'
+  /** Mastercard Fleet Credit */
+  | 'MCFLEETCREDIT'
+  /** Mastercard Fleet Debit */
+  | 'MCFLEETDEBIT'
+  /** Mastercard Premium Credit */
+  | 'MCPREMIUMCREDIT'
+  /** Mastercard Premium Debit */
+  | 'MCPREMIUMDEBIT'
+  /** Mastercard Prepaid Anonymous */
+  | 'MCPREPAIDANONYMOUS'
+  /** Mastercard Pro */
+  | 'MCPRO'
+  /** Mastercard Purchasing Credit */
+  | 'MCPURCHASINGCREDIT'
+  /** Mastercard Purchasing Debit */
+  | 'MCPURCHASINGDEBIT'
+  /** Mastercard Standard Credit */
+  | 'MCSTANDARDCREDIT'
+  /** Mastercard Standard Debit */
+  | 'MCSTANDARDDEBIT'
+  /** Mastercard Super Premium Credit */
+  | 'MCSUPERPREMIUMCREDIT'
+  /** Mastercard Super Premium Debit */
+  | 'MCSUPERPREMIUMDEBIT'
+  /** Amazon Pay - Mastercard */
+  | 'MC_AMAZONPAY'
+  /** Apple Pay - Mastercard */
+  | 'MC_APPLEPAY'
+  /** Google Pay - Mastercard */
+  | 'MC_GOOGLEPAY'
+  /** MobilePay - Mastercard */
+  | 'MC_MOBILEPAY'
+  /** Samsung Pay - Mastercard */
+  | 'MC_SAMSUNGPAY'
+  /** Vipps - Mastercard */
+  | 'MC_VIPPS'
+  /** MobilePay */
+  | 'MOBILEPAY'
+  /** Alipay via MOLPay */
+  | 'MOLPAY_ALIPAY'
+  /** Online banking Thailand */
+  | 'MOLPAY_BANGKOKBANK'
+  /** Boost via MOLPay */
+  | 'MOLPAY_BOOST'
+  /** 7-Eleven via MOLPay */
+  | 'MOLPAY_CASH'
+  /** Malaysian eBanking via FPX MOLPay */
+  | 'MOLPAY_EBANKING_FPX_MY'
+  /** Online banking Malaysia */
+  | 'MOLPAY_EBANKING_MY'
+  /** Thailand eBanking via MOLPay */
+  | 'MOLPAY_EBANKING_TH'
+  /** Online banking Malaysia */
+  | 'MOLPAY_FPX'
+  /** Online banking Thailand */
+  | 'MOLPAY_KBANK'
+  /** Online banking Thailand */
+  | 'MOLPAY_KRUNGSRIBANK'
+  /** Online banking Thailand */
+  | 'MOLPAY_KRUNGTHAIBANK'
+  /** RazerGold (by MOLPay) */
+  | 'MOLPAY_POINTS'
+  /** Online banking Thailand */
+  | 'MOLPAY_SIAMCOMMERCIALBANK'
+  /** MoMo ATM */
+  | 'MOMO_ATM'
+  /** MoMo Wallet */
+  | 'MOMO_WALLET'
+  /** Multibanco */
+  | 'MULTIBANCO'
+  /** Nationale Bioscoopbon */
+  | 'NATIONALEBIOSCOOPBON'
+  /** Neteller */
+  | 'NETELLER'
+  /** Nets gift card */
+  | 'NETSCARD'
+  /** Nordea */
+  | 'NORDEA'
+  /** NYCE */
+  | 'NYCE'
+  /** Oberthur gift card */
+  | 'OBERTHUR'
+  /** Online banking India */
+  | 'ONLINEBANKING_IN'
+  /** Online banking Poland */
+  | 'ONLINEBANKING_PL'
+  /** Oxxo */
+  | 'OXXO'
+  /** Pathe gift card */
+  | 'PATHEGIFTCARD'
+  /** PayEx gift card */
+  | 'PAYEX'
+  /** PayMaya Connect */
+  | 'PAYMAYA_CONNECT'
+  /** PayMaya Wallet */
+  | 'PAYMAYA_WALLET'
+  /** PayPal */
+  | 'PAYPAL'
+  /** PayPal for POS */
+  | 'PAYPAL_POS'
+  /** PaySafeCard */
+  | 'PAYSAFECARD'
+  /** Payshop */
+  | 'PAYSHOP'
+  /** PayTM payment method India */
+  | 'PAYTM'
+  /** Pix */
+  | 'PIX'
+  /** Podium Card gift card */
+  | 'PODIUMCARD'
+  /** Illicado gift card */
+  | 'PROSODIE_ILLICADO'
+  /** PULSE for in-person payments */
+  | 'PULSE'
+  /** PULSE for online payments */
+  | 'PULSE_PINLESS'
+  /** Resurs gift card */
+  | 'RESURSGIFTCARD'
+  /** Romcard */
+  | 'ROMCARD'
+  /** Romcard credit card */
+  | 'ROMCARD_CREDIT'
+  /** Romcard debit card */
+  | 'ROMCARD_DEBIT'
+  /** Samsung Pay */
+  | 'SAMSUNGPAY'
+  /** SEPA Direct Debit */
+  | 'SEPADIRECTDEBIT'
+  /** SpareBank gift card */
+  | 'SPAREBANK'
+  /** Spar Nord gift card */
+  | 'SPARNORD'
+  /** STAR */
+  | 'STAR'
+  /** SVS gift card */
+  | 'SVS'
+  /** Swish */
+  | 'SWISH'
+  /** Trustly */
+  | 'TRUSTLY'
+  /** Twint */
+  | 'TWINT'
+  /** Twint for POS */
+  | 'TWINT_POS'
+  /** Universal gift card gift card */
+  | 'UNIVERSALGIFTCARD'
+  /** UPI Collect */
+  | 'UPI_COLLECT'
+  /** UPI Intent */
+  | 'UPI_INTENT'
+  /** UPI QR */
+  | 'UPI_QR'
+  /** Vale Refeicao */
+  | 'VALE_REFEICAO'
+  /** Vale Refeicao prepaid */
+  | 'VALE_REFEICAO_PREPAID'
+  /** Fiserv (formerly ValueLink) gift card */
+  | 'VALUELINKGIFTCARD'
+  /** V and D Cadeaucard */
+  | 'VDCADEAUCARD'
+  /** Vipps */
+  | 'VIPPS'
+  /** Visa */
+  | 'VISA'
+  /** Visa Alpha Bank Bonus */
+  | 'VISAALPHABANKBONUS'
+  /** Visa Business */
+  | 'VISABUSINESS'
+  /** Visa Checkout */
+  | 'VISACHECKOUT'
+  /** Visa Classic */
+  | 'VISACLASSIC'
+  /** Visa Commercial Credit */
+  | 'VISACOMMERCIALCREDIT'
+  /** Visa Commercial Debit */
+  | 'VISACOMMERCIALDEBIT'
+  /** Visa Commercial Premium Credit */
+  | 'VISACOMMERCIALPREMIUMCREDIT'
+  /** Visa Commercial Premium Debit */
+  | 'VISACOMMERCIALPREMIUMDEBIT'
+  /** Visa Commercial Super Premium Credit */
+  | 'VISACOMMERCIALSUPERPREMIUMCREDIT'
+  /** Visa Commercial Super Premium Debit */
+  | 'VISACOMMERCIALSUPERPREMIUMDEBIT'
+  /** Visa Corporate */
+  | 'VISACORPORATE'
+  /** Visa Corporate Credit */
+  | 'VISACORPORATECREDIT'
+  /** Visa Corporate Debit */
+  | 'VISACORPORATEDEBIT'
+  /** Visa credit card */
+  | 'VISACREDIT'
+  /** Visa debit card */
+  | 'VISADEBIT'
+  /** Visa Fleet Credit */
+  | 'VISAFLEETCREDIT'
+  /** Visa Fleet Debit */
+  | 'VISAFLEETDEBIT'
+  /** Visa Gold */
+  | 'VISAGOLD'
+  /** Visa Hipotecario */
+  | 'VISAHIPOTECARIO'
+  /** Visa Platinum */
+  | 'VISAPLATINUM'
+  /** Visa Premium Credit */
+  | 'VISAPREMIUMCREDIT'
+  /** Visa Premium Debit */
+  | 'VISAPREMIUMDEBIT'
+  /** Visa Prepaid Anonymous */
+  | 'VISAPREPAIDANONYMOUS'
+  /** Visa Proprietary */
+  | 'VISAPROPRIETARY'
+  /** Visa Purchasing */
+  | 'VISAPURCHASING'
+  /** Visa Purchasing Credit */
+  | 'VISAPURCHASINGCREDIT'
+  /** Visa Purchasing Debit */
+  | 'VISAPURCHASINGDEBIT'
+  /** Visa Saraiva Card */
+  | 'VISASARAIVACARD'
+  /** Visa Signature */
+  | 'VISASIGNATURE'
+  /** Visa Standard Credit */
+  | 'VISASTANDARDCREDIT'
+  /** Visa Standard Debit */
+  | 'VISASTANDARDDEBIT'
+  /** Visa Super Premium Credit */
+  | 'VISASUPERPREMIUMCREDIT'
+  /** Visa Super Premium Debit */
+  | 'VISASUPERPREMIUMDEBIT'
+  /** Amazon Pay - Visa */
+  | 'VISA_AMAZONPAY'
+  /** Apple Pay - Visa */
+  | 'VISA_APPLEPAY'
+  /** Google Pay - Visa */
+  | 'VISA_GOOGLEPAY'
+  /** MobilePay - Visa */
+  | 'VISA_MOBILEPAY'
+  /** Samsung Pay - Visa */
+  | 'VISA_SAMSUNGPAY'
+  /** Vipps - Visa */
+  | 'VISA_VIPPS'
+  /** V Pay */
+  | 'VPAY'
+  /** VVV Cadeaubon */
+  | 'VVVCADEAUBON'
+  /** VVV gift card */
+  | 'VVVGIFTCARD'
+  /** Wallets India */
+  | 'WALLET_IN'
+  /** Webshop gift card */
+  | 'WEBSHOPGIFTCARD'
+  /** WeChat Pay */
+  | 'WECHATPAY'
+  /** WeChat Pay for POS */
+  | 'WECHATPAY_POS'
+  /** Winkel Cheque gift card */
+  | 'WINKELCHEQUE'
+  /** XPonCard gift card */
+  | 'XPONCARD'
+  /** YourGift gift card */
+  | 'YOURGIFT'
+  /** Zip */
+  | 'ZIP'
+  /** Zip for POS */
+  | 'ZIP_POS';
+
+export type AppliedPromotionDeactivationStrategy =
+  /** Gets deactivated when used x number or times. */
+  | 'TIMES'
+  /** Never gets deactivated based on usage. */
+  | 'UNLIMITED'
+  /** Gets deactivated after a monetary limit has been reached. */
+  | 'VALUE';
+
+/** Autogenerated input type of ApplyPromotionToSubscription */
+export type ApplyPromotionToSubscriptionInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** ID of the promotion to apply. */
+  promotionId: string | number;
+  /** ID of the subscription to apply the promotion to. */
+  subscriptionId: string | number;
+  /** Whether to validate the promotion before applying it. */
+  validatePromotion?: boolean | null | undefined;
+};
+
+export type BaseIntervalUnit =
+  /** Interval period in days. */
+  | 'DAYS'
+  /** Interval period in months. */
+  | 'MONTHS'
+  /** Interval period in weeks. */
+  | 'WEEKS'
+  /** Interval period in years. */
+  | 'YEARS';
+
+export type BillingCycleIntervalUnit =
+  /** The billing cycle interval is specified in days. */
+  | 'DAYS'
+  /** The billing cycle interval is specified in months. */
+  | 'MONTHS'
+  /** The billing cycle interval is specified in weeks. */
+  | 'WEEKS'
+  /** The billing cycle interval is specified in years. */
+  | 'YEARS';
+
+/** Autogenerated input type of CancelSubscription */
+export type CancelSubscriptionInput = {
+  /** Why did this customer decide to cancel? */
+  cancellationNotes?: string | null | undefined;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** The ID of the subscription to cancel, only needed if a project access token is used. */
+  id?: string | number | null | undefined;
+  /** Skip sending the standard cancellation confirmation email to the customer. */
+  skipCancellationConfirmationEmail?: boolean | null | undefined;
+  /** If a customer cannot be cancelled due to active commitments, this process can be skipped. */
+  skipContractTermsEnforcement?: boolean | null | undefined;
+  /** If two-step cancellation is enabled it can be skipped */
+  skipTwoStepCancellation?: boolean | null | undefined;
+  /** The token of the subscription to cancel, only needed if a project access token is used. */
+  token?: string | number | null | undefined;
+};
+
+export type CollectionCaseStatus =
+  /** The collection case is is closed. */
+  | 'CLOSED'
+  /** The collection case is still open. */
+  | 'OPEN';
+
+export type CommitmentUnit =
+  /** The period in days. */
+  | 'DAYS'
+  /** The period in months. */
+  | 'MONTHS'
+  /** The period in weeks. */
+  | 'WEEKS'
+  /** The period in years. */
+  | 'YEARS';
+
+/** Autogenerated input type of CreateOrderedProduct */
+export type CreateOrderedProductInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** A custom price in cents for this ordered product. If left blank, the default product price will be used, with the plan discount applied when a plan is present. */
+  customPriceCents?: number | null | undefined;
+  ensureNewRecord?: boolean | null | undefined;
+  /** ID of this ordered product. This will be ignored on create action. */
+  id?: string | number | null | undefined;
+  /** The amount of time in units between shipments of this order */
+  interval?: number | null | undefined;
+  /** The time measure for interval units */
+  intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null | undefined;
+  /** The date at which the maximum commitment ends for this product */
+  maximumCommitmentEndsAt?: string | null | undefined;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: unknown;
+  /** The date at which the minimum commitment ends for this product */
+  minimumCommitmentEndsAt?: string | null | undefined;
+  /** This argument is deprecated. Use direct arguments on this mutation instead. If you pass this field, direct arguments will be ignored. */
+  orderedProduct?: OrderedProductInput | null | undefined;
+  /** ID for the related product. When replacing a product, this is the replacement product. */
+  productId?: string | number | null | undefined;
+  /** The quantity for this ordered product. */
+  quantity?: number | null | undefined;
+  /** The next date on which a new order should get initiated */
+  shipmentDate?: string | null | undefined;
+  /** Use this field to look up the associated product based on Shopify Variant ID. */
+  shopifyVariantId?: string | number | null | undefined;
+  /** Use this field to look up the associated product based on SKU. */
+  sku?: string | null | undefined;
+  /** Use this field to look up the associated product based on slug. */
+  slug?: string | null | undefined;
+  /** The status of the ordered product */
+  status?: OrderedProductStatus | null | undefined;
+  /** ID of the subscription to create this OrderedProduct for. Required if authenticated via a project access token */
+  subscriptionId?: string | number | null | undefined;
+};
+
+/** Autogenerated input type of DeactivateAppliedPromotion */
+export type DeactivateAppliedPromotionInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** Id of the applied promotion that needs to be deactivated. */
+  id: string | number;
+};
+
+/** Autogenerated input type of DestroyOrderedProduct */
+export type DestroyOrderedProductInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** ID of the ordered product to delete. Be careful when this is the subscription's last ordered product: deleting it can leave the subscription without an active product and may break downstream subscription behavior. For replacement flows, prefer updateOrderedProduct for an in-place product swap; if delete-and-create is required, create or verify the replacement first, then destroy the old line. */
+  id?: string | number | null | undefined;
+  /** The Shopify product ID to find the ordered product by */
+  shopifyProductId?: string | number | null | undefined;
+  /** The Shopify variant ID to find the ordered product by */
+  shopifyVariantId?: string | number | null | undefined;
+  /** Required when using shopify_variant_id or shopify_product_id */
+  subscriptionId?: string | number | null | undefined;
+};
+
+/** Input type for creating extra field answers */
+export type ExtraFieldInput = {
+  /** ID of the extra field the value is for. */
+  extraFieldId: string | number;
+  /** The ID of the extra field answer. Unique for each subscription and required in case of an update. */
+  id?: string | number | null | undefined;
+  /** The value of the extra field. */
+  value: string;
+};
+
+export type InvoiceStatusEnum =
+  /** The invoice payment was cancelled. */
+  | 'CANCELLED'
+  /** The invoice payment has been charged back. */
+  | 'CHARGED_BACK'
+  /** The invoice payment has expired. */
+  | 'EXPIRED'
+  /** The invoice payment has failed. */
+  | 'FAILED'
+  /** The invoice payment is open. */
+  | 'OPEN'
+  /** The invoice has been successfully paid in full. */
+  | 'PAID'
+  /** The invoice has been successfully paid in full. */
+  | 'PAIDOUT'
+  /** The invoice has been partially paid. */
+  | 'PARTIALLY_PAID'
+  /** The invoice has been partially refunded. */
+  | 'PARTIALLY_REFUNDED'
+  /** The invoice payment is pending. */
+  | 'PENDING'
+  /** The invoice has been refunded in full. */
+  | 'REFUNDED'
+  /** The invoice has been deemed uncollectible. */
+  | 'UNCOLLECTIBLE';
+
+export type LineItemTypeEnum =
+  /** Line item for a purchase of an asset */
+  | 'ASSET_PURCHASE'
+  /** Line item for a credited amount */
+  | 'CREDIT'
+  /** Line item for custom charges */
+  | 'CUSTOM'
+  /** Line item for applied discount */
+  | 'DISCOUNT'
+  /** Line item for an initial payment */
+  | 'INITIAL'
+  /** Line item for manual invoice description */
+  | 'MANUAL_INVOICE'
+  /** Line item indicating the switch to a new subscription plan. */
+  | 'PLAN_SWITCH'
+  /** Line item for a plan upgrade */
+  | 'PLAN_UPGRADE'
+  /** Line item for a prepaid upgrade */
+  | 'PRE_PAID'
+  /** Line item charging for a product. */
+  | 'PRODUCT'
+  /** Line item for applied promotion */
+  | 'PROMOTION'
+  /** Line item for shipping costs. */
+  | 'SHIPPING'
+  /** Line item for subscription, generally for a recurring charge. */
+  | 'SUBSCRIPTION';
+
+export type MaximumCommitmentUnit =
+  /** The period in billing cycles */
+  | 'BILLING_CYCLES'
+  /** The period in days. */
+  | 'DAYS'
+  /** The period in months. */
+  | 'MONTHS'
+  /** The period in weeks. */
+  | 'WEEKS'
+  /** The period in years. */
+  | 'YEARS';
+
+export type OrderStatus =
+  /** The order is waiting for pre-confirmation before regular processing continues. */
+  | 'AWAITING_CONFIRMATION'
+  /** The order was cancelled. */
+  | 'CANCELLED'
+  /** The order was marked confirmed. */
+  | 'CONFIRMED'
+  /** The order has a draft state as long as the customer didn't complete their signup. */
+  | 'DRAFT'
+  /** The order was marked fulfilled. */
+  | 'FULFILLED'
+  /** The order still needs to be accepted by you or the customer. */
+  | 'PENDING'
+  /** The order is scheduled for a future date. */
+  | 'SCHEDULED'
+  /** The order was snoozed to be possibly confirmed at a later moment. */
+  | 'SNOOZED';
+
+/** Input type for creating ordered products */
+export type OrderedProductInput = {
+  /** A custom price in cents for this ordered product. If left blank, the default product price will be used, with the plan discount applied when a plan is present. */
+  customPriceCents?: number | null | undefined;
+  /** Id of this ordered product */
+  id?: string | number | null | undefined;
+  /** The amount of time in units between shipments of this order */
+  interval?: number | null | undefined;
+  /** The time measure for interval units */
+  intervalUnitOfMeasure?: string | null | undefined;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: unknown;
+  /** ID for the related product */
+  productId?: string | number | null | undefined;
+  /** The quantity for this ordered product. */
+  quantity?: number | null | undefined;
+  /** The next date on which a new order should get initiated */
+  shipmentDate?: string | null | undefined;
+  /** Shopify variant ID for the Firmhouse product */
+  shopifyVariantId?: string | number | null | undefined;
+  /** SKU for the related product */
+  sku?: string | null | undefined;
+  /** Slug for the related product */
+  slug?: string | null | undefined;
+};
+
+export type OrderedProductIntervalUnitOfMeasure =
+  /** Days unit of measure */
+  | 'DAYS'
+  /** Use associated product's default unit of measure. */
+  | 'DEFAULT'
+  /** Months unit of measure */
+  | 'MONTHS'
+  /** Weeks unit of measure */
+  | 'WEEKS';
+
+export type OrderedProductStatus =
+  /** The ordered product is current actively billed or shipped for the subscription. */
+  | 'ACTIVE'
+  /** The ordered product has been shipped and is now owned by the customer. */
+  | 'OWNED'
+  /** The ordered product has been returned. */
+  | 'RETURNED';
+
+export type OrderedProductTypes =
+  /** Regular ordered product */
+  | 'NORMAL'
+  /** A one-off add-on product automatically included in the next order and removed after the order is created */
+  | 'ONE_OFF_ADDON'
+  /** An ordered product that will be added to the order when reaching position 1 in the queue */
+  | 'QUEUED'
+  /** An additional product will be added to the order */
+  | 'QUEUED_ADDON'
+  /** An ordered product that will be added to the order if there is no queued ordered product */
+  | 'QUEUED_DEFAULT'
+  /** No order will be created if a skip product is added on position 1 in the queue */
+  | 'QUEUED_SKIP';
+
+/** Autogenerated input type of PauseSubscription */
+export type PauseSubscriptionInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** ID of the subscription to pause. */
+  id: string | number;
+  /** Time from which the subscription automaticaly resumes again. */
+  pauseUntil?: string | null | undefined;
+};
+
+export type PaymentStatusEnum =
+  /** The payment was cancelled. */
+  | 'CANCELLED'
+  /** The payment has been charged back. */
+  | 'CHARGED_BACK'
+  /** The payment has expired. */
+  | 'EXPIRED'
+  /** The payment has failed. */
+  | 'FAILED'
+  /** The payment is open. */
+  | 'OPEN'
+  /** The payment has been successfully paid in full. */
+  | 'PAID'
+  /** The payment has been successfully paid in full. */
+  | 'PAIDOUT'
+  /** The payment has been partially refunded. */
+  | 'PARTIALLY_REFUNDED'
+  /** The payment is pending. */
+  | 'PENDING'
+  /** The payment has been refunded in full. */
+  | 'REFUNDED';
+
+export type PaymentTypeEnum =
+  /** Payment used to update a customers payment method. */
+  | 'AUTHORIZATION'
+  /** An on-session payment performed by a customer to pay for an invoice manually. */
+  | 'DIRECT_PAYMENT'
+  /** An on-session payment performed by a customer to pay for an invoice manually that stores the payment method for all future subscription payments. */
+  | 'DIRECT_PAYMENT_WITH_AUTHORIZATION'
+  /** Payment made outside the Firmhouse platform, such as direct transfers from customers to your account, bypassing Firmhouse usual payment flow. */
+  | 'EXTERNAL_PAYMENT'
+  /** Initial payment made directly during checkout. */
+  | 'INITIAL'
+  /** Externally created recurring payment. */
+  | 'MONTHLY'
+  /** Recurring charge made by our billing cycle. */
+  | 'RECURRING'
+  /** An (automated) retry of a failed payment. */
+  | 'RETRY'
+  /** A non-recurring, portal or API-triggered payment. */
+  | 'SINGLE_CHARGE';
+
+export type RefundStatus =
+  /** The refund was canceled. */
+  | 'CANCELED'
+  /** The refund has failed. For example due to a closed bank or card. The payment service provider will return the amount to your account balance. */
+  | 'FAILED'
+  /** The refund is sent to the payment service provider. In some payment service providers you can still cancel the refund at this stage. */
+  | 'PENDING'
+  /** The refund is being processed. */
+  | 'PROCESSING'
+  /** The refund is queued to be processed. A refund might be in this status when your account balance at the payment provider is not sufficient to initiate the refund at this time. */
+  | 'QUEUED'
+  /** The refund was succesful and has been settled to your customer. */
+  | 'SUCCEEDED';
+
+/** Autogenerated input type of ResumeSubscription */
+export type ResumeSubscriptionInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** ID of the subscription to resume. */
+  id: string | number;
+  /** Time to resume the subscription from. If not given the subscription will be immediately resumed. */
+  resumeFrom?: string | null | undefined;
+};
+
+export type SubscriptionStatus =
+  /** The subscription has completed signup process and has been activated. Active subscription. */
+  | 'ACTIVATED'
+  /** The subscription started but has not completed. cancellation process yet (only for projects with two-step cancellation feature enabled). */
+  | 'CANCELLATION_IN_PROGRESS'
+  /** The subscription has been cancelled. */
+  | 'CANCELLED'
+  /** Deprecated. */
+  | 'CUSTOMER_UNSUBSCRIBED'
+  /** The subscription (or a cart) created on checkout that has not completed signup process. */
+  | 'DRAFT'
+  /** The subscription has completed signup process by has not yet been activated (for manual activation strategy). */
+  | 'INACTIVE'
+  /** This status can be assigned to customers that do a one-time purchase. */
+  | 'ONE_TIME_PURCHASE'
+  /** The subscription has been paused. */
+  | 'PAUSED'
+  /** The subscription is marked to be automatically cancelled on the next billing moment after the prepaid commitment ends. */
+  | 'PENDING_CANCELLATION'
+  /** The subscription completed first step of two step signup process. */
+  | 'PENDING_CUSTOMER_COMPLETION'
+  /** This subscription is currently in the process of completing the initial payment. */
+  | 'PENDING_INITIAL_PAYMENT'
+  /** The subscription has been rejected (for manual activation strategy). */
+  | 'REJECTED'
+  /** The subscription was automatically stopped because the maximum plan commitment was reached */
+  | 'STOPPED';
+
+/** Autogenerated input type of UpdateAppliedPromotion */
+export type UpdateAppliedPromotionInput = {
+  /** Whether this promotion should actively be used for this subscription. */
+  active?: boolean | null | undefined;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** The maximum discount amount in cents that this promotion should provide.Only applicable when using the VALUE deactivation strategy. */
+  deactivateAfterAmountIncludingTaxCents?: number | null | undefined;
+  /** After how mamy times used this applied promotion should get deactivated.Only applicable when using the TIMES deactivation strategy. */
+  deactivateAfterTimes?: number | null | undefined;
+  id: string | number;
+};
+
+/** Autogenerated input type of UpdateOrderedProduct */
+export type UpdateOrderedProductInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** A custom price in cents for this ordered product. If left blank, the default product price will be used, with the plan discount applied when a plan is present. */
+  customPriceCents?: number | null | undefined;
+  /** ID of this ordered product. This will be ignored on create action. */
+  id?: string | number | null | undefined;
+  /** The amount of time in units between shipments of this order */
+  interval?: number | null | undefined;
+  /** The time measure for interval units */
+  intervalUnitOfMeasureType?: OrderedProductIntervalUnitOfMeasure | null | undefined;
+  /** The date at which the maximum commitment ends for this product */
+  maximumCommitmentEndsAt?: string | null | undefined;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: unknown;
+  /** The date at which the minimum commitment ends for this product */
+  minimumCommitmentEndsAt?: string | null | undefined;
+  /** ID for the related product. When replacing a product, this is the replacement product. */
+  productId?: string | number | null | undefined;
+  /** The quantity for this ordered product. */
+  quantity?: number | null | undefined;
+  /** The next date on which a new order should get initiated */
+  shipmentDate?: string | null | undefined;
+  /** The status of the ordered product */
+  status?: OrderedProductStatus | null | undefined;
+};
+
+/** Autogenerated input type of UpdatePlan */
+export type UpdatePlanInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  planSlug: string;
+};
+
+/** Autogenerated input type of UpdateSubscription */
+export type UpdateSubscriptionInput = {
+  /** The time the subscription was activated. */
+  activatedAt?: string | null | undefined;
+  /** The customer's address line or street. */
+  address?: string | null | undefined;
+  /** The customer's second address line for additional information. */
+  address2?: string | null | undefined;
+  /** Specify a specific recurring payment method, also requires the adyen payment reference to be set. If either of them is not this field will be ignored */
+  adyenPaymentMethodVariant?: AdyenPaymentMethodVariant | null | undefined;
+  /** Specify a specific recurring payment reference, also requires the adyen payment method variant to be set. If either of them is not this field will be ignored */
+  adyenRecurringDetailReference?: string | null | undefined;
+  /** The Adyen shopper reference being used for charges. */
+  adyenShopperReference?: string | null | undefined;
+  /** The customer's billing address address line or street. */
+  billToAddress?: string | null | undefined;
+  /** The customer's billing address second address line for additional information. */
+  billToAddress2?: string | null | undefined;
+  /** The customer's billing address city or town. */
+  billToCity?: string | null | undefined;
+  /** The company name of the customer's billing address. */
+  billToCompanyName?: string | null | undefined;
+  /** The customer's billing address country code (ISO3661). */
+  billToCountry?: string | null | undefined;
+  /** The customer's billing address district. */
+  billToDistrict?: string | null | undefined;
+  /** The customer's billing address house, building, or appartment number. */
+  billToHouseNumber?: string | null | undefined;
+  /** The customer's billing address last name. */
+  billToLastName?: string | null | undefined;
+  /** The customer's billing address first name. */
+  billToName?: string | null | undefined;
+  /** The customer's billing address phone number (international format). */
+  billToPhoneNumber?: string | null | undefined;
+  /** The customer's billing address salutation (mr,ms,mx). */
+  billToSalutation?: string | null | undefined;
+  /** The customer's billing address state or province (ISO3661-2). */
+  billToState?: string | null | undefined;
+  /** The customer's billing address zip code or postal code. */
+  billToZipcode?: string | null | undefined;
+  /** The time the subscription started the cancellation process (with two-step cancellation) */
+  cancellationStartedAt?: string | null | undefined;
+  /** The time the subscription was (fully) cancelled. */
+  cancelledAt?: string | null | undefined;
+  /** The day of the month when the customer is charged. */
+  chargeDayOfTheMonth?: number | null | undefined;
+  /** The customer's city or town. */
+  city?: string | null | undefined;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: string | null | undefined;
+  /** The company name of the customer. */
+  companyName?: string | null | undefined;
+  /** The customer's country code (ISO3661). */
+  country?: string | null | undefined;
+  /** The field that can be used for your internal reference. For example, internal customer id. */
+  customerReference?: string | null | undefined;
+  /** The customer's date of birth (yyyy-mm-dd). */
+  dateOfBirth?: string | null | undefined;
+  /** Whether billing and shipping addresses are the same. Set this flag to `true` to store a separate billing address. */
+  differentBillingAddress?: boolean | null | undefined;
+  /** The customer's district. */
+  district?: string | null | undefined;
+  /** The customer's email address. */
+  email?: string | null | undefined;
+  /** Extra field values for the subscription. */
+  extraFields?: Array<ExtraFieldInput> | null | undefined;
+  /** The customer's house, building, or appartment number. */
+  houseNumber?: string | null | undefined;
+  /** Unique ID for an imported subscription. */
+  importedSubscriptionId?: string | null | undefined;
+  /** The customer's last name. */
+  lastName?: string | null | undefined;
+  /** The customer's language/locale. Must be enabled on the project. */
+  locale?: string | null | undefined;
+  /** Time time the subscription was marked as non-paying. */
+  markedAsNonPayingAt?: string | null | undefined;
+  /** Whether the customer accepted optional marketing communication opt-in. */
+  marketingOptIn?: boolean | null | undefined;
+  /** Metadata that can be used by developers to store additional information on objects. */
+  metadata?: unknown;
+  /** The Mollie Customer ID (cst_XXX) */
+  mollieCustomerId?: string | null | undefined;
+  /** The customer's first name. */
+  name?: string | null | undefined;
+  /** Notes specific for this subscription */
+  notes?: string | null | undefined;
+  /** The customer's phone number (international format). */
+  phoneNumber?: string | null | undefined;
+  /** Additional payment service provider specific properties used for payment creation. */
+  pspPaymentProperties?: unknown;
+  /** The customer's salutation (mr,ms,mx). */
+  salutation?: string | null | undefined;
+  /** The ID of the service channel to use for this subscription. */
+  serviceChannelId?: string | number | null | undefined;
+  /** The ID of the shipping method to use for this subscription. */
+  shippingMethodId?: string | number | null | undefined;
+  /** The customer's shipping notes (delivery instructions). */
+  shippingNotes?: string | null | undefined;
+  /** The time when the signup was completed. */
+  signupCompletedAt?: string | null | undefined;
+  /** Don't automatically activate the subscription on signup. */
+  skipAutoActivationOnSignup?: boolean | null | undefined;
+  /** The customer's state or province (ISO3661-2). */
+  state?: string | null | undefined;
+  /** The current status of the subscription. (default: inactive) */
+  status?: SubscriptionStatus | null | undefined;
+  /** The time the subscription was stopped. */
+  stoppedAt?: string | null | undefined;
+  /** The Stripe Customer ID (cus_XXX) */
+  stripeCustomerId?: string | null | undefined;
+  /** The Stripe Payment Method ID of the active payment method to charge. (pm_XXX) */
+  stripePaymentMethodId?: string | null | undefined;
+  /** Whether the customer accepted the terms and conditions. */
+  termsAccepted?: boolean | null | undefined;
+  /** The token of the subscription to update, or creates a new one if one doesn't exist. */
+  token?: string | number | null | undefined;
+  /** The number of months before the customer is charged for the first time. */
+  trialPeriodMonths?: number | null | undefined;
+  /** The company VAT number. */
+  vatNumber?: string | null | undefined;
+  /** The customer's zip code or postal code. */
+  zipcode?: string | null | undefined;
+};
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan_planProducts_PlanProduct_product_Product = { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan_planProducts_PlanProduct = { quantity: number, product: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan_planProducts_PlanProduct_product_Product };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan = { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan_planProducts_PlanProduct> | null };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan = { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_plan_Plan = { id: string };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_product_Product = { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct = { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_plan_Plan | null, product: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_product_Product };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer = { extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct = { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, subscription: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_Subscription | null, plan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_plan_Plan | null, product: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_product_Product };
+
+export type UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload = { orderedProduct: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct | null };
+
+export type UpdateOrderedProductMutation_Mutation = { updateOrderedProduct: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload | null };
+
+
+export type UpdateOrderedProductMutationVariables = Exact<{
   input: Types.UpdateOrderedProductInput;
 }>;
 
 
-export type UpdateOrderedProductMutation = { updateOrderedProduct: { orderedProduct: { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } } | null } | null };
+export type UpdateOrderedProductMutation = UpdateOrderedProductMutation_Mutation;
 
-export type GetSubscriptionQueryVariables = Types.Exact<{
-  token: Types.Scalars['ID']['input'];
-  includeVerifiedIdentity: Types.Scalars['Boolean']['input'];
-  includeCollectionCases: Types.Scalars['Boolean']['input'];
-  includeOrders: Types.Scalars['Boolean']['input'];
-  ordersAfter?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  ordersBefore?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  ordersFirst?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-  ordersLast?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-  ordersIncludeOrderLines: Types.Scalars['Boolean']['input'];
-  ordersIncludePayment: Types.Scalars['Boolean']['input'];
-  ordersIncludeInvoice: Types.Scalars['Boolean']['input'];
-  includeInvoices: Types.Scalars['Boolean']['input'];
-  invoicesIncludeInvoiceLineItems: Types.Scalars['Boolean']['input'];
-  invoicesIncludePayment: Types.Scalars['Boolean']['input'];
-  invoicesIncludeOriginalInvoice: Types.Scalars['Boolean']['input'];
-  invoicesIncludeInvoiceReminders: Types.Scalars['Boolean']['input'];
-  invoicesIncludeCollectionCase: Types.Scalars['Boolean']['input'];
-  includeDiscountCodes: Types.Scalars['Boolean']['input'];
-  includeDiscountCodesAutoSelectPlan: Types.Scalars['Boolean']['input'];
-  includeDiscountCodesPromotion: Types.Scalars['Boolean']['input'];
-  includeAppliedPromotions: Types.Scalars['Boolean']['input'];
-  includeAppliedPromotionsDiscountCode: Types.Scalars['Boolean']['input'];
-  includeAppliedPromotionsPromotion: Types.Scalars['Boolean']['input'];
+export type GetSubscriptionQuery_getSubscription_collectionCases_CollectionCaseConnection_nodes_CollectionCase = { caseNumber: string, createdAt: string | null, id: string, status: Types.CollectionCaseStatus, updatedAt: string | null };
+
+export type GetSubscriptionQuery_getSubscription_collectionCases_CollectionCaseConnection = { nodes: Array<GetSubscriptionQuery_getSubscription_collectionCases_CollectionCaseConnection_nodes_CollectionCase | null> | null };
+
+export type GetSubscriptionQuery_getSubscription_verifiedIdentity_SubscriptionIdentity = { createdAt: string, payload: unknown, serviceProvider: string, status: string, verificationMethod: string | null };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_orderLines_OrderLine_product_Product = { costPerItemCents: number | null, available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_orderLines_OrderLine = { metadata: unknown, productSku: string | null, productTitle: string | null, productType: Types.OrderedProductTypes | null, quantity: number, taxPercentage: number | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, product: GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_orderLines_OrderLine_product_Product };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_invoice_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_payment_Payment_refunds_Refund = { amountCents: number, id: string, paymentProviderObjectId: string | null, reason: string | null, refundedAt: string | null, status: Types.RefundStatus };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_payment_Payment = { amountCents: number, amountWithSymbol: string, createdAt: string, id: string, paymentId: string | null, paymentStatus: Types.PaymentStatusEnum, paymentType: Types.PaymentTypeEnum, retryPaymentUrl: string | null, token: string, updatedAt: string, refunds: Array<GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_payment_Payment_refunds_Refund> | null };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order = { acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null, orderLines?: Array<GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_orderLines_OrderLine> | null, invoice?: GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_invoice_Invoice | null, payment?: GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_payment_Payment | null };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_pageInfo_PageInfo = { endCursor: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null };
+
+export type GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection = { totalCount: number | null, nodes: Array<GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order | null> | null, pageInfo: GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_pageInfo_PageInfo };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceLineItems_InvoiceLineItem_product_Product = { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceLineItems_InvoiceLineItem = { amountExcludingTaxCents: number, amountIncludingTaxCents: number, billingPeriodEndsAt: string | null, billingPeriodStartsAt: string | null, description: string | null, effectiveAmountExcludingTaxCents: number, effectiveAmountIncludingTaxCents: number, id: string, lineItemType: Types.LineItemTypeEnum, metadata: unknown, quantity: number, taxPercentage: number, totalAmountExcludingTaxCents: number, totalAmountIncludingTaxCents: number, totalTaxAmountCents: number, product: GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceLineItems_InvoiceLineItem_product_Product | null };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_payment_Payment = { amountCents: number, amountWithSymbol: string, createdAt: string, id: string, paymentId: string | null, paymentStatus: Types.PaymentStatusEnum, paymentType: Types.PaymentTypeEnum, retryPaymentUrl: string | null, token: string, updatedAt: string, refunds: Array<GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection_nodes_Order_payment_Payment_refunds_Refund> | null };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_originalInvoice_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceReminders_InvoiceReminder = { id: string, remindOn: string, remindedAt: string | null, reminderNumber: number };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice_collectionCase_CollectionCase = { caseNumber: string, createdAt: string | null, id: string, status: Types.CollectionCaseStatus, updatedAt: string | null };
+
+export type GetSubscriptionQuery_getSubscription_invoices_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null, invoiceLineItems?: Array<GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceLineItems_InvoiceLineItem> | null, payment?: GetSubscriptionQuery_getSubscription_invoices_Invoice_payment_Payment | null, originalInvoice?: GetSubscriptionQuery_getSubscription_invoices_Invoice_originalInvoice_Invoice | null, invoiceReminders?: Array<GetSubscriptionQuery_getSubscription_invoices_Invoice_invoiceReminders_InvoiceReminder> | null, collectionCase?: GetSubscriptionQuery_getSubscription_invoices_Invoice_collectionCase_CollectionCase | null };
+
+export type GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_autoSelectPlan_Plan = { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan_planProducts_PlanProduct> | null };
+
+export type GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion_BillingCyclePromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion_OrderDiscountPromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion =
+  | GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion_BillingCyclePromotion
+  | GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion_OrderDiscountPromotion
+;
+
+export type GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode = { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown, updatedAt: string, autoSelectPlan?: GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_autoSelectPlan_Plan | null, promotion?: GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode_promotion | null };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_discountCode_DiscountCode = { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown, updatedAt: string };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_BillingCyclePromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_OrderDiscountPromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion =
+  | GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_BillingCyclePromotion
+  | GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_OrderDiscountPromotion
+;
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedBillingCyclePromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, discountCode?: GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_discountCode_DiscountCode | null, promotion?: GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedOrderDiscountPromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, discountCode?: GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_discountCode_DiscountCode | null, promotion?: GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion };
+
+export type GetSubscriptionQuery_getSubscription_appliedPromotions =
+  | GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedBillingCyclePromotion
+  | GetSubscriptionQuery_getSubscription_appliedPromotions_AppliedOrderDiscountPromotion
+;
+
+export type GetSubscriptionQuery_getSubscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, collectionCases?: GetSubscriptionQuery_getSubscription_collectionCases_CollectionCaseConnection | null, verifiedIdentity?: GetSubscriptionQuery_getSubscription_verifiedIdentity_SubscriptionIdentity | null, ordersV2?: GetSubscriptionQuery_getSubscription_ordersV2_OrderConnection | null, invoices?: Array<GetSubscriptionQuery_getSubscription_invoices_Invoice> | null, discountCodes?: Array<GetSubscriptionQuery_getSubscription_discountCodes_DiscountCode> | null, appliedPromotions?: Array<GetSubscriptionQuery_getSubscription_appliedPromotions> | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type GetSubscriptionQuery_Query = { getSubscription: GetSubscriptionQuery_getSubscription_Subscription | null };
+
+
+export type GetSubscriptionQueryVariables = Exact<{
+  token: string | number;
+  includeVerifiedIdentity: boolean;
+  includeCollectionCases: boolean;
+  includeOrders: boolean;
+  ordersAfter?: string | null | undefined;
+  ordersBefore?: string | null | undefined;
+  ordersFirst?: number | null | undefined;
+  ordersLast?: number | null | undefined;
+  ordersIncludeOrderLines: boolean;
+  ordersIncludePayment: boolean;
+  ordersIncludeInvoice: boolean;
+  includeInvoices: boolean;
+  invoicesIncludeInvoiceLineItems: boolean;
+  invoicesIncludePayment: boolean;
+  invoicesIncludeOriginalInvoice: boolean;
+  invoicesIncludeInvoiceReminders: boolean;
+  invoicesIncludeCollectionCase: boolean;
+  includeDiscountCodes: boolean;
+  includeDiscountCodesAutoSelectPlan: boolean;
+  includeDiscountCodesPromotion: boolean;
+  includeAppliedPromotions: boolean;
+  includeAppliedPromotionsDiscountCode: boolean;
+  includeAppliedPromotionsPromotion: boolean;
 }>;
 
 
-export type GetSubscriptionQuery = { getSubscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, collectionCases?: { nodes: Array<{ caseNumber: string, createdAt: string | null, id: string, status: Types.CollectionCaseStatus, updatedAt: string | null } | null> | null } | null, verifiedIdentity?: { createdAt: string, payload: unknown, serviceProvider: string, status: string, verificationMethod: string | null } | null, ordersV2?: { totalCount: number | null, nodes: Array<{ acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null, orderLines?: Array<{ metadata: unknown | null, productSku: string | null, productTitle: string | null, productType: Types.OrderedProductTypes | null, quantity: number, taxPercentage: number | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, product: { costPerItemCents: number | null, available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, invoice?: { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null } | null, payment?: { amountCents: number, amountWithSymbol: string, createdAt: string, id: string, paymentId: string | null, paymentStatus: Types.PaymentStatusEnum, paymentType: Types.PaymentTypeEnum, retryPaymentUrl: string | null, token: string, updatedAt: string, refunds: Array<{ amountCents: number, id: string, paymentProviderObjectId: string | null, reason: string | null, refundedAt: string | null, status: Types.RefundStatus }> | null } | null } | null> | null, pageInfo: { endCursor: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null } } | null, invoices?: Array<{ city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null, invoiceLineItems?: Array<{ amountExcludingTaxCents: number, amountIncludingTaxCents: number, billingPeriodEndsAt: string | null, billingPeriodStartsAt: string | null, description: string | null, effectiveAmountExcludingTaxCents: number, effectiveAmountIncludingTaxCents: number, id: string, lineItemType: Types.LineItemTypeEnum, metadata: unknown | null, quantity: number, taxPercentage: number, totalAmountExcludingTaxCents: number, totalAmountIncludingTaxCents: number, totalTaxAmountCents: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } | null }> | null, payment?: { amountCents: number, amountWithSymbol: string, createdAt: string, id: string, paymentId: string | null, paymentStatus: Types.PaymentStatusEnum, paymentType: Types.PaymentTypeEnum, retryPaymentUrl: string | null, token: string, updatedAt: string, refunds: Array<{ amountCents: number, id: string, paymentProviderObjectId: string | null, reason: string | null, refundedAt: string | null, status: Types.RefundStatus }> | null } | null, originalInvoice?: { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null } | null, invoiceReminders?: Array<{ id: string, remindOn: string, remindedAt: string | null, reminderNumber: number }> | null, collectionCase?: { caseNumber: string, createdAt: string | null, id: string, status: Types.CollectionCaseStatus, updatedAt: string | null } | null }> | null, discountCodes?: Array<{ id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown | null, updatedAt: string, autoSelectPlan?: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, promotion?: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | null }> | null, appliedPromotions?: Array<{ active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, discountCode?: { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown | null, updatedAt: string } | null, promotion?: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, discountCode?: { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown | null, updatedAt: string } | null, promotion?: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } }> | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null };
+export type GetSubscriptionQuery = GetSubscriptionQuery_Query;
 
-export type GetSubscriptionBySelfServiceCenterLoginTokenQueryVariables = Types.Exact<{
-  token: Types.Scalars['ID']['input'];
+export type GetSubscriptionBySelfServiceCenterLoginTokenQuery_getSubscriptionBySelfServiceCenterLoginToken_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type GetSubscriptionBySelfServiceCenterLoginTokenQuery_Query = { getSubscriptionBySelfServiceCenterLoginToken: GetSubscriptionBySelfServiceCenterLoginTokenQuery_getSubscriptionBySelfServiceCenterLoginToken_Subscription };
+
+
+export type GetSubscriptionBySelfServiceCenterLoginTokenQueryVariables = Exact<{
+  token: string | number;
 }>;
 
 
-export type GetSubscriptionBySelfServiceCenterLoginTokenQuery = { getSubscriptionBySelfServiceCenterLoginToken: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } };
+export type GetSubscriptionBySelfServiceCenterLoginTokenQuery = GetSubscriptionBySelfServiceCenterLoginTokenQuery_Query;
 
-export type CancelSubscriptionMutationVariables = Types.Exact<{
+export type CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload = { subscription: CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload_subscription_Subscription | null, errors: Array<CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload_errors_ModelValidationError> };
+
+export type CancelSubscriptionMutation_Mutation = { cancelSubscription: CancelSubscriptionMutation_cancelSubscription_CancelSubscriptionPayload | null };
+
+
+export type CancelSubscriptionMutationVariables = Exact<{
   input: Types.CancelSubscriptionInput;
 }>;
 
 
-export type CancelSubscriptionMutation = { cancelSubscription: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type CancelSubscriptionMutation = CancelSubscriptionMutation_Mutation;
 
-export type PauseSubscriptionMutationVariables = Types.Exact<{
+export type PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload = { subscription: PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload_subscription_Subscription | null, errors: Array<PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload_errors_ModelValidationError> };
+
+export type PauseSubscriptionMutation_Mutation = { pauseSubscription: PauseSubscriptionMutation_pauseSubscription_PauseSubscriptionPayload | null };
+
+
+export type PauseSubscriptionMutationVariables = Exact<{
   input: Types.PauseSubscriptionInput;
 }>;
 
 
-export type PauseSubscriptionMutation = { pauseSubscription: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type PauseSubscriptionMutation = PauseSubscriptionMutation_Mutation;
 
-export type ResumeSubscriptionMutationVariables = Types.Exact<{
+export type ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload = { subscription: ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload_subscription_Subscription | null, errors: Array<ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload_errors_ModelValidationError> };
+
+export type ResumeSubscriptionMutation_Mutation = { resumeSubscription: ResumeSubscriptionMutation_resumeSubscription_ResumeSubscriptionPayload | null };
+
+
+export type ResumeSubscriptionMutationVariables = Exact<{
   input: Types.ResumeSubscriptionInput;
 }>;
 
 
-export type ResumeSubscriptionMutation = { resumeSubscription: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type ResumeSubscriptionMutation = ResumeSubscriptionMutation_Mutation;
 
-export type CreateOrderedProductMutationVariables = Types.Exact<{
+export type CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload_orderedProduct_OrderedProduct = { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_plan_Plan | null, product: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_product_Product };
+
+export type CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload = { subscription: CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload_subscription_Subscription | null, orderedProduct: CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload_orderedProduct_OrderedProduct | null };
+
+export type CreateOrderedProductMutation_Mutation = { createOrderedProduct: CreateOrderedProductMutation_createOrderedProduct_CreateOrderedProductPayload | null };
+
+
+export type CreateOrderedProductMutationVariables = Exact<{
   input: Types.CreateOrderedProductInput;
 }>;
 
 
-export type CreateOrderedProductMutation = { createOrderedProduct: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, orderedProduct: { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } } | null } | null };
+export type CreateOrderedProductMutation = CreateOrderedProductMutation_Mutation;
 
-export type DestroyOrderedProductMutationVariables = Types.Exact<{
+export type DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload_orderedProduct_OrderedProduct = { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_plan_Plan | null, product: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct_product_Product };
+
+export type DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload = { subscription: DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload_subscription_Subscription | null, orderedProduct: DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload_orderedProduct_OrderedProduct | null };
+
+export type DestroyOrderedProductMutation_Mutation = { destroyOrderedProduct: DestroyOrderedProductMutation_destroyOrderedProduct_DestroyOrderedProductPayload | null };
+
+
+export type DestroyOrderedProductMutationVariables = Exact<{
   input: Types.DestroyOrderedProductInput;
 }>;
 
 
-export type DestroyOrderedProductMutation = { destroyOrderedProduct: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, orderedProduct: { createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } } | null } | null };
+export type DestroyOrderedProductMutation = DestroyOrderedProductMutation_Mutation;
 
-export type UpdatePlanMutationVariables = Types.Exact<{
+export type UpdatePlanMutation_updatePlan_UpdatePlanPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type UpdatePlanMutation_updatePlan_UpdatePlanPayload = { subscription: UpdatePlanMutation_updatePlan_UpdatePlanPayload_subscription_Subscription };
+
+export type UpdatePlanMutation_Mutation = { updatePlan: UpdatePlanMutation_updatePlan_UpdatePlanPayload | null };
+
+
+export type UpdatePlanMutationVariables = Exact<{
   input: Types.UpdatePlanInput;
 }>;
 
 
-export type UpdatePlanMutation = { updatePlan: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } } | null };
+export type UpdatePlanMutation = UpdatePlanMutation_Mutation;
 
-export type UpdateSubscriptionMutationVariables = Types.Exact<{
+export type UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload_subscription_Subscription = { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_activePlan_Plan | null, subscribedPlan: UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_subscribedPlan_SubscribedPlan | null, orderedProducts: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_orderedProducts_OrderedProduct> | null, extraFields: Array<UpdateOrderedProductMutation_updateOrderedProduct_UpdateOrderedProductPayload_orderedProduct_OrderedProduct_subscription_extraFields_ExtraFieldAnswer> };
+
+export type UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload = { subscription: UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload_subscription_Subscription | null, errors: Array<UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload_errors_ModelValidationError> };
+
+export type UpdateSubscriptionMutation_Mutation = { updateSubscription: UpdateSubscriptionMutation_updateSubscription_UpdateSubscriptionPayload | null };
+
+
+export type UpdateSubscriptionMutationVariables = Exact<{
   input: Types.UpdateSubscriptionInput;
 }>;
 
 
-export type UpdateSubscriptionMutation = { updateSubscription: { subscription: { address: string | null, amountForStartingSubscriptionCents: number | null, billToAddress: string | null, billToCity: string | null, billToCompanyName: string | null, billToCountry: string | null, billToDistrict: string | null, billToFullAddress: string | null, billToFullName: string | null, billToHouseNumber: string | null, billToLastName: string | null, billToName: string | null, billToPhoneNumber: string | null, billToSalutation: string | null, billToState: string | null, billToZipcode: string | null, chargeDayOfTheMonth: number | null, checkoutUrl: string | null, city: string | null, companyName: string | null, country: string | null, createdAt: string | null, currency: string | null, customerId: string | null, customerReference: string | null, dateOfBirth: string | null, differentBillingAddress: boolean | null, district: string | null, email: string | null, fullAddress: string | null, fullName: string | null, houseNumber: string | null, id: string | null, identityVerificationUrl: string | null, lastName: string | null, locale: string | null, marketingOptIn: boolean | null, metadata: unknown | null, monthlyAmountCents: number | null, name: string | null, phoneNumber: string | null, salutation: string | null, startDate: string, state: string | null, status: Types.SubscriptionStatus, termsAccepted: boolean, termsAcceptedOn: string | null, token: string | null, trialPeriodMonths: number | null, updatedAt: string | null, vatNumber: string | null, zipcode: string | null, activatedAt: string | null, cancellationStartedAt: string | null, cancelledAt: string | null, inTrialPeriod: boolean, markedAsNonPayingAt: string | null, notes: string | null, paidAmount: number | null, pausedAt: string | null, pausedUntil: string | null, paymentMethod: string | null, paymentMethodSummary: string | null, paymentMethodTranslated: string | null, pspPaymentMethodDetails: unknown | null, signupCompletedAt: string | null, skipAutoActivationOnSignup: boolean, stoppedAt: string | null, updatePaymentMethodUrl: string | null, activePlan: { available: boolean, currency: string | null, graceCancellationEnabled: boolean, graceCancellationPeriod: number, graceCancellationUnit: Types.CommitmentUnit, id: string, imageUrl: string | null, initialAmountExcludingTaxCents: number | null, initialAmountIncludingTaxCents: number | null, instalmentIntervalPeriod: number | null, instalmentIntervalUnit: Types.BaseIntervalUnit | null, instalments: number | null, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean, minimumCommitmentPeriod: number, minimumCommitmentUnit: Types.CommitmentUnit, monthlyAmountCents: number | null, monthlyAmountExcludingTaxCents: number | null, monthlyAmountIncludingTaxCents: number | null, name: string, slug: string, taxAmountCents: number | null, taxPercentage: number | null, planProducts: Array<{ quantity: number, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null } | null, subscribedPlan: { activatedAt: string | null, allowedToCancel: boolean, billingCycleInterval: number | null, billingCycleIntervalUnit: Types.BillingCycleIntervalUnit | null, customInitialAmountCents: number | null, customRecurringAmountCents: number | null, graceCancellationEndsAt: string | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, inGraceCancellation: boolean, inMinimumCommitment: boolean, maximumCommitmentEndsAt: string | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, minimumCommitmentEndsAt: string | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, name: string, nextBillingDate: string | null, showInPriceBreakDown: boolean, trialPeriodPeriod: number | null, trialPeriodUnit: Types.CommitmentUnit | null, unconsumedContractTermEventCount: number | null } | null, orderedProducts: Array<{ createdAt: string | null, graceCancellationEndsAt: string | null, id: string, interval: number | null, intervalUnitOfMeasure: string | null, maximumCommitmentEndsAt: string | null, metadata: unknown | null, minimumCommitmentEndsAt: string | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productId: string, quantity: number | null, recurring: boolean, shipmentDate: string | null, status: Types.OrderedProductStatus, title: string | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, totalOrdered: number | null, updatedAt: string | null, plan: { id: string } | null, product: { available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } }> | null, extraFields: Array<{ extraFieldId: string, fieldType: string, id: string | null, name: string, position: number | null, required: boolean, selectOptions: Array<string> | null, value: string | null, visibility: string }> } | null, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type UpdateSubscriptionMutation = UpdateSubscriptionMutation_Mutation;
 
-export type GetPromotionAndSubscriptionIdQueryVariables = Types.Exact<{
-  code: Types.Scalars['ID']['input'];
-  subscriptionToken: Types.Scalars['ID']['input'];
+export type GetPromotionAndSubscriptionIdQuery_getDiscountCode_DiscountCode = { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown, updatedAt: string };
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_BillingCyclePromotion = { id: string };
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_OrderDiscountPromotion = { id: string };
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion =
+  | GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_BillingCyclePromotion
+  | GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion_OrderDiscountPromotion
+;
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedBillingCyclePromotion = { id: string, active: boolean, promotion: GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion };
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedOrderDiscountPromotion = { id: string, active: boolean, promotion: GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedPromotion_promotion };
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions =
+  | GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedBillingCyclePromotion
+  | GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions_AppliedOrderDiscountPromotion
+;
+
+export type GetPromotionAndSubscriptionIdQuery_getSubscription_Subscription = { id: string | null, appliedPromotions: Array<GetPromotionAndSubscriptionIdQuery_getSubscription_appliedPromotions> | null };
+
+export type GetPromotionAndSubscriptionIdQuery_Query = { getDiscountCode: GetPromotionAndSubscriptionIdQuery_getDiscountCode_DiscountCode | null, getSubscription: GetPromotionAndSubscriptionIdQuery_getSubscription_Subscription | null };
+
+
+export type GetPromotionAndSubscriptionIdQueryVariables = Exact<{
+  code: string | number;
+  subscriptionToken: string | number;
 }>;
 
 
-export type GetPromotionAndSubscriptionIdQuery = { getDiscountCode: { id: string, promotionId: string, redeemable: boolean, code: string, createdAt: string, expired: boolean, maxTimesUsed: number | null, metadata: unknown | null, updatedAt: string } | null, getSubscription: { id: string | null, appliedPromotions: Array<{ id: string, active: boolean, promotion: { id: string } | { id: string } } | { id: string, active: boolean, promotion: { id: string } | { id: string } }> | null } | null };
+export type GetPromotionAndSubscriptionIdQuery = GetPromotionAndSubscriptionIdQuery_Query;
 
-export type ApplyPromotionMutationVariables = Types.Exact<{
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion_BillingCyclePromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion_OrderDiscountPromotion = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion =
+  | ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion_BillingCyclePromotion
+  | ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion_OrderDiscountPromotion
+;
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order = { acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedOrderDiscountPromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion =
+  | ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion
+  | ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedOrderDiscountPromotion
+;
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload = { appliedPromotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion | null, errors: Array<ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_errors_ModelValidationError> };
+
+export type ApplyPromotionMutation_Mutation = { applyPromotionToSubscription: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload | null };
+
+
+export type ApplyPromotionMutationVariables = Exact<{
   input: Types.ApplyPromotionToSubscriptionInput;
 }>;
 
 
-export type ApplyPromotionMutation = { applyPromotionToSubscription: { appliedPromotion: { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<{ city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<{ acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | null, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type ApplyPromotionMutation = ApplyPromotionMutation_Mutation;
 
-export type UpdateAppliedPromotionMutationVariables = Types.Exact<{
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null };
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order = { acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null };
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion =
+  | UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion
+  | UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion
+;
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_errors_ModelValidationError = { attribute: string, message: string, path: Array<string> | null };
+
+export type UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload = { appliedPromotion: UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_appliedPromotion, errors: Array<UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload_errors_ModelValidationError> };
+
+export type UpdateAppliedPromotionMutation_Mutation = { updateAppliedPromotion: UpdateAppliedPromotionMutation_updateAppliedPromotion_UpdateAppliedPromotionPayload | null };
+
+
+export type UpdateAppliedPromotionMutationVariables = Exact<{
   input: Types.UpdateAppliedPromotionInput;
 }>;
 
 
-export type UpdateAppliedPromotionMutation = { updateAppliedPromotion: { appliedPromotion: { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<{ city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<{ acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } }, errors: Array<{ attribute: string, message: string, path: Array<string> | null }> } | null };
+export type UpdateAppliedPromotionMutation = UpdateAppliedPromotionMutation_Mutation;
 
-export type DeactivateAppliedPromotionMutationVariables = Types.Exact<{
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice = { city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null };
+
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order = { acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null };
+
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion_invoices_Invoice>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion = { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion_orders_Order>, promotion: ApplyPromotionMutation_applyPromotionToSubscription_ApplyPromotionToSubscriptionPayload_appliedPromotion_AppliedBillingCyclePromotion_promotion };
+
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion =
+  | DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedBillingCyclePromotion
+  | DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion_AppliedOrderDiscountPromotion
+;
+
+export type DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload = { appliedPromotion: DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload_appliedPromotion | null };
+
+export type DeactivateAppliedPromotionMutation_Mutation = { deactivateAppliedPromotion: DeactivateAppliedPromotionMutation_deactivateAppliedPromotion_DeactivateAppliedPromotionPayload | null };
+
+
+export type DeactivateAppliedPromotionMutationVariables = Exact<{
   input: Types.DeactivateAppliedPromotionInput;
 }>;
 
 
-export type DeactivateAppliedPromotionMutation = { deactivateAppliedPromotion: { appliedPromotion: { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, invoices: Array<{ city: string | null, companyName: string | null, country: string | null, createdAt: string, currency: string | null, description: string | null, detailsUrl: string, externalUrl: string | null, fullAddress: string | null, fullName: string | null, id: string, invoiceNumber: string, invoiceStatus: Types.InvoiceStatusEnum, invoicedAt: string | null, phoneNumber: string | null, salutation: string | null, state: string | null, subscriptionId: string, taxPercentage: number | null, totalAmountCents: number, totalTaxAmountCents: number, zipcode: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | { active: boolean, amountUsedIncludingTaxCents: number, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, timesUsed: number, orders: Array<{ acceptUrl: string | null, amountCents: number, cancelUrl: string | null, createdAt: string | null, discountCents: number | null, discountExclTaxCents: number | null, fulfilledAt: string | null, id: string | null, paid: boolean, shipmentDate: string | null, shippingCostsCents: number | null, shippingCostsExclTaxCents: number | null, shopifyDraftId: string | null, shopifyId: string | null, snoozeUrl: string | null, status: Types.OrderStatus, totalTaxCents: number, trackingCode: string | null, updatedAt: string | null }>, promotion: { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } | { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string } } | null } | null };
+export type DeactivateAppliedPromotionMutation = DeactivateAppliedPromotionMutation_Mutation;
 
 
 export const UpdateOrderedProductDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateOrderedProduct"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateOrderedProductInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOrderedProduct"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"orderedProduct"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderedProductFields"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SubscriptionFields"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CompleteSubscriptionFields"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available"}},{"kind":"Field","name":{"kind":"Name","value":"eligibleForDiscount"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationUnit"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"intervalUnitOfMeasure"}},{"kind":"Field","name":{"kind":"Name","value":"mandatory"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"nthProductFree"}},{"kind":"Field","name":{"kind":"Name","value":"priceCents"}},{"kind":"Field","name":{"kind":"Name","value":"priceExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"priceIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"productType"}},{"kind":"Field","name":{"kind":"Name","value":"shopifyProductId"}},{"kind":"Field","name":{"kind":"Name","value":"shopifyVariantId"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"supplier"}},{"kind":"Field","name":{"kind":"Name","value":"taxAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"taxPercentage"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PlanFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Plan"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationUnit"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"initialAmountExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"initialAmountIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"instalmentIntervalPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"instalmentIntervalUnit"}},{"kind":"Field","name":{"kind":"Name","value":"instalments"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"monthlyAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"monthlyAmountExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"monthlyAmountIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"taxAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"taxPercentage"}},{"kind":"Field","name":{"kind":"Name","value":"planProducts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SubscribedPlanFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscribedPlan"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"allowedToCancel"}},{"kind":"Field","name":{"kind":"Name","value":"billingCycleInterval"}},{"kind":"Field","name":{"kind":"Name","value":"billingCycleIntervalUnit"}},{"kind":"Field","name":{"kind":"Name","value":"customInitialAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"customRecurringAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationUnit"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"inGraceCancellation"}},{"kind":"Field","name":{"kind":"Name","value":"inMinimumCommitment"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nextBillingDate"}},{"kind":"Field","name":{"kind":"Name","value":"showInPriceBreakDown"}},{"kind":"Field","name":{"kind":"Name","value":"trialPeriodPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"trialPeriodUnit"}},{"kind":"Field","name":{"kind":"Name","value":"unconsumedContractTermEventCount"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderedProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderedProduct"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"intervalUnitOfMeasure"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentEndsAt"}},{"kind":"Field","name":{"kind":"Name","value":"priceExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"priceIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"productId"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"recurring"}},{"kind":"Field","name":{"kind":"Name","value":"shipmentDate"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"totalAmountExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"totalAmountIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"totalOrdered"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExtraFieldAnswerFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ExtraFieldAnswer"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extraFieldId"}},{"kind":"Field","name":{"kind":"Name","value":"fieldType"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"required"}},{"kind":"Field","name":{"kind":"Name","value":"selectOptions"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SubscriptionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Subscription"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"amountForStartingSubscriptionCents"}},{"kind":"Field","name":{"kind":"Name","value":"billToAddress"}},{"kind":"Field","name":{"kind":"Name","value":"billToCity"}},{"kind":"Field","name":{"kind":"Name","value":"billToCompanyName"}},{"kind":"Field","name":{"kind":"Name","value":"billToCountry"}},{"kind":"Field","name":{"kind":"Name","value":"billToDistrict"}},{"kind":"Field","name":{"kind":"Name","value":"billToFullAddress"}},{"kind":"Field","name":{"kind":"Name","value":"billToFullName"}},{"kind":"Field","name":{"kind":"Name","value":"billToHouseNumber"}},{"kind":"Field","name":{"kind":"Name","value":"billToLastName"}},{"kind":"Field","name":{"kind":"Name","value":"billToName"}},{"kind":"Field","name":{"kind":"Name","value":"billToPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"billToSalutation"}},{"kind":"Field","name":{"kind":"Name","value":"billToState"}},{"kind":"Field","name":{"kind":"Name","value":"billToZipcode"}},{"kind":"Field","name":{"kind":"Name","value":"chargeDayOfTheMonth"}},{"kind":"Field","name":{"kind":"Name","value":"checkoutUrl"}},{"kind":"Field","name":{"kind":"Name","value":"city"}},{"kind":"Field","name":{"kind":"Name","value":"companyName"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"customerId"}},{"kind":"Field","name":{"kind":"Name","value":"customerReference"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"differentBillingAddress"}},{"kind":"Field","name":{"kind":"Name","value":"district"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"fullAddress"}},{"kind":"Field","name":{"kind":"Name","value":"fullName"}},{"kind":"Field","name":{"kind":"Name","value":"houseNumber"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationUrl"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"locale"}},{"kind":"Field","name":{"kind":"Name","value":"marketingOptIn"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"monthlyAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"salutation"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"termsAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedOn"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"trialPeriodMonths"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vatNumber"}},{"kind":"Field","name":{"kind":"Name","value":"zipcode"}},{"kind":"Field","name":{"kind":"Name","value":"activePlan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PlanFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscribedPlan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SubscribedPlanFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderedProducts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderedProductFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extraFields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExtraFieldAnswerFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CompleteSubscriptionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Subscription"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"cancellationStartedAt"}},{"kind":"Field","name":{"kind":"Name","value":"cancelledAt"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationUrl"}},{"kind":"Field","name":{"kind":"Name","value":"inTrialPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"markedAsNonPayingAt"}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"paidAmount"}},{"kind":"Field","name":{"kind":"Name","value":"pausedAt"}},{"kind":"Field","name":{"kind":"Name","value":"pausedUntil"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethodSummary"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethodTranslated"}},{"kind":"Field","name":{"kind":"Name","value":"pspPaymentMethodDetails"}},{"kind":"Field","name":{"kind":"Name","value":"signupCompletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"skipAutoActivationOnSignup"}},{"kind":"Field","name":{"kind":"Name","value":"stoppedAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatePaymentMethodUrl"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<UpdateOrderedProductMutation, UpdateOrderedProductMutationVariables>;

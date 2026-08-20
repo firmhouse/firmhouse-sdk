@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import {
   GraphQLClient as GraphQLClientBase,
   ClientError,
@@ -25,7 +24,7 @@ export class _GraphQLClient {
 
   constructor(
     apiToken: string,
-    baseUrl = 'https://portal.firmhouse.com/graphql'
+    baseUrl = 'https://portal.firmhouse.com/graphql',
   ) {
     this.API_TOKEN = apiToken;
     this.BASE_URL = baseUrl;
