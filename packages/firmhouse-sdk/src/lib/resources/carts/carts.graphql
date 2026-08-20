@@ -66,6 +66,28 @@ query getCart(
   }
 }
 
+mutation applyDiscountCodeToCart($input: ApplyDiscountCodeInput!) {
+  applyDiscountCode(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+mutation removeDiscountCodeFromCart($input: ClearDiscountCodeInput!) {
+  removeDiscountCode: clearDiscountCode(input: $input) {
+    cart {
+      token
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
 mutation addToCart($input: CreateOrderedProductInput!) {
   addToCart: createOrderedProduct(input: $input) {
     subscription {

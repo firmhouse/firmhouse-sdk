@@ -6,6 +6,8 @@ import {
   CreateCartDocument,
   GetCartDocument,
   AddToCartDocument,
+  ApplyDiscountCodeToCartDocument,
+  RemoveDiscountCodeFromCartDocument,
   RemoveFromCartDocument,
   UpdateOrderedProductInCartDocument,
   UpdateAddressDetailsDocument,
@@ -121,7 +123,7 @@ describe('lib/resources/carts/index.ts', () => {
           includeDiscountCodesPromotion: true,
           includeAppliedPromotionsDiscountCode: true,
           includeAppliedPromotionsPromotion: true,
-        }
+        },
       );
     });
     it('should throw error if null response is return from API', async () => {
@@ -130,7 +132,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ createCart: null });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.create()).rejects.toThrow(
-        'Could not create subscription'
+        'Could not create subscription',
       );
     });
 
@@ -138,7 +140,7 @@ describe('lib/resources/carts/index.ts', () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({});
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.create()).rejects.toThrow(
-        'Could not create subscription'
+        'Could not create subscription',
       );
     });
 
@@ -177,7 +179,7 @@ describe('lib/resources/carts/index.ts', () => {
         .fn()
         .mockResolvedValue({ subscription: { token: null } });
       expect(testResource.createCartToken()).rejects.toThrow(
-        'No token returned from API'
+        'No token returned from API',
       );
     });
   });
@@ -201,7 +203,7 @@ describe('lib/resources/carts/index.ts', () => {
           includeAppliedPromotionsDiscountCode: false,
           includeAppliedPromotionsPromotion: false,
         },
-        { 'X-Subscription-Token': token }
+        { 'X-Subscription-Token': token },
       );
     });
 
@@ -236,7 +238,7 @@ describe('lib/resources/carts/index.ts', () => {
       };
       testResource.get = jest.fn().mockResolvedValue(draftSubscription);
       expect(testResource.getOrCreate('testToken')).resolves.toMatchObject(
-        draftSubscription
+        draftSubscription,
       );
     });
 
@@ -252,7 +254,7 @@ describe('lib/resources/carts/index.ts', () => {
       };
       testResource.create = jest.fn().mockResolvedValue(draftSubscription);
       expect(testResource.getOrCreate('testToken')).resolves.toStrictEqual(
-        draftSubscription
+        draftSubscription,
       );
     });
 
@@ -268,7 +270,7 @@ describe('lib/resources/carts/index.ts', () => {
       };
       testResource.create = jest.fn().mockResolvedValue(draftSubscription);
       expect(testResource.getOrCreate('testToken')).resolves.toStrictEqual(
-        draftSubscription
+        draftSubscription,
       );
     });
 
@@ -281,8 +283,136 @@ describe('lib/resources/carts/index.ts', () => {
         .fn()
         .mockRejectedValue(new ServerError('No token returned from API'));
       expect(testResource.getOrCreate('testToken')).rejects.toThrow(
-        'No token returned from API'
+        'No token returned from API',
       );
+    });
+  });
+
+  describe('applyDiscountCode', () => {
+    const appliedPromotion = {
+      id: 'applied-promotion-id',
+      active: true,
+    };
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await testResource.applyDiscountCode('testToken', 'WELCOME10');
+
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        ApplyDiscountCodeToCartDocument,
+        { input: { discountCode: 'WELCOME10' } },
+        { 'X-Subscription-Token': 'testToken' },
+      );
+    });
+
+    it('should return the applied promotion', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10'),
+      ).resolves.toEqual(appliedPromotion);
+    });
+
+    it('should throw validation errors returned by the API', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: {
+          appliedPromotion: null,
+          errors: [{ attribute: 'discount_code', message: 'Code is invalid' }],
+        },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'INVALID'),
+      ).rejects.toMatchObject({
+        name: 'ValidationError',
+        details: { discountCode: 'Code is invalid' },
+      });
+    });
+
+    it('should throw a server error when the mutation returns no result', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: null,
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10'),
+      ).rejects.toThrow('Could not apply discount code');
+    });
+
+    it('should throw a server error when no promotion is returned', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion: null, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10'),
+      ).rejects.toThrow('Could not apply discount code');
+    });
+  });
+
+  describe('removeDiscountCode', () => {
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: { cart: { token: 'testToken' }, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await testResource.removeDiscountCode('testToken');
+
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        RemoveDiscountCodeFromCartDocument,
+        { input: {} },
+        { 'X-Subscription-Token': 'testToken' },
+      );
+    });
+
+    it('should throw validation errors returned by the API', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: {
+          cart: null,
+          errors: [{ attribute: 'discount_code', message: 'Code is invalid' }],
+        },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toMatchObject({
+        name: 'ValidationError',
+        details: { discountCode: 'Code is invalid' },
+      });
+    });
+
+    it('should throw a server error when the mutation returns no result', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: null,
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toThrow('Could not remove discount code');
+    });
+
+    it('should throw a server error when no cart is returned', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        removeDiscountCode: { cart: null, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.removeDiscountCode('testToken'),
+      ).rejects.toThrow('Could not remove discount code');
     });
   });
 
@@ -300,7 +430,7 @@ describe('lib/resources/carts/index.ts', () => {
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         AddToCartDocument,
         { input },
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -315,7 +445,7 @@ describe('lib/resources/carts/index.ts', () => {
       const testResource = new CartsResource(mockGraphQLClient);
       const input = { productId: 'test', quantity: 1 };
       expect(
-        testResource.addProduct('testToken', input)
+        testResource.addProduct('testToken', input),
       ).resolves.toMatchObject({ orderedProduct, subscription });
     });
 
@@ -327,7 +457,7 @@ describe('lib/resources/carts/index.ts', () => {
       const testResource = new CartsResource(mockGraphQLClient);
       const input = { productId: 'test', quantity: 1 };
       expect(testResource.addProduct('testToken', input)).rejects.toThrow(
-        'Could not add product to cart'
+        'Could not add product to cart',
       );
     });
 
@@ -342,7 +472,7 @@ describe('lib/resources/carts/index.ts', () => {
       const testResource = new CartsResource(mockGraphQLClient);
       const input = { productId: 'test', quantity: 1 };
       expect(testResource.addProduct('testToken', input)).rejects.toThrow(
-        'Could not add product to cart'
+        'Could not add product to cart',
       );
     });
     it('should throw an error if returned subscription is null', async () => {
@@ -359,7 +489,7 @@ describe('lib/resources/carts/index.ts', () => {
       const testResource = new CartsResource(mockGraphQLClient);
       const input = { productId: 'test', quantity: 1 };
       expect(testResource.addProduct('testToken', input)).rejects.toThrow(
-        'Could not add product to cart'
+        'Could not add product to cart',
       );
     });
   });
@@ -378,7 +508,7 @@ describe('lib/resources/carts/index.ts', () => {
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         RemoveFromCartDocument,
         { input: { id } },
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -395,7 +525,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ removeFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.removeProduct('testToken', response.orderedProduct.id)
+        testResource.removeProduct('testToken', response.orderedProduct.id),
       ).resolves.toMatchObject(response);
     });
     it('should throw an error if response is null', async () => {
@@ -405,7 +535,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ removeProduct: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.removeProduct('testToken', 'test')).rejects.toThrow(
-        'Could not remove product from cart'
+        'Could not remove product from cart',
       );
     });
 
@@ -422,7 +552,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ removeFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.removeProduct('testToken', 'test')).rejects.toThrow(
-        'Could not remove product from cart'
+        'Could not remove product from cart',
       );
     });
 
@@ -439,7 +569,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ removeFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.removeProduct('testToken', 'test')).rejects.toThrow(
-        'Could not remove product from cart'
+        'Could not remove product from cart',
       );
     });
   });
@@ -458,12 +588,12 @@ describe('lib/resources/carts/index.ts', () => {
       await testResource.updateOrderedProductQuantity(
         'testToken',
         testId,
-        testQuantity
+        testQuantity,
       );
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateOrderedProductInCartQuantityDocument,
         { id: testId, quantity: testQuantity },
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -487,8 +617,8 @@ describe('lib/resources/carts/index.ts', () => {
         testResource.updateOrderedProductQuantity(
           'testToken',
           response.orderedProduct.id,
-          response.orderedProduct.quantity
-        )
+          response.orderedProduct.quantity,
+        ),
       ).resolves.toMatchObject(response);
     });
     it('should throw an error if response is null', async () => {
@@ -498,7 +628,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCartQuantity: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProductQuantity('testToken', 'test', 1)
+        testResource.updateOrderedProductQuantity('testToken', 'test', 1),
       ).rejects.toThrow('Could not update ordered product quantity');
     });
 
@@ -515,7 +645,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCartQuantity: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProductQuantity('testToken', 'test', 1)
+        testResource.updateOrderedProductQuantity('testToken', 'test', 1),
       ).rejects.toThrow('Could not update ordered product quantity');
     });
 
@@ -532,7 +662,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCartQuantity: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProductQuantity('testToken', 'test', 1)
+        testResource.updateOrderedProductQuantity('testToken', 'test', 1),
       ).rejects.toThrow('Could not update ordered product quantity');
     });
   });
@@ -552,7 +682,7 @@ describe('lib/resources/carts/index.ts', () => {
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateOrderedProductInCartDocument,
         input,
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -572,7 +702,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct('testToken', input)
+        testResource.updateOrderedProduct('testToken', input),
       ).resolves.toMatchObject({
         orderedProduct: input,
         subscription: response.orderedProduct.subscription,
@@ -590,7 +720,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct('testToken', input)
+        testResource.updateOrderedProduct('testToken', input),
       ).rejects.toThrow('Could not update ordered product');
     });
 
@@ -607,7 +737,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateOrderedProductInCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateOrderedProduct('testToken', input)
+        testResource.updateOrderedProduct('testToken', input),
       ).rejects.toThrow('Could not update ordered product');
     });
   });
@@ -625,7 +755,7 @@ describe('lib/resources/carts/index.ts', () => {
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateAddressDetailsDocument,
         input,
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -645,7 +775,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateAddressDetails: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateAddressDetails('testToken', input)
+        testResource.updateAddressDetails('testToken', input),
       ).resolves.toMatchObject(response.subscription);
     });
 
@@ -657,7 +787,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateAddressDetails: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateAddressDetails('testToken', input)
+        testResource.updateAddressDetails('testToken', input),
       ).rejects.toThrow('Could not update address details');
     });
 
@@ -672,7 +802,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateAddressDetails: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updateAddressDetails('testToken', input)
+        testResource.updateAddressDetails('testToken', input),
       ).rejects.toThrow('Could not update address details');
     });
 
@@ -720,12 +850,12 @@ describe('lib/resources/carts/index.ts', () => {
       await testResource.createSubscription(
         'testToken',
         paymentPageUrl,
-        returnUrl
+        returnUrl,
       );
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         CreateSubscriptionFromCartDocument,
         { input: { paymentPageUrl, returnUrl } },
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -747,7 +877,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ createSubscriptionFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.createSubscription('testToken', paymentUrl, returnUrl)
+        testResource.createSubscription('testToken', paymentUrl, returnUrl),
       ).resolves.toMatchObject({
         subscription: response.subscription,
         paymentUrl,
@@ -764,7 +894,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ createSubscriptionFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.createSubscription('testToken', paymentPageUrl, returnUrl)
+        testResource.createSubscription('testToken', paymentPageUrl, returnUrl),
       ).rejects.toThrow('Could not create subscription');
     });
 
@@ -782,7 +912,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ createSubscriptionFromCart: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.createSubscription('testToken', paymentUrl, returnUrl)
+        testResource.createSubscription('testToken', paymentUrl, returnUrl),
       ).rejects.toThrow('Could not create subscription');
     });
 
@@ -811,7 +941,7 @@ describe('lib/resources/carts/index.ts', () => {
         await testResource.createSubscription(
           'testToken',
           paymentPageUrl,
-          returnUrl
+          returnUrl,
         );
       } catch (error) {
         thrownError = error as ValidationError;
@@ -836,7 +966,7 @@ describe('lib/resources/carts/index.ts', () => {
       expect(mockGraphQLClient.request).toHaveBeenCalledWith(
         UpdateCartPlanDocument,
         { input: { planSlug: planSlug } },
-        { 'X-Subscription-Token': 'testToken' }
+        { 'X-Subscription-Token': 'testToken' },
       );
     });
 
@@ -857,7 +987,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateCartPlan: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(
-        testResource.updatePlan('testToken', input)
+        testResource.updatePlan('testToken', input),
       ).resolves.toMatchObject(response.subscription);
     });
 
@@ -869,7 +999,7 @@ describe('lib/resources/carts/index.ts', () => {
         .mockResolvedValue({ updateCartPlan: response });
       const testResource = new CartsResource(mockGraphQLClient);
       expect(testResource.updatePlan('testToken', input)).rejects.toThrow(
-        'Could not update plan'
+        'Could not update plan',
       );
     });
   });

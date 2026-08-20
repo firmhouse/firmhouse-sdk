@@ -8,6 +8,7 @@ export interface SelectOptionType {
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   options: SelectOptionType[];
+  placeholder?: string;
   error?: string;
 }
 

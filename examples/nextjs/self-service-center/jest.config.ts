@@ -1,5 +1,4 @@
-/* eslint-disable */
-export default {
+module.exports = {
   displayName: 'nextjs-self-service-center',
   preset: '../../../jest.preset.js',
   transform: {

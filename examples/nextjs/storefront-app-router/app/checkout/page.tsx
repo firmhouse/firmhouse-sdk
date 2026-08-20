@@ -3,12 +3,14 @@ import {
   getSubscriptionToken,
   isInitialized,
   applyDiscount,
+  removeDiscount,
   deactivatePromotion,
 } from '../../lib/actions/subscription';
 import { firmhouseClient } from '../../lib/firmhouse';
 import { CheckoutForm } from '../../components/CheckoutForm';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import { Input, Plan, formatCentsToEuros } from '@firmhouse/ui-components';
+import { calculateCartTotals } from '@firmhouse/firmhouse-sdk';
 
 export default async function Index() {
   let subscription = null;
@@ -22,18 +24,19 @@ export default async function Index() {
             discountCode: true,
           },
         },
-      }
+      },
     );
   } else {
     redirect('/');
   }
-  const {
-    orderedProducts,
-    monthlyAmountCents,
-    amountForStartingSubscriptionCents,
-    appliedPromotions,
-  } = subscription;
+  const { orderedProducts, appliedPromotions } = subscription;
   const activePromotions = (appliedPromotions ?? []).filter((ap) => ap.active);
+  const {
+    payNowSubtotalCents,
+    payNowDiscountCents,
+    payNowTotalCents,
+    monthlyTotalCents,
+  } = calculateCartTotals(subscription);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">
       <div className="flex flex-row w-11/12 max-w-5xl bg-white shadow-sm border rounded-md border-gray-100 flex-nowrap m-16">
@@ -93,7 +96,13 @@ export default async function Index() {
                       key={ap.id}
                     >
                       <span>{ap?.promotion.publicName}</span>
-                      <form action={deactivatePromotion.bind(null, ap.id)}>
+                      <form
+                        action={
+                          ap.discountCode
+                            ? removeDiscount
+                            : deactivatePromotion.bind(null, ap.id)
+                        }
+                      >
                         <button
                           type="submit"
                           className="text-lg p-2 font-light"
@@ -123,15 +132,29 @@ export default async function Index() {
             )}
           </div>
           <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
-            <p className="font-semibold">Subtotal (pay now)</p>
+            <p className="font-light">Subtotal (pay now)</p>
             <p className="font-light">
-              {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
+              {formatCentsToEuros(payNowSubtotalCents)}
+            </p>
+          </div>
+          {payNowDiscountCents > 0 && (
+            <div className="flex flex-row justify-between text-green-700">
+              <p className="font-light">Discount</p>
+              <p className="font-light">
+                -{formatCentsToEuros(payNowDiscountCents)}
+              </p>
+            </div>
+          )}
+          <div className="flex flex-row justify-between">
+            <p className="font-semibold">Total (pay now)</p>
+            <p className="font-semibold">
+              {formatCentsToEuros(payNowTotalCents)}
             </p>
           </div>
           <div className="flex flex-row justify-between">
             <p className="font-light">Total per month</p>
             <p className="font-light">
-              {formatCentsToEuros(monthlyAmountCents ?? 0)}
+              {formatCentsToEuros(monthlyTotalCents)}
             </p>
           </div>
         </div>

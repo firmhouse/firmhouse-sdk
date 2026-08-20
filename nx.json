@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "affected": {
-    "defaultBase": "master"
-  },
   "workspaceLayout": {
     "projectNameAndRootFormat": "as-provided",
     "appsDir": "examples",
@@ -17,8 +14,7 @@
     "lint": {
       "inputs": [
         "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
         "{workspaceRoot}/eslint.config.js"
       ],
       "cache": true
@@ -36,7 +32,7 @@
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
-      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
@@ -63,5 +59,72 @@
       "projectNameAndRootFormat": "as-provided"
     }
   },
-  "nxCloudAccessToken": "ZjQwMGFiYWMtYjBmNy00NjRhLThjNzMtNjAxYmU4NDRlODI0fHJlYWQtd3JpdGU="
+  "release": {
+    "projects": ["firmhouse-sdk"],
+    "projectsRelationship": "independent",
+    "releaseTag": {
+      "pattern": "{projectName}-v{version}",
+      "checkAllBranchesWhen": ["main", "alpha", "beta"]
+    },
+    "version": {
+      "conventionalCommits": true,
+      "preVersionCommand": "npx nx run firmhouse-sdk:api-extractor"
+    },
+    "changelog": {
+      "workspaceChangelog": false,
+      "projectChangelogs": {
+        "createRelease": "github",
+        "file": "{projectRoot}/CHANGELOG.md"
+      }
+    },
+    "conventionalCommits": {
+      "useCommitScope": false,
+      "types": {
+        "feat": {
+          "semverBump": "minor",
+          "changelog": {
+            "title": "Features"
+          }
+        },
+        "fix": {
+          "semverBump": "patch",
+          "changelog": {
+            "title": "Bug Fixes"
+          }
+        },
+        "build": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "ci": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "chore": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "docs": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "refactor": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "style": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "test": {
+          "semverBump": "patch",
+          "changelog": false
+        }
+      }
+    }
+  },
+  "nxCloudAccessToken": "ZjQwMGFiYWMtYjBmNy00NjRhLThjNzMtNjAxYmU4NDRlODI0fHJlYWQtd3JpdGU=",
+  "useInferencePlugins": false,
+  "defaultBase": "main",
+  "analytics": false
 }

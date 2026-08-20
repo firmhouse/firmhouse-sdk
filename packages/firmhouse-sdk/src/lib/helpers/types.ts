@@ -12,6 +12,7 @@ import {
   OrderedProductStatus,
   PaymentStatusEnum,
   PaymentTypeEnum,
+  PromotionDiscountTypeEnum,
   RefundStatus,
   SubscriptionStatus,
 } from '../graphql/generated';
@@ -66,9 +67,17 @@ export type PaginatedResponse<T> = {
  */
 export interface FirmhousePromotion {
   /**
+   * The concrete promotion type.
+   */
+  __typename: 'BillingCyclePromotion' | 'OrderDiscountPromotion';
+  /**
    * Whether the promotion is currently active.
    */
   activated: boolean;
+  /**
+   * The fixed discount amount in cents.
+   */
+  amountCents: number | null;
   /**
    * Whether or not this promotion will automatically be applied on checkout
    */
@@ -85,6 +94,10 @@ export interface FirmhousePromotion {
    * Which mechanism will be used to deactivate the promotion
    */
   deactivationStrategy: AppliedPromotionDeactivationStrategy;
+  /**
+   * Whether the promotion applies a fixed amount or a percentage.
+   */
+  discountType: PromotionDiscountTypeEnum | null;
   /**
    * The id of this promotion that can be used to apply the promotion on a subscription
    */
@@ -1172,8 +1185,7 @@ export interface FirmhouseOrderedProduct {
  * @public
  */
 export interface FirmhouseOrderedProductWithUtils
-  extends FirmhouseOrderedProduct,
-    FirmhouseOrderedProductUtils {}
+  extends FirmhouseOrderedProduct, FirmhouseOrderedProductUtils {}
 
 /**
  * @public
@@ -1719,8 +1731,7 @@ export interface FirmhouseSubscription extends FirmhouseCart {
  * @public
  */
 export interface FirmhouseSubscriptionWithUtils
-  extends FirmhouseSubscription,
-    FirmhouseSubscriptionUtils {
+  extends FirmhouseSubscription, FirmhouseSubscriptionUtils {
   orderedProducts: FirmhouseOrderedProductWithUtils[] | null;
 }
 
@@ -1814,6 +1825,11 @@ export interface FirmhouseAppliedPromotion {
   deactivationStrategy: AppliedPromotionDeactivationStrategy;
 
   /**
+   * The discount code that applied this promotion, when present.
+   */
+  discountCode?: FirmhouseDiscountCode | null;
+
+  /**
    * ID to identify the applied promotion with
    */
   id: string;
@@ -1832,8 +1848,7 @@ export interface FirmhouseAppliedPromotion {
 /**
  * @public
  */
-export interface FirmhouseAppliedOrderDiscountPromotion
-  extends FirmhouseAppliedPromotion {
+export interface FirmhouseAppliedOrderDiscountPromotion extends FirmhouseAppliedPromotion {
   /**
    * Orders on which this promotion was applied.
    */
@@ -1843,8 +1858,7 @@ export interface FirmhouseAppliedOrderDiscountPromotion
 /**
  * @public
  */
-export interface FirmhouseBillingCyclePromotion
-  extends FirmhouseAppliedPromotion {
+export interface FirmhouseBillingCyclePromotion extends FirmhouseAppliedPromotion {
   /**
    * Invoices on which this promotion was applied.
    */

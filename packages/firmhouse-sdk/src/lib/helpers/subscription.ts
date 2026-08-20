@@ -63,7 +63,7 @@ export type OrderedProductType = ResolveObject<
  * @internal
  */
 export function _formatOrderedProduct(
-  orderedProduct: BaseOrderedProductType
+  orderedProduct: BaseOrderedProductType,
 ): FirmhouseOrderedProduct {
   const { intervalUnitOfMeasure } = orderedProduct;
   const unit = capitalize(intervalUnitOfMeasure ?? '');
@@ -86,7 +86,7 @@ export function _formatOrderedProduct(
  */
 function followsPlanSchedule(
   orderedProduct: BaseOrderedProductType,
-  subscription: BaseCartType
+  subscription: Pick<FirmhouseCart, 'subscribedPlan'>,
 ) {
   return (
     orderedProduct.product.intervalUnitOfMeasure === 'on_billing_cycle' &&
@@ -139,7 +139,7 @@ export function _formatCart(subscription: BaseCartType): FirmhouseCart {
  * @typeParam T - Subscription type
  */
 export function _formatSubscription(
-  subscription: BaseSubscriptionType
+  subscription: BaseSubscriptionType,
 ): FirmhouseSubscription {
   const { orderedProducts, token, ...rest } = subscription;
   if (!token) {
@@ -181,7 +181,7 @@ export function _formatSubscription(
  * @typeParam T - Subscription type
  */
 function getClosestUpcomingOrderDate<
-  T extends { orderedProducts: BaseOrderedProductType[] | null }
+  T extends { orderedProducts: BaseOrderedProductType[] | null },
 >(subscription: T) {
   if (subscription.orderedProducts === null) {
     return null;
@@ -203,7 +203,7 @@ function getClosestUpcomingOrderDate<
  * @typeParam T - Subscription type
  */
 function getClosestUpcomingOrderOrderedProducts<
-  T extends { orderedProducts: BaseOrderedProductType[] | null }
+  T extends { orderedProducts: BaseOrderedProductType[] | null },
 >(subscription: T) {
   if (subscription.orderedProducts === null) {
     return [];
@@ -211,18 +211,18 @@ function getClosestUpcomingOrderOrderedProducts<
   const closestUpcomingOrderDate = getClosestUpcomingOrderDate(subscription);
   if (closestUpcomingOrderDate === null) return [];
   return subscription.orderedProducts.filter(
-    (op) => op.shipmentDate === closestUpcomingOrderDate
+    (op) => op.shipmentDate === closestUpcomingOrderDate,
   ) as FirmhouseOrderedProduct[];
 }
 
 export function assignSubscriptionUtils(
-  subscription: FirmhouseSubscription
+  subscription: FirmhouseSubscription,
 ): FirmhouseSubscriptionWithUtils {
   return {
     ...subscription,
     getClosestUpcomingOrderDate: getClosestUpcomingOrderDate.bind(
       null,
-      subscription
+      subscription,
     ),
     getClosestUpcomingOrderOrderedProducts:
       getClosestUpcomingOrderOrderedProducts.bind(null, subscription),
@@ -231,14 +231,14 @@ export function assignSubscriptionUtils(
 
 export function assignOrderedProductUtils(
   orderedProduct: FirmhouseOrderedProduct,
-  subscription: FirmhouseCart | FirmhouseSubscription
+  subscription: FirmhouseCart | FirmhouseSubscription,
 ): FirmhouseOrderedProductWithUtils {
   return {
     ...orderedProduct,
     followsPlanSchedule: followsPlanSchedule.bind(
       null,
       orderedProduct,
-      subscription
+      subscription,
     ),
     shipsOnlyOnce: shipsOnlyOnce.bind(null, orderedProduct),
   } as FirmhouseOrderedProductWithUtils;
