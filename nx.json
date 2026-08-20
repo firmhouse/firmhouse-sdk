@@ -82,23 +82,49 @@
       "types": {
         "feat": {
           "semverBump": "minor",
-          "changelog": { "title": "Features" }
+          "changelog": {
+            "title": "Features"
+          }
         },
         "fix": {
           "semverBump": "patch",
-          "changelog": { "title": "Bug Fixes" }
+          "changelog": {
+            "title": "Bug Fixes"
+          }
         },
-        "build": { "semverBump": "patch", "changelog": false },
-        "ci": { "semverBump": "patch", "changelog": false },
-        "chore": { "semverBump": "patch", "changelog": false },
-        "docs": { "semverBump": "patch", "changelog": false },
-        "refactor": { "semverBump": "patch", "changelog": false },
-        "style": { "semverBump": "patch", "changelog": false },
-        "test": { "semverBump": "patch", "changelog": false }
+        "build": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "ci": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "chore": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "docs": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "refactor": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "style": {
+          "semverBump": "patch",
+          "changelog": false
+        },
+        "test": {
+          "semverBump": "patch",
+          "changelog": false
+        }
       }
     }
   },
   "nxCloudAccessToken": "ZjQwMGFiYWMtYjBmNy00NjRhLThjNzMtNjAxYmU4NDRlODI0fHJlYWQtd3JpdGU=",
   "useInferencePlugins": false,
-  "defaultBase": "master"
+  "defaultBase": "master",
+  "analytics": false
 }
