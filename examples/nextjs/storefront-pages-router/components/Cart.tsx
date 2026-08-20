@@ -17,20 +17,22 @@ export interface CartProps {
   ) => void;
 }
 
-function billingCycleDiscountCents(subscription: FirmhouseCart) {
+function promotionDiscountCents(subscription: FirmhouseCart) {
   const amountCents = subscription.amountForStartingSubscriptionCents ?? 0;
-  const promotion = subscription.appliedPromotions?.find(
-    (appliedPromotion) =>
-      appliedPromotion.active &&
-      appliedPromotion.promotion.__typename === 'BillingCyclePromotion',
-  )?.promotion;
+  return (subscription.appliedPromotions ?? []).reduce(
+    (largestDiscount, appliedPromotion) => {
+      if (!appliedPromotion.active) return largestDiscount;
 
-  if (!promotion) return 0;
-  if (promotion.discountType === 'FIXED_AMOUNT') {
-    return Math.min(amountCents, promotion.amountCents ?? 0);
-  }
+      const { promotion } = appliedPromotion;
+      const discount =
+        promotion.discountType === 'FIXED_AMOUNT'
+          ? (promotion.amountCents ?? 0)
+          : Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
 
-  return Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
+      return Math.min(amountCents, Math.max(largestDiscount, discount));
+    },
+    0,
+  );
 }
 
 export default function Cart({
@@ -41,15 +43,8 @@ export default function Cart({
   onRemoveDiscountCode,
   onUpdateInterval,
 }: CartProps) {
-  const {
-    orderedProducts,
-    amountForStartingSubscriptionCents,
-    orderCalculation,
-  } = subscription;
-  const discountCents = Math.max(
-    orderCalculation?.discountInclTaxCents ?? 0,
-    billingCycleDiscountCents(subscription),
-  );
+  const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
+  const discountCents = promotionDiscountCents(subscription);
   const totalCents = Math.max(
     0,
     (amountForStartingSubscriptionCents ?? 0) - discountCents,

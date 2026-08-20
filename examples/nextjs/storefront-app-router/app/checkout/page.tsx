@@ -11,24 +11,23 @@ import { CheckoutForm } from '../../components/CheckoutForm';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import { Input, Plan, formatCentsToEuros } from '@firmhouse/ui-components';
 
-function billingCycleDiscountCents(
+function promotionDiscountCents(
   amountCents: number,
   appliedPromotions: NonNullable<
     Awaited<ReturnType<typeof firmhouseClient.carts.get>>['appliedPromotions']
   >,
 ) {
-  const promotion = appliedPromotions.find(
-    (appliedPromotion) =>
-      appliedPromotion.active &&
-      appliedPromotion.promotion.__typename === 'BillingCyclePromotion',
-  )?.promotion;
+  return appliedPromotions.reduce((largestDiscount, appliedPromotion) => {
+    if (!appliedPromotion.active) return largestDiscount;
 
-  if (!promotion) return 0;
-  if (promotion.discountType === 'FIXED_AMOUNT') {
-    return Math.min(amountCents, promotion.amountCents ?? 0);
-  }
+    const { promotion } = appliedPromotion;
+    const discount =
+      promotion.discountType === 'FIXED_AMOUNT'
+        ? (promotion.amountCents ?? 0)
+        : Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
 
-  return Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
+    return Math.min(amountCents, Math.max(largestDiscount, discount));
+  }, 0);
 }
 
 export default async function Index() {
@@ -53,19 +52,17 @@ export default async function Index() {
     monthlyAmountCents,
     amountForStartingSubscriptionCents,
     appliedPromotions,
-    orderCalculation,
   } = subscription;
   const activePromotions = (appliedPromotions ?? []).filter((ap) => ap.active);
   const checkoutAmountCents = amountForStartingSubscriptionCents ?? 0;
   const monthlyAmount = monthlyAmountCents ?? 0;
-  const orderDiscountCents = orderCalculation?.discountInclTaxCents ?? 0;
-  const checkoutDiscountCents = Math.max(
-    orderDiscountCents,
-    billingCycleDiscountCents(checkoutAmountCents, activePromotions),
+  const checkoutDiscountCents = promotionDiscountCents(
+    checkoutAmountCents,
+    activePromotions,
   );
-  const monthlyDiscountCents = Math.max(
-    orderDiscountCents,
-    billingCycleDiscountCents(monthlyAmount, activePromotions),
+  const monthlyDiscountCents = promotionDiscountCents(
+    monthlyAmount,
+    activePromotions,
   );
   const checkoutTotalCents = Math.max(
     0,

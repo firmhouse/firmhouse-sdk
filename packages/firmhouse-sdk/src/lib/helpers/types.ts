@@ -1438,17 +1438,6 @@ export interface FirmhouseCart {
    * List of all applied promotions for this customer.
    */
   appliedPromotions?: FirmhouseAppliedPromotion[] | null;
-  /**
-   * Current cart totals calculated by the API, including applied discounts.
-   */
-  orderCalculation?: {
-    /** Total discount including tax, in cents. */
-    discountInclTaxCents: number;
-    /** Subtotal before shipping and discounts, including tax, in cents. */
-    subtotalBeforeShippingInclTaxCents: number;
-    /** Total after discounts, including tax, in cents. */
-    totalInclTaxCents: number;
-  } | null;
 }
 
 /**
