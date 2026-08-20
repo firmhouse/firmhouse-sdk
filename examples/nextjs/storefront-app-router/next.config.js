@@ -1,6 +1,7 @@
 //@ts-check
 
 const path = require('node:path');
+const { composePlugins, withNx } = require('@nx/next');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -35,4 +36,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = composePlugins(withNx)(nextConfig);
