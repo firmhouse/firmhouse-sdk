@@ -1,3 +1,18 @@
+## 1.1.0 (2026-08-20)
+
+### Features
+
+- **firmhouse-sdk:** add cart totals helper ([76f2ad8](https://github.com/firmhouse/firmhouse-sdk/commit/76f2ad8))
+- **firmhouse-sdk:** support removing cart discount codes ([b639f46](https://github.com/firmhouse/firmhouse-sdk/commit/b639f46))
+
+### Bug Fixes
+
+- **firmhouse-sdk:** stop using deprecated order calculation ([8fbb697](https://github.com/firmhouse/firmhouse-sdk/commit/8fbb697))
+
+### ❤️ Thank You
+
+- fthts
+
 ## [1.0.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1) (2024-06-27)
 
 ## [1.0.1-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1-alpha.1) (2024-06-27)
