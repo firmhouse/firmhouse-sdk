@@ -10,25 +10,7 @@ import { firmhouseClient } from '../../lib/firmhouse';
 import { CheckoutForm } from '../../components/CheckoutForm';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import { Input, Plan, formatCentsToEuros } from '@firmhouse/ui-components';
-
-function promotionDiscountCents(
-  amountCents: number,
-  appliedPromotions: NonNullable<
-    Awaited<ReturnType<typeof firmhouseClient.carts.get>>['appliedPromotions']
-  >,
-) {
-  return appliedPromotions.reduce((largestDiscount, appliedPromotion) => {
-    if (!appliedPromotion.active) return largestDiscount;
-
-    const { promotion } = appliedPromotion;
-    const discount =
-      promotion.discountType === 'FIXED_AMOUNT'
-        ? (promotion.amountCents ?? 0)
-        : Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
-
-    return Math.min(amountCents, Math.max(largestDiscount, discount));
-  }, 0);
-}
+import { calculateCartTotals } from '@firmhouse/firmhouse-sdk';
 
 export default async function Index() {
   let subscription = null;
@@ -47,28 +29,14 @@ export default async function Index() {
   } else {
     redirect('/');
   }
-  const {
-    orderedProducts,
-    monthlyAmountCents,
-    amountForStartingSubscriptionCents,
-    appliedPromotions,
-  } = subscription;
+  const { orderedProducts, appliedPromotions } = subscription;
   const activePromotions = (appliedPromotions ?? []).filter((ap) => ap.active);
-  const checkoutAmountCents = amountForStartingSubscriptionCents ?? 0;
-  const monthlyAmount = monthlyAmountCents ?? 0;
-  const checkoutDiscountCents = promotionDiscountCents(
-    checkoutAmountCents,
-    activePromotions,
-  );
-  const monthlyDiscountCents = promotionDiscountCents(
-    monthlyAmount,
-    activePromotions,
-  );
-  const checkoutTotalCents = Math.max(
-    0,
-    checkoutAmountCents - checkoutDiscountCents,
-  );
-  const monthlyTotalCents = Math.max(0, monthlyAmount - monthlyDiscountCents);
+  const {
+    payNowSubtotalCents,
+    payNowDiscountCents,
+    payNowTotalCents,
+    monthlyTotalCents,
+  } = calculateCartTotals(subscription);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">
       <div className="flex flex-row w-11/12 max-w-5xl bg-white shadow-sm border rounded-md border-gray-100 flex-nowrap m-16">
@@ -166,21 +134,21 @@ export default async function Index() {
           <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
             <p className="font-light">Subtotal (pay now)</p>
             <p className="font-light">
-              {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
+              {formatCentsToEuros(payNowSubtotalCents)}
             </p>
           </div>
-          {checkoutDiscountCents > 0 && (
+          {payNowDiscountCents > 0 && (
             <div className="flex flex-row justify-between text-green-700">
               <p className="font-light">Discount</p>
               <p className="font-light">
-                -{formatCentsToEuros(checkoutDiscountCents)}
+                -{formatCentsToEuros(payNowDiscountCents)}
               </p>
             </div>
           )}
           <div className="flex flex-row justify-between">
             <p className="font-semibold">Total (pay now)</p>
             <p className="font-semibold">
-              {formatCentsToEuros(checkoutTotalCents)}
+              {formatCentsToEuros(payNowTotalCents)}
             </p>
           </div>
           <div className="flex flex-row justify-between">

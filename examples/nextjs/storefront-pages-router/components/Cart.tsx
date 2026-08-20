@@ -1,4 +1,5 @@
 import {
+  calculateCartTotals,
   FirmhouseCart,
   OrderedProductIntervalUnitOfMeasure,
 } from '@firmhouse/firmhouse-sdk';
@@ -17,24 +18,6 @@ export interface CartProps {
   ) => void;
 }
 
-function promotionDiscountCents(subscription: FirmhouseCart) {
-  const amountCents = subscription.amountForStartingSubscriptionCents ?? 0;
-  return (subscription.appliedPromotions ?? []).reduce(
-    (largestDiscount, appliedPromotion) => {
-      if (!appliedPromotion.active) return largestDiscount;
-
-      const { promotion } = appliedPromotion;
-      const discount =
-        promotion.discountType === 'FIXED_AMOUNT'
-          ? (promotion.amountCents ?? 0)
-          : Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
-
-      return Math.min(amountCents, Math.max(largestDiscount, discount));
-    },
-    0,
-  );
-}
-
 export default function Cart({
   subscription,
   onRemove,
@@ -43,12 +26,9 @@ export default function Cart({
   onRemoveDiscountCode,
   onUpdateInterval,
 }: CartProps) {
-  const { orderedProducts, amountForStartingSubscriptionCents } = subscription;
-  const discountCents = promotionDiscountCents(subscription);
-  const totalCents = Math.max(
-    0,
-    (amountForStartingSubscriptionCents ?? 0) - discountCents,
-  );
+  const { orderedProducts } = subscription;
+  const { payNowSubtotalCents, payNowDiscountCents, payNowTotalCents } =
+    calculateCartTotals(subscription);
   const appliedDiscountCode = subscription.appliedPromotions?.find(
     (appliedPromotion) =>
       appliedPromotion.active && appliedPromotion.discountCode,
@@ -117,17 +97,14 @@ export default function Cart({
         <div className="flex flex-row justify-between border-t-gray-100 border-t pt-8">
           <p className="font-light text-sm">Subtotal (pay now)</p>
           <p className="font-light text-sm">
-            {formatCentsWithCurrency(
-              amountForStartingSubscriptionCents ?? 0,
-              'EUR',
-            )}
+            {formatCentsWithCurrency(payNowSubtotalCents, 'EUR')}
           </p>
         </div>
-        {discountCents > 0 && (
+        {payNowDiscountCents > 0 && (
           <div className="flex flex-row justify-between text-green-700">
             <p className="font-light text-sm">Discount</p>
             <p className="font-light text-sm">
-              -{formatCentsWithCurrency(discountCents, 'EUR')}
+              -{formatCentsWithCurrency(payNowDiscountCents, 'EUR')}
             </p>
           </div>
         )}
@@ -138,7 +115,7 @@ export default function Cart({
         <div className="flex flex-row justify-between">
           <p className="font-light">Total</p>
           <p className="font-light">
-            {formatCentsWithCurrency(totalCents, 'EUR')} + Shipping
+            {formatCentsWithCurrency(payNowTotalCents, 'EUR')} + Shipping
           </p>
         </div>
         {subscription.checkoutUrl && (
