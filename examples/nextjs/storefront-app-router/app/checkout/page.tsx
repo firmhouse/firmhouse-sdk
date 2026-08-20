@@ -10,6 +10,26 @@ import { CheckoutForm } from '../../components/CheckoutForm';
 import { CartProduct } from '@firmhouse/ui-components/server';
 import { Input, Plan, formatCentsToEuros } from '@firmhouse/ui-components';
 
+function billingCycleDiscountCents(
+  amountCents: number,
+  appliedPromotions: NonNullable<
+    Awaited<ReturnType<typeof firmhouseClient.carts.get>>['appliedPromotions']
+  >
+) {
+  const promotion = appliedPromotions.find(
+    (appliedPromotion) =>
+      appliedPromotion.active &&
+      appliedPromotion.promotion.__typename === 'BillingCyclePromotion'
+  )?.promotion;
+
+  if (!promotion) return 0;
+  if (promotion.discountType === 'FIXED_AMOUNT') {
+    return Math.min(amountCents, promotion.amountCents ?? 0);
+  }
+
+  return Math.round(amountCents * ((promotion.percentDiscount ?? 0) / 100));
+}
+
 export default async function Index() {
   let subscription = null;
   if (await isInitialized()) {
@@ -32,8 +52,25 @@ export default async function Index() {
     monthlyAmountCents,
     amountForStartingSubscriptionCents,
     appliedPromotions,
+    orderCalculation,
   } = subscription;
   const activePromotions = (appliedPromotions ?? []).filter((ap) => ap.active);
+  const checkoutAmountCents = amountForStartingSubscriptionCents ?? 0;
+  const monthlyAmount = monthlyAmountCents ?? 0;
+  const orderDiscountCents = orderCalculation?.discountInclTaxCents ?? 0;
+  const checkoutDiscountCents = Math.max(
+    orderDiscountCents,
+    billingCycleDiscountCents(checkoutAmountCents, activePromotions)
+  );
+  const monthlyDiscountCents = Math.max(
+    orderDiscountCents,
+    billingCycleDiscountCents(monthlyAmount, activePromotions)
+  );
+  const checkoutTotalCents = Math.max(
+    0,
+    checkoutAmountCents - checkoutDiscountCents
+  );
+  const monthlyTotalCents = Math.max(0, monthlyAmount - monthlyDiscountCents);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">
       <div className="flex flex-row w-11/12 max-w-5xl bg-white shadow-sm border rounded-md border-gray-100 flex-nowrap m-16">
@@ -123,15 +160,29 @@ export default async function Index() {
             )}
           </div>
           <div className="flex flex-row justify-between border-t-gray-100 border-t my-4 pt-8">
-            <p className="font-semibold">Subtotal (pay now)</p>
+            <p className="font-light">Subtotal (pay now)</p>
             <p className="font-light">
               {formatCentsToEuros(amountForStartingSubscriptionCents ?? 0)}
+            </p>
+          </div>
+          {checkoutDiscountCents > 0 && (
+            <div className="flex flex-row justify-between text-green-700">
+              <p className="font-light">Discount</p>
+              <p className="font-light">
+                -{formatCentsToEuros(checkoutDiscountCents)}
+              </p>
+            </div>
+          )}
+          <div className="flex flex-row justify-between">
+            <p className="font-semibold">Total (pay now)</p>
+            <p className="font-semibold">
+              {formatCentsToEuros(checkoutTotalCents)}
             </p>
           </div>
           <div className="flex flex-row justify-between">
             <p className="font-light">Total per month</p>
             <p className="font-light">
-              {formatCentsToEuros(monthlyAmountCents ?? 0)}
+              {formatCentsToEuros(monthlyTotalCents)}
             </p>
           </div>
         </div>

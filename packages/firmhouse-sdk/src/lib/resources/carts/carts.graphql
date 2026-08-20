@@ -10,6 +10,11 @@ mutation createCart(
   createCart(input: $input) {
     subscription {
       ...SubscriptionFields
+      orderCalculation {
+        discountInclTaxCents
+        subtotalBeforeShippingInclTaxCents
+        totalInclTaxCents
+      }
       discountCodes @include(if: $includeDiscountCodes) {
         ...DiscountCodeFields
         autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
@@ -44,6 +49,12 @@ query getCart(
   getCart: getSubscription(token: $token) {
     ...SubscriptionFields
 
+    orderCalculation {
+      discountInclTaxCents
+      subtotalBeforeShippingInclTaxCents
+      totalInclTaxCents
+    }
+
     discountCodes @include(if: $includeDiscountCodes) {
       ...DiscountCodeFields
       autoSelectPlan @include(if: $includeDiscountCodesAutoSelectPlan) {
@@ -62,6 +73,17 @@ query getCart(
       promotion @include(if: $includeAppliedPromotionsPromotion) {
         ...PromotionFields
       }
+    }
+  }
+}
+
+mutation applyDiscountCodeToCart($input: ApplyDiscountCodeInput!) {
+  applyDiscountCode(input: $input) {
+    appliedPromotion {
+      ...AppliedPromotionFields
+    }
+    errors {
+      ...ModelValidationErrorFields
     }
   }
 }

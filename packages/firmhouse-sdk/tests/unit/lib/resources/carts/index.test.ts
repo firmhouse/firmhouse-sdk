@@ -6,6 +6,7 @@ import {
   CreateCartDocument,
   GetCartDocument,
   AddToCartDocument,
+  ApplyDiscountCodeToCartDocument,
   RemoveFromCartDocument,
   UpdateOrderedProductInCartDocument,
   UpdateAddressDetailsDocument,
@@ -283,6 +284,80 @@ describe('lib/resources/carts/index.ts', () => {
       expect(testResource.getOrCreate('testToken')).rejects.toThrow(
         'No token returned from API'
       );
+    });
+  });
+
+  describe('applyDiscountCode', () => {
+    const appliedPromotion = {
+      id: 'applied-promotion-id',
+      active: true,
+    };
+
+    it('should call the correct mutation', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await testResource.applyDiscountCode('testToken', 'WELCOME10');
+
+      expect(mockGraphQLClient.request).toHaveBeenCalledWith(
+        ApplyDiscountCodeToCartDocument,
+        { input: { discountCode: 'WELCOME10' } },
+        { 'X-Subscription-Token': 'testToken' }
+      );
+    });
+
+    it('should return the applied promotion', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10')
+      ).resolves.toEqual(appliedPromotion);
+    });
+
+    it('should throw validation errors returned by the API', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: {
+          appliedPromotion: null,
+          errors: [
+            { attribute: 'discount_code', message: 'Code is invalid' },
+          ],
+        },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'INVALID')
+      ).rejects.toMatchObject({
+        name: 'ValidationError',
+        details: { discountCode: 'Code is invalid' },
+      });
+    });
+
+    it('should throw a server error when the mutation returns no result', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: null,
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10')
+      ).rejects.toThrow('Could not apply discount code');
+    });
+
+    it('should throw a server error when no promotion is returned', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        applyDiscountCode: { appliedPromotion: null, errors: [] },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        testResource.applyDiscountCode('testToken', 'WELCOME10')
+      ).rejects.toThrow('Could not apply discount code');
     });
   });
 

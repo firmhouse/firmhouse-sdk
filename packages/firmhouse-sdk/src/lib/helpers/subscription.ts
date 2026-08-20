@@ -26,7 +26,10 @@ export type { GetSubscriptionQuery, GetCartQuery };
 /**
  * @internal
  */
-export type BaseCartType = NonNullable<GetCartQuery['getCart']>;
+type GeneratedCartType = NonNullable<GetCartQuery['getCart']>;
+
+export type BaseCartType = Omit<GeneratedCartType, 'orderCalculation'> &
+  Partial<Pick<GeneratedCartType, 'orderCalculation'>>;
 
 /**
  * @internal

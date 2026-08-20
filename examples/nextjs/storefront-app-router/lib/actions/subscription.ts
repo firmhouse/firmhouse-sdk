@@ -130,9 +130,8 @@ export async function updatePlan(data: FormData) {
 
 export async function applyDiscount(data: FormData) {
   const discountCode = data.get('discountCode') as string;
-  const writeAccessClient = await writeAccessFirmhouseClient();
   try {
-    await writeAccessClient.subscriptions.applyPromotionWithDiscountCode(
+    await firmhouseClient.carts.applyDiscountCode(
       await getSubscriptionToken(),
       discountCode
     );

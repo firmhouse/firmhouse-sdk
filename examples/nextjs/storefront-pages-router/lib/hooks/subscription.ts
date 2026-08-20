@@ -40,6 +40,19 @@ async function updateOrderedProductQuantity(
   );
 }
 
+async function applyDiscountCode(
+  subscriptionToken: string,
+  discountCode: string
+) {
+  await firmhouseClient.carts.applyDiscountCode(
+    subscriptionToken,
+    discountCode
+  );
+  return firmhouseClient.carts.get(subscriptionToken, {
+    appliedPromotions: { includeRelations: { promotion: true } },
+  });
+}
+
 export function useSubscription() {
   const [subscription, setSubscription] = useState(
     null as FirmhouseCart | null
@@ -51,7 +64,8 @@ export function useSubscription() {
       undefined;
     const initialize = async (subscriptionToken?: string) => {
       const response = await firmhouseClient.carts.getOrCreate(
-        subscriptionToken
+        subscriptionToken,
+        { appliedPromotions: { includeRelations: { promotion: true } } }
       );
       setSubscription(response);
       localStorage.setItem(SUBSCRIPTION_TOKEN_KEY, response.token);
@@ -128,6 +142,16 @@ export function useSubscription() {
             token: subscription.token,
           });
         })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    applyDiscountCode: (discountCode: string) => {
+      if (subscription === null) {
+        return;
+      }
+      applyDiscountCode(subscription.token, discountCode)
+        .then(setSubscription)
         .catch((error) => {
           console.error(error);
         });

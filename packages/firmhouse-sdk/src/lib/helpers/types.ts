@@ -12,6 +12,7 @@ import {
   OrderedProductStatus,
   PaymentStatusEnum,
   PaymentTypeEnum,
+  PromotionDiscountTypeEnum,
   RefundStatus,
   SubscriptionStatus,
 } from '../graphql/generated';
@@ -66,9 +67,17 @@ export type PaginatedResponse<T> = {
  */
 export interface FirmhousePromotion {
   /**
+   * The concrete promotion type.
+   */
+  __typename: 'BillingCyclePromotion' | 'OrderDiscountPromotion';
+  /**
    * Whether the promotion is currently active.
    */
   activated: boolean;
+  /**
+   * The fixed discount amount in cents.
+   */
+  amountCents: number | null;
   /**
    * Whether or not this promotion will automatically be applied on checkout
    */
@@ -85,6 +94,10 @@ export interface FirmhousePromotion {
    * Which mechanism will be used to deactivate the promotion
    */
   deactivationStrategy: AppliedPromotionDeactivationStrategy;
+  /**
+   * Whether the promotion applies a fixed amount or a percentage.
+   */
+  discountType: PromotionDiscountTypeEnum | null;
   /**
    * The id of this promotion that can be used to apply the promotion on a subscription
    */
@@ -1426,6 +1439,17 @@ export interface FirmhouseCart {
    * List of all applied promotions for this customer.
    */
   appliedPromotions?: FirmhouseAppliedPromotion[] | null;
+  /**
+   * Current cart totals calculated by the API, including applied discounts.
+   */
+  orderCalculation?: {
+    /** Total discount including tax, in cents. */
+    discountInclTaxCents: number;
+    /** Subtotal before shipping and discounts, including tax, in cents. */
+    subtotalBeforeShippingInclTaxCents: number;
+    /** Total after discounts, including tax, in cents. */
+    totalInclTaxCents: number;
+  } | null;
 }
 
 /**

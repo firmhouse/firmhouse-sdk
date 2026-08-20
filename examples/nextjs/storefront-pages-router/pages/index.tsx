@@ -23,6 +23,7 @@ export default function Index({
     removeFromCart,
     updateOrderedProductQuantity,
     updateOrderedProductInterval,
+    applyDiscountCode,
   } = useSubscription();
 
   return (
@@ -44,6 +45,7 @@ export default function Index({
               onRemove={removeFromCart}
               onUpdateQuantity={updateOrderedProductQuantity}
               onUpdateInterval={updateOrderedProductInterval}
+              onApplyDiscountCode={applyDiscountCode}
             />
           )}
         </div>

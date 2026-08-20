@@ -7,6 +7,7 @@ import {
 
 import {
   AddToCartDocument,
+  ApplyDiscountCodeToCartDocument,
   CreateCartDocument,
   CreateSubscriptionFromCartDocument,
   GetCartDocument,
@@ -22,7 +23,11 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import { _formatCart, _formatOrderedProduct } from '../../helpers/subscription';
-import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
+import {
+  FirmhouseAppliedPromotion,
+  FirmhouseCart,
+  FirmhouseOrderedProduct,
+} from '../../helpers/types';
 
 /**
  * @public
@@ -232,6 +237,37 @@ export class CartsResource extends BaseResource {
       }
     }
     return this.create(includeRelations);
+  }
+
+  /**
+   * Apply a discount code to a cart.
+   * @param cartToken - Cart token
+   * @param discountCode - Discount code to apply
+   * @returns Applied promotion
+   * @throws {@link ValidationError} Thrown when the discount code is invalid
+   * @throws {@link NotFoundError} Thrown when the cart is not found
+   * @throws {@link ServerError} Thrown when the discount code could not be applied
+   */
+  public async applyDiscountCode(
+    cartToken: string,
+    discountCode: string
+  ): Promise<FirmhouseAppliedPromotion> {
+    const response = await this._client.request(
+      ApplyDiscountCodeToCartDocument,
+      { input: { discountCode } },
+      this.getSubscriptionTokenHeader(cartToken)
+    );
+    const result = response.applyDiscountCode;
+    if (result === null) {
+      throw new ServerError('Could not apply discount code');
+    }
+    if (result.errors.length > 0) {
+      throw new ValidationError(result.errors);
+    }
+    if (result.appliedPromotion === null) {
+      throw new ServerError('Could not apply discount code');
+    }
+    return result.appliedPromotion;
   }
 
   /**
