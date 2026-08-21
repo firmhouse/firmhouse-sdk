@@ -1,3 +1,14 @@
+## 1.1.1 (2026-08-21)
+
+### Bug Fixes
+
+- **firmhouse-sdk:** support Node 22 ([997fae0](https://github.com/firmhouse/firmhouse-sdk/commit/997fae0))
+- **firmhouse-sdk:** declare published dependencies ([8654d8e](https://github.com/firmhouse/firmhouse-sdk/commit/8654d8e))
+
+### ❤️ Thank You
+
+- fthts
+
 ## 1.1.0 (2026-08-20)
 
 ### Features
