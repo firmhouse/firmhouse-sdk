@@ -94,7 +94,3 @@ const extraFieldAnswer = extraFieldsById['EXTRA_FIELD_ID'];
 `calculateCartTotals` uses the largest active promotion when multiple
 promotions are present; promotions do not stack. Discounts are capped at the
 subtotal, and shipping is not included.
-
-## Development Guide
-
-You can check the [Development Guide](./docs/DevelopmentGuide.md) for learning about the conventions and tools used in the project.
