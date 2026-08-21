@@ -18,3 +18,13 @@ jobs:
       - run: npx nx format:check
       - run: npx nx affected -t lint --parallel=3
       - run: npx nx affected -t test --parallel=3
+  sdk-node-22:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - run: npx nx test firmhouse-sdk
