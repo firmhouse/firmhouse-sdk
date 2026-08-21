@@ -22,7 +22,11 @@
   "scripts": {
     "generate": "graphql-codegen --config ./graphql.config.yml"
   },
+  "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "graphql-request": "^7.4.0"
+  },
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=22.0.0"
   }
 }
