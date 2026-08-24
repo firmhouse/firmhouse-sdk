@@ -14,7 +14,7 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const extraFields = useMemo(
     () => mapExtraFieldsByFieldId(subscription.extraFields),
-    [subscription.extraFields]
+    [subscription.extraFields],
   );
 
   const onSubmit = useCallback(
@@ -28,21 +28,21 @@ export function CheckoutForm({ subscription }: CheckoutFormProps) {
           {
             extraFieldId: '1243',
             value: referrer,
-            ...({ id: extraFields['1243']?.id } ?? {}),
+            id: extraFields['1243']?.id,
           },
           {
             extraFieldId: '1251',
             value: isGift,
-            ...({ id: extraFields['1251']?.id } ?? {}),
+            id: extraFields['1251']?.id,
           },
-        ])
+        ]),
       );
       const err = await updateCheckoutDetails(formData);
       if (err !== undefined) {
         setErrors((prev) => ({ ...prev, ...err }));
       }
     },
-    [extraFields]
+    [extraFields],
   );
   // Convert array of extra fields to a map for more efficient lookup
 

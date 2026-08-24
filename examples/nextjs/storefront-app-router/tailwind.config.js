@@ -1,4 +1,3 @@
-const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
 const defaultTheme = require('tailwindcss/defaultTheme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -16,7 +15,6 @@ module.exports = {
       },
       screens: {
         '2xl': '1536px',
-        print: { raw: 'print' },
       },
       maxWidth: {
         '7xl': '80rem',
@@ -154,6 +152,6 @@ module.exports = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    ...createGlobPatternsForDependencies(__dirname),
+    '../../../packages/ui-components/src/**/*.{ts,tsx}',
   ],
 };

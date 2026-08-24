@@ -78,7 +78,7 @@ interface BreakField extends BaseCheckoutField {
   name: 'break';
 }
 
-interface SubmitButton extends BaseCheckoutField {
+interface SubmitButtonField extends BaseCheckoutField {
   name: 'submit';
 }
 
@@ -86,7 +86,7 @@ export type CheckoutField =
   | ExtraField
   | DefaultField
   | BreakField
-  | SubmitButton;
+  | SubmitButtonField;
 
 export interface CheckoutFieldsListProps {
   fields: CheckoutField[];

@@ -22,6 +22,8 @@ export function OrderSummaryUI({
   className,
   totalAmountWithCurrency,
   totalTaxAmount,
+  totalDiscountAmount,
+  totalDiscountAmountWithCurrency,
   cart,
   children,
   currency,
@@ -30,6 +32,11 @@ export function OrderSummaryUI({
 }: OrderSummaryUIProps) {
   return (
     <div className={className}>
+      {!!totalDiscountAmount && (
+        <p className="orderSummaryDiscount">
+          Discount: <span>-{totalDiscountAmountWithCurrency}</span>
+        </p>
+      )}
       <p className={`${styles.total} orderSummaryTotal`}>
         {`${t?.('checkout.orderSummary.total')}: `}
         <span>{totalAmountWithCurrency}</span>
@@ -40,7 +47,7 @@ export function OrderSummaryUI({
             amount: formatCentsWithCurrency(
               totalTaxAmount ?? 0,
               currency,
-              locale ?? cart?.locale
+              locale ?? cart?.locale,
             ),
           })}
         </p>

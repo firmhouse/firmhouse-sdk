@@ -1,9 +1,38 @@
-## [1.1.0-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.1...firmhouse-sdk-v1.1.0-alpha.1) (2024-08-15)
+## 1.1.2 (2026-08-21)
 
+This was a version bump only for firmhouse-sdk to align it with other projects, there were no code changes.
+
+## 1.1.1 (2026-08-21)
+
+### Bug Fixes
+
+- **firmhouse-sdk:** support Node 22 ([997fae0](https://github.com/firmhouse/firmhouse-sdk/commit/997fae0))
+- **firmhouse-sdk:** declare published dependencies ([8654d8e](https://github.com/firmhouse/firmhouse-sdk/commit/8654d8e))
+
+### ❤️ Thank You
+
+- fthts
+
+## 1.1.0 (2026-08-20)
 
 ### Features
 
-* **firmhouse-sdk:** allow passing request initialization parameters to fetch instance ([6d80c6d](https://github.com/firmhouse/firmhouse-sdk/commit/6d80c6de48700801937a24676ca2212b8417b71c))
+- **firmhouse-sdk:** add cart totals helper ([76f2ad8](https://github.com/firmhouse/firmhouse-sdk/commit/76f2ad8))
+- **firmhouse-sdk:** support removing cart discount codes ([b639f46](https://github.com/firmhouse/firmhouse-sdk/commit/b639f46))
+
+### Bug Fixes
+
+- **firmhouse-sdk:** stop using deprecated order calculation ([8fbb697](https://github.com/firmhouse/firmhouse-sdk/commit/8fbb697))
+
+### ❤️ Thank You
+
+- fthts
+
+## [1.1.0-alpha.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.1...firmhouse-sdk-v1.1.0-alpha.1) (2024-08-15)
+
+### Features
+
+- **firmhouse-sdk:** allow passing request initialization parameters to fetch instance ([6d80c6d](https://github.com/firmhouse/firmhouse-sdk/commit/6d80c6de48700801937a24676ca2212b8417b71c))
 
 ## [1.0.1](https://github.com/firmhouse/firmhouse-sdk/compare/firmhouse-sdk-v1.0.0...firmhouse-sdk-v1.0.1) (2024-06-27)
 

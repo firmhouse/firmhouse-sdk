@@ -25,15 +25,12 @@
     "url": "https://firmhouse.com/"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "peerDependencies": {
-    "@firmhouse/firmhouse-sdk": "^1"
-  },
-  "peerDependenciesMeta": {
-    "typescript": {
-      "optional": false
-    }
+    "@firmhouse/firmhouse-sdk": "^1",
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "exports": {
     "./package.json": "./package.json",

@@ -1,6 +1,16 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import * as Types from '../generated';
 
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type AppliedPromotionDeactivationStrategy =
+  /** Gets deactivated when used x number or times. */
+  | 'TIMES'
+  /** Never gets deactivated based on usage. */
+  | 'UNLIMITED'
+  /** Gets deactivated after a monetary limit has been reached. */
+  | 'VALUE';
+
 export type BillingCyclePromotionFieldsFragment = { activated: boolean, autoApply: boolean, deactivateAfterAmountIncludingTaxCents: number | null, deactivateAfterTimes: number | null, deactivationStrategy: Types.AppliedPromotionDeactivationStrategy, id: string, percentDiscount: number | null, publicName: string | null, title: string };
 
 export const BillingCyclePromotionFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BillingCyclePromotionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BillingCyclePromotion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activated"}},{"kind":"Field","name":{"kind":"Name","value":"autoApply"}},{"kind":"Field","name":{"kind":"Name","value":"deactivateAfterAmountIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"deactivateAfterTimes"}},{"kind":"Field","name":{"kind":"Name","value":"deactivationStrategy"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"percentDiscount"}},{"kind":"Field","name":{"kind":"Name","value":"publicName"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]} as unknown as DocumentNode<BillingCyclePromotionFieldsFragment, unknown>;

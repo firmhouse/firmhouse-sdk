@@ -39,7 +39,7 @@ describe('helpers/GraphQLClient', () => {
       const client = new GraphQLClient('token');
       const e = new ClientError(
         {} as GraphQLResponse,
-        {} as GraphQLRequestContext
+        {} as GraphQLRequestContext,
       );
       const errors = [
         {
@@ -57,6 +57,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: ValidationError | null = null;
       try {
@@ -72,7 +74,7 @@ describe('helpers/GraphQLClient', () => {
       const client = new GraphQLClient('token');
       const e = new ClientError(
         {} as GraphQLResponse,
-        {} as GraphQLRequestContext
+        {} as GraphQLRequestContext,
       );
       e.response = {
         errors: [
@@ -84,6 +86,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: NotFoundError | null = null;
       try {
@@ -99,7 +103,7 @@ describe('helpers/GraphQLClient', () => {
       const client = new GraphQLClient('token');
       const e = new ClientError(
         {} as GraphQLResponse,
-        {} as GraphQLRequestContext
+        {} as GraphQLRequestContext,
       );
       e.response = {
         errors: [
@@ -108,6 +112,8 @@ describe('helpers/GraphQLClient', () => {
           } as unknown as GraphQLError,
         ],
         status: 0,
+        headers: new Headers(),
+        body: '',
       };
       let error: ServerError | null = null;
       try {

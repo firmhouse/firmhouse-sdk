@@ -3,8 +3,6 @@ import './global.css';
 import { NavBar } from '@firmhouse/ui-components';
 import type { Metadata, Viewport } from 'next';
 
-export const runtime = 'edge';
-
 export const metadata: Metadata = {
   title: 'Firmhouse Storefront Next.js App / App Router',
 };

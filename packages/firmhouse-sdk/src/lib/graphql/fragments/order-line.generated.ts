@@ -1,6 +1,46 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import * as Types from '../generated';
 
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
-export type OrderLineFieldsFragment = { metadata: unknown | null, productSku: string | null, productTitle: string | null, productType: Types.OrderedProductTypes | null, quantity: number, taxPercentage: number | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, product: { costPerItemCents: number | null, available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown | null, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string } };
+export type CommitmentUnit =
+  /** The period in days. */
+  | 'DAYS'
+  /** The period in months. */
+  | 'MONTHS'
+  /** The period in weeks. */
+  | 'WEEKS'
+  /** The period in years. */
+  | 'YEARS';
+
+export type MaximumCommitmentUnit =
+  /** The period in billing cycles */
+  | 'BILLING_CYCLES'
+  /** The period in days. */
+  | 'DAYS'
+  /** The period in months. */
+  | 'MONTHS'
+  /** The period in weeks. */
+  | 'WEEKS'
+  /** The period in years. */
+  | 'YEARS';
+
+export type OrderedProductTypes =
+  /** Regular ordered product */
+  | 'NORMAL'
+  /** A one-off add-on product automatically included in the next order and removed after the order is created */
+  | 'ONE_OFF_ADDON'
+  /** An ordered product that will be added to the order when reaching position 1 in the queue */
+  | 'QUEUED'
+  /** An additional product will be added to the order */
+  | 'QUEUED_ADDON'
+  /** An ordered product that will be added to the order if there is no queued ordered product */
+  | 'QUEUED_DEFAULT'
+  /** No order will be created if a skip product is added on position 1 in the queue */
+  | 'QUEUED_SKIP';
+
+export type OrderLineFieldsFragment_OrderLine_product_Product = { costPerItemCents: number | null, available: boolean, eligibleForDiscount: boolean, graceCancellationEnabled: boolean | null, graceCancellationPeriod: number | null, graceCancellationUnit: Types.CommitmentUnit | null, id: string, imageUrl: string | null, interval: number | null, intervalUnitOfMeasure: string | null, mandatory: boolean, maximumCommitmentEnabled: boolean | null, maximumCommitmentPeriod: number | null, maximumCommitmentUnit: Types.MaximumCommitmentUnit | null, metadata: unknown, minimumCommitmentEnabled: boolean | null, minimumCommitmentPeriod: number | null, minimumCommitmentUnit: Types.CommitmentUnit | null, nthProductFree: number | null, priceCents: number | null, priceExcludingTaxCents: number | null, priceIncludingTaxCents: number | null, productType: string | null, shopifyProductId: string | null, shopifyVariantId: string | null, sku: string | null, slug: string, supplier: string | null, taxAmountCents: number | null, taxPercentage: number | null, title: string };
+
+export type OrderLineFieldsFragment = { metadata: unknown, productSku: string | null, productTitle: string | null, productType: Types.OrderedProductTypes | null, quantity: number, taxPercentage: number | null, totalAmountExcludingTaxCents: number | null, totalAmountIncludingTaxCents: number | null, product: OrderLineFieldsFragment_OrderLine_product_Product };
 
 export const OrderLineFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderLineFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderLine"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"productSku"}},{"kind":"Field","name":{"kind":"Name","value":"productTitle"}},{"kind":"Field","name":{"kind":"Name","value":"productType"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"taxPercentage"}},{"kind":"Field","name":{"kind":"Name","value":"totalAmountExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"totalAmountIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CompleteProductFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available"}},{"kind":"Field","name":{"kind":"Name","value":"eligibleForDiscount"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"graceCancellationUnit"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"intervalUnitOfMeasure"}},{"kind":"Field","name":{"kind":"Name","value":"mandatory"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"maximumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentPeriod"}},{"kind":"Field","name":{"kind":"Name","value":"minimumCommitmentUnit"}},{"kind":"Field","name":{"kind":"Name","value":"nthProductFree"}},{"kind":"Field","name":{"kind":"Name","value":"priceCents"}},{"kind":"Field","name":{"kind":"Name","value":"priceExcludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"priceIncludingTaxCents"}},{"kind":"Field","name":{"kind":"Name","value":"productType"}},{"kind":"Field","name":{"kind":"Name","value":"shopifyProductId"}},{"kind":"Field","name":{"kind":"Name","value":"shopifyVariantId"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"supplier"}},{"kind":"Field","name":{"kind":"Name","value":"taxAmountCents"}},{"kind":"Field","name":{"kind":"Name","value":"taxPercentage"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CompleteProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFields"}},{"kind":"Field","name":{"kind":"Name","value":"costPerItemCents"}}]}}]} as unknown as DocumentNode<OrderLineFieldsFragment, unknown>;

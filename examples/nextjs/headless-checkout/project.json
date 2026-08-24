@@ -10,7 +10,8 @@
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/examples/nextjs/headless-checkout",
-        "postcssConfig": "examples/nextjs/headless-checkout/postcss.config.js"
+        "postcssConfig": "examples/nextjs/headless-checkout/postcss.config.js",
+        "webpack": true
       },
       "configurations": {
         "development": {

@@ -7,3 +7,5 @@
 generated.ts
 /tmp
 CHANGELOG.md
+/.nx/workspace-data
+.nx/self-healing

@@ -29,3 +29,7 @@ import { CheckoutForm, FirmhouseCartProvider, OrderedProductsList, OrderSummary 
   </div>
 </FirmhouseCartProvider>;
 ```
+
+`useFirmhouseCart()` exposes `applyDiscountCode` and `removeDiscountCode` for
+building a discount-code form. The cart and `OrderSummary` refresh with the
+active promotion after either action.

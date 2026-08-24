@@ -21,17 +21,17 @@ async function getSSCSubscriptionTokenCookieKey() {
 
 export async function createSSCSubscriptionCookie(
   selfServiceCenterLoginToken: string,
-  redirectURL: string
+  redirectURL: string,
 ): Promise<void> {
   try {
     const client = await writeAccessFirmhouseClient();
     const subscription =
       await client.subscriptions.getBySelfServiceCenterLoginToken(
-        selfServiceCenterLoginToken
+        selfServiceCenterLoginToken,
       );
-    cookies().set(
+    (await cookies()).set(
       await getSSCSubscriptionTokenCookieKey(),
-      await createAuthToken(subscription.token)
+      await createAuthToken(subscription.token),
     );
   } catch (e) {
     console.error(e);
@@ -49,7 +49,7 @@ export async function updateSubscription(path: string, data: FormData) {
   try {
     client.subscriptions.updateSubscription(
       await getSSCSubscriptionToken(),
-      body
+      body,
     );
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -66,7 +66,8 @@ export async function updateSubscription(path: string, data: FormData) {
 
 export async function hasValidSSCAuthToken() {
   const jwtToken =
-    cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+    (await cookies()).get(await getSSCSubscriptionTokenCookieKey())?.value ??
+    '';
   if (!jwtToken) {
     return false;
   }
@@ -80,7 +81,8 @@ export async function hasValidSSCAuthToken() {
 export async function getSSCSubscriptionToken(): Promise<string> {
   try {
     const jwtToken =
-      cookies().get(await getSSCSubscriptionTokenCookieKey())?.value ?? '';
+      (await cookies()).get(await getSSCSubscriptionTokenCookieKey())?.value ??
+      '';
     return verifyAndDecodeAuthToken(jwtToken);
   } catch (e) {
     clearSSCSubscriptionToken();
@@ -89,7 +91,7 @@ export async function getSSCSubscriptionToken(): Promise<string> {
 }
 
 export async function clearSSCSubscriptionToken(): Promise<void> {
-  cookies().delete(await getSSCSubscriptionTokenCookieKey());
+  (await cookies()).delete(await getSSCSubscriptionTokenCookieKey());
 }
 
 export async function cancelSubscription(): Promise<void> {
@@ -100,12 +102,12 @@ export async function cancelSubscription(): Promise<void> {
 }
 
 export async function removeOrderedProduct(
-  orderedProductId: string
+  orderedProductId: string,
 ): Promise<void> {
   const client = await writeAccessFirmhouseClient();
   await client.subscriptions.removeProduct(
     await getSSCSubscriptionToken(),
-    orderedProductId
+    orderedProductId,
   );
   revalidatePath('/');
   revalidatePath(`/orderedProducts/${orderedProductId}`);
@@ -115,14 +117,14 @@ export async function removeOrderedProduct(
 export async function updateOrderedProductInterval(
   token: string,
   orderedProductId: string,
-  formData: FormData
+  formData: FormData,
 ): Promise<void> {
   const client = await writeAccessFirmhouseClient();
   const interval = formData.has('interval')
     ? parseInt(formData.get('interval') as string)
     : null;
   const unitOfMeasure = formData.get(
-    'unitOfMeasure'
+    'unitOfMeasure',
   ) as OrderedProductIntervalUnitOfMeasure;
   await client.subscriptions.updateOrderedProduct(token, {
     intervalUnitOfMeasureType: unitOfMeasure,
@@ -136,7 +138,7 @@ export async function updateOrderedProductInterval(
 export async function updateShipmentDate(
   token: string,
   orderedProductId: string,
-  formData: FormData
+  formData: FormData,
 ): Promise<void> {
   const client = await writeAccessFirmhouseClient();
   const shipmentDate = formData.get('shipmentDate') as string;

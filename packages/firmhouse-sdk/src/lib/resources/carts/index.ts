@@ -7,9 +7,11 @@ import {
 
 import {
   AddToCartDocument,
+  ApplyDiscountCodeToCartDocument,
   CreateCartDocument,
   CreateSubscriptionFromCartDocument,
   GetCartDocument,
+  RemoveDiscountCodeFromCartDocument,
   RemoveFromCartDocument,
   UpdateAddressDetailsDocument,
   UpdateCartPlanDocument,
@@ -22,7 +24,11 @@ import {
   ValidationError,
 } from '../../helpers/errors';
 import { _formatCart, _formatOrderedProduct } from '../../helpers/subscription';
-import { FirmhouseCart, FirmhouseOrderedProduct } from '../../helpers/types';
+import {
+  FirmhouseAppliedPromotion,
+  FirmhouseCart,
+  FirmhouseOrderedProduct,
+} from '../../helpers/types';
 
 /**
  * @public
@@ -148,7 +154,7 @@ export class CartsResource extends BaseResource {
           discountCode?: boolean;
         };
       };
-    }
+    },
   ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       GetCartDocument,
@@ -168,7 +174,7 @@ export class CartsResource extends BaseResource {
           includeRelations?.appliedPromotions?.includeRelations?.discountCode ??
           false,
       },
-      this.getSubscriptionTokenHeader(token)
+      this.getSubscriptionTokenHeader(token),
     );
     if (response.getCart === null) {
       throw new NotFoundError('Cart not found');
@@ -219,19 +225,74 @@ export class CartsResource extends BaseResource {
           discountCode?: boolean;
         };
       };
-    }
+    },
   ) {
     if (token !== undefined) {
       try {
         const response = await this.get(token, includeRelations);
         if (response.status === SubscriptionStatus.Draft) {
-          return _formatCart(response);
+          return response;
         }
       } catch (error) {
         // ignore
       }
     }
     return this.create(includeRelations);
+  }
+
+  /**
+   * Apply a discount code to a cart.
+   * @param cartToken - Cart token
+   * @param discountCode - Discount code to apply
+   * @returns Applied promotion
+   * @throws {@link ValidationError} Thrown when the discount code is invalid
+   * @throws {@link NotFoundError} Thrown when the cart is not found
+   * @throws {@link ServerError} Thrown when the discount code could not be applied
+   */
+  public async applyDiscountCode(
+    cartToken: string,
+    discountCode: string,
+  ): Promise<FirmhouseAppliedPromotion> {
+    const response = await this._client.request(
+      ApplyDiscountCodeToCartDocument,
+      { input: { discountCode } },
+      this.getSubscriptionTokenHeader(cartToken),
+    );
+    const result = response.applyDiscountCode;
+    if (result === null) {
+      throw new ServerError('Could not apply discount code');
+    }
+    if (result.errors.length > 0) {
+      throw new ValidationError(result.errors);
+    }
+    if (result.appliedPromotion === null) {
+      throw new ServerError('Could not apply discount code');
+    }
+    return result.appliedPromotion;
+  }
+
+  /**
+   * Remove the discount code applied to a cart.
+   * @param cartToken - Cart token
+   * @throws {@link ValidationError} Thrown when the discount code could not be removed
+   * @throws {@link ServerError} Thrown when the API returns no cart
+   */
+  public async removeDiscountCode(cartToken: string): Promise<void> {
+    const response = await this._client.request(
+      RemoveDiscountCodeFromCartDocument,
+      { input: {} },
+      this.getSubscriptionTokenHeader(cartToken),
+    );
+    const result = response.removeDiscountCode;
+    if (result === null) {
+      throw new ServerError('Could not remove discount code');
+    }
+    if (result.errors.length > 0) {
+      throw new ValidationError(result.errors);
+    }
+    if (result.cart === null) {
+      throw new ServerError('Could not remove discount code');
+    }
   }
 
   /**
@@ -276,12 +337,12 @@ export class CartsResource extends BaseResource {
       slug?: string | null;
       /** ID of the subscription to create this OrderedProduct for. Required if authenticated via a project access token */
       subscriptionId?: string | null;
-    }
+    },
   ) {
     const response = await this._client.request(
       AddToCartDocument,
       { input },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const addToCart = response.addToCart ?? null;
     if (addToCart === null) {
@@ -311,7 +372,7 @@ export class CartsResource extends BaseResource {
     const response = await this._client.request(
       RemoveFromCartDocument,
       { input: { id: orderedProductId } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const removeFromCart = response.removeFromCart ?? null;
     if (removeFromCart === null) {
@@ -325,7 +386,7 @@ export class CartsResource extends BaseResource {
 
     return {
       orderedProduct: _formatOrderedProduct(
-        orderedProduct
+        orderedProduct,
       ) as FirmhouseOrderedProduct,
       subscription: _formatCart(subscription) as FirmhouseCart,
     };
@@ -344,12 +405,12 @@ export class CartsResource extends BaseResource {
   public async updateOrderedProductQuantity(
     cartToken: string,
     orderedProductId: string,
-    quantity: number
+    quantity: number,
   ) {
     const response = await this._client.request(
       UpdateOrderedProductInCartQuantityDocument,
       { id: orderedProductId, quantity },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const updateOrderedProductQuantity =
       response.updateOrderedProductInCartQuantity ?? null;
@@ -399,12 +460,12 @@ export class CartsResource extends BaseResource {
        * @example 2024-01-01
        */
       shipmentDate?: string | null;
-    }
+    },
   ) {
     const response = await this._client.request(
       UpdateOrderedProductInCartDocument,
       input,
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const updateOrderedProduct = response.updateOrderedProductInCart ?? null;
     if (updateOrderedProduct === null) {
@@ -555,12 +616,12 @@ export class CartsResource extends BaseResource {
       vatNumber?: string | null;
       /** The customer's zip code or postal code. */
       zipcode?: string | null;
-    }
+    },
   ): Promise<FirmhouseCart> {
     const response = await this._client.request(
       UpdateAddressDetailsDocument,
       input,
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
 
     const updateAddressDetails = response.updateAddressDetails;
@@ -594,12 +655,12 @@ export class CartsResource extends BaseResource {
   public async createSubscription(
     cartToken: string,
     paymentPageUrl: string,
-    returnUrl: string
+    returnUrl: string,
   ) {
     const response = await this._client.request(
       CreateSubscriptionFromCartDocument,
       { input: { paymentPageUrl, returnUrl } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const { createSubscriptionFromCart } = response;
 
@@ -635,7 +696,7 @@ export class CartsResource extends BaseResource {
     const response = await this._client.request(
       UpdateCartPlanDocument,
       { input: { planSlug } },
-      this.getSubscriptionTokenHeader(cartToken)
+      this.getSubscriptionTokenHeader(cartToken),
     );
     const { updateCartPlan } = response;
 

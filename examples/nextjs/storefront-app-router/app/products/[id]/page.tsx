@@ -4,9 +4,10 @@ import { firmhouseClient } from '../../../lib/firmhouse';
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await firmhouseClient.products.fetchById(params.id);
+  const { id } = await params;
+  const product = await firmhouseClient.products.fetchById(id);
   return (
     <div className="flex h-full w-full justify-center align-middle flex-col">
       {product !== null && (

@@ -1,10 +1,10 @@
-import { FirmhouseCart } from '@firmhouse/firmhouse-sdk';
+import { calculateCartTotals, FirmhouseCart } from '@firmhouse/firmhouse-sdk';
 
 export function formatCentsWithCurrency(
   cents: number,
   currency: string,
   locale?: string | null,
-  decimalPoints = 2
+  decimalPoints = 2,
 ): string {
   return Intl.NumberFormat(locale ?? undefined, {
     currency,
@@ -16,8 +16,10 @@ export function formatCentsWithCurrency(
 
 export function getOrderCalculations(cart: FirmhouseCart | null) {
   if (!cart || !cart.orderedProducts) {
+    const totals = cart ? calculateCartTotals(cart) : null;
     return {
-      totalIncludingTax: cart?.amountForStartingSubscriptionCents ?? 0,
+      totalIncludingTax: totals?.payNowTotalCents ?? 0,
+      totalDiscount: totals?.payNowDiscountCents ?? 0,
       totalTax: 0,
       currency: cart?.currency ?? 'EUR',
     };
@@ -43,11 +45,12 @@ export function getOrderCalculations(cart: FirmhouseCart | null) {
     totalOrderedProducts +
     (cart?.activePlan?.initialAmountIncludingTaxCents ?? 0);
   const taxPercentage = tax / sum;
-  const totalTax =
-    (cart.amountForStartingSubscriptionCents ?? 0) * taxPercentage;
+  const { payNowDiscountCents, payNowTotalCents } = calculateCartTotals(cart);
+  const totalTax = sum > 0 ? payNowTotalCents * taxPercentage : 0;
 
   return {
-    totalIncludingTax: cart.amountForStartingSubscriptionCents,
+    totalIncludingTax: payNowTotalCents,
+    totalDiscount: payNowDiscountCents,
     totalTax,
     currency: cart.currency,
   };

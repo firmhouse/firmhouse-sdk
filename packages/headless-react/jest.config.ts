@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'headless-react',
   preset: '../../jest.preset.js',

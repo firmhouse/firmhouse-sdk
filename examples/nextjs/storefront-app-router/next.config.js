@@ -1,17 +1,11 @@
 //@ts-check
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('node:path');
 const { composePlugins, withNx } = require('@nx/next');
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  nx: {
-    // Set this to true if you would like to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: true,
-  },
+  outputFileTracingRoot: path.join(__dirname, '../../..'),
   images: {
     remotePatterns: [
       {
@@ -21,11 +15,25 @@ const nextConfig = {
       },
     ],
   },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: [
+        {
+          loader: require.resolve('@svgr/webpack'),
+          options: {
+            exportType: 'named',
+            namedExport: 'ReactComponent',
+            ref: true,
+            svgo: false,
+            titleProp: true,
+          },
+        },
+      ],
+    });
+
+    return config;
+  },
 };
 
-const plugins = [
-  // Add more Next.js plugins to this list if needed.
-  withNx,
-];
-
-module.exports = composePlugins(...plugins)(nextConfig);
+module.exports = composePlugins(withNx)(nextConfig);

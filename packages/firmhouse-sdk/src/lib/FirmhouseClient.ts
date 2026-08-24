@@ -91,7 +91,11 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   constructor(readonly config: FirmhouseConfig<TAccess>) {
     this.API_TOKEN = config.apiToken;
     this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
-    this.client = new _GraphQLClient(this.API_TOKEN, this.BASE_URL);
+    this.client = new _GraphQLClient(
+      this.API_TOKEN,
+      this.BASE_URL,
+      config.fetchParameters,
+    );
     this.ACCESS_TYPE = config?.accessType ?? Access.storefront;
     this._subscriptions = new SubscriptionsResource(this.client);
     this._carts = new CartsResource(this.client);
@@ -100,7 +104,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
     this._products = new ProductsResource(this.client);
     this._plans = new PlansResource(this.client);
     this._selfServiceCenterToken = new SelfServiceCenterTokenResource(
-      this.client
+      this.client,
     );
   }
 
@@ -116,7 +120,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
    */
   public async rawRequest(
     graphQLQuery: string,
-    variables?: Record<string, unknown>
+    variables?: Record<string, unknown>,
   ): Promise<unknown> {
     return this.client.request(graphQLQuery, variables);
   }
@@ -160,7 +164,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
     : never {
     if (this.ACCESS_TYPE === Access.storefront) {
       throw new Error(
-        'Cannot access subscriptions resource with Storefront acess'
+        'Cannot access subscriptions resource with Storefront acess',
       );
     }
     return this._subscriptions as Access extends Access.write

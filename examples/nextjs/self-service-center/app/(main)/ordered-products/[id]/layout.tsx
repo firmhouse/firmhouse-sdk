@@ -22,24 +22,25 @@ export default async function OrderedProduct({
   shipmentDate,
   frequency,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   shipmentDate: React.ReactNode;
   frequency: React.ReactNode;
 }) {
+  const { id } = await params;
   const token = await getSSCSubscriptionToken();
   const firmhouseClient = await writeAccessFirmhouseClient();
   const subscription = await firmhouseClient.subscriptions.get(token);
   const project = await firmhouseClient.projects.getCurrent();
   const isPlanBasedProject = project.projectType === 'plan_based';
   const orderedProduct = subscription.orderedProducts?.find(
-    (orderedProduct) => orderedProduct.id === params.id
+    (orderedProduct) => orderedProduct.id === id,
   );
   if (!orderedProduct) {
     return notFound();
   }
   const { title, product, quantity, shipsOnlyOnce } = assignOrderedProductUtils(
     orderedProduct,
-    subscription
+    subscription,
   );
   const notShipped =
     orderedProduct.shipmentDate !== null &&
@@ -75,7 +76,7 @@ export default async function OrderedProduct({
                           orderedProduct.product.priceCents ?? 0,
                           'EUR',
                           null,
-                          0
+                          0,
                         )} each`}
                       </span>
                     )}
@@ -98,7 +99,7 @@ export default async function OrderedProduct({
                     <>
                       <CalendarIcon className="w-5 h-5 text-gray-700 mr-1" />
                       {`Next shipment on ${formatLongDate(
-                        orderedProduct.shipmentDate
+                        orderedProduct.shipmentDate,
                       )}`}
                     </>
                   )}

@@ -21,17 +21,15 @@
         "tsConfig": "packages/headless-react/tsconfig.lib.json",
         "deleteOutputPath": true,
         "project": "packages/headless-react/package.json",
-        "entryFile": "packages/headless-react/src/index.ts",
         "extractCss": "styles.css",
-        "updateBuildableProjectDepsInPackageJson": true,
-        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "packages/headless-react/rollup.config.js",
         "external": [
           "react",
           "react-dom",
           "react/jsx-runtime",
           "@firmhouse/firmhouse-sdk"
         ],
-        "compiler": "babel",
+        "compiler": "tsc",
         "assets": [
           {
             "glob": "packages/headless-react/README.md",
@@ -65,14 +63,18 @@
         }
       }
     },
-    "release": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "dependsOn": ["build"],
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
       "options": {
-        "command": "npx semantic-release-plus --extends ./packages/headless-react/release.config.js",
-        "parallel": false
+        "packageRoot": "dist/packages/headless-react"
       }
+    }
+  },
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
     }
   }
 }

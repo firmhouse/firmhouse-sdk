@@ -1,5 +1,3 @@
-const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
-const defaultTheme = require('tailwindcss/defaultTheme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
@@ -151,6 +149,5 @@ module.exports = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    ...createGlobPatternsForDependencies(__dirname),
   ],
 };

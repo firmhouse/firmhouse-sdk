@@ -1,9 +1,12 @@
 fragment PromotionFields on Promotion {
+  __typename
   activated
+  amountCents
   autoApply
   deactivateAfterAmountIncludingTaxCents
   deactivateAfterTimes
   deactivationStrategy
+  discountType
   id
   percentDiscount
   publicName

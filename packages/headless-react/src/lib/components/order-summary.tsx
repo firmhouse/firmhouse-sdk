@@ -16,7 +16,8 @@ export function OrderSummary({
   fallback,
 }: OrderSummaryProps) {
   const { cart, t, loading, locale } = useFirmhouseCart();
-  const { totalTax, currency, totalIncludingTax } = getOrderCalculations(cart);
+  const { totalTax, totalDiscount, currency, totalIncludingTax } =
+    getOrderCalculations(cart);
   const Component = OrderSummaryUIComponent ?? OrderSummaryUI;
   if (!cart || !t || loading) {
     return fallback || null;
@@ -31,13 +32,19 @@ export function OrderSummary({
       totalAmountWithCurrency={formatCentsWithCurrency(
         totalIncludingTax ?? 0,
         currency ?? 'EUR',
-        locale ?? cart?.locale
+        locale ?? cart?.locale,
       )}
       totalTaxAmount={totalTax}
       totalTaxAmountWithCurrency={formatCentsWithCurrency(
         totalTax,
         currency ?? 'EUR',
-        locale ?? cart?.locale
+        locale ?? cart?.locale,
+      )}
+      totalDiscountAmount={totalDiscount}
+      totalDiscountAmountWithCurrency={formatCentsWithCurrency(
+        totalDiscount,
+        currency ?? 'EUR',
+        locale ?? cart?.locale,
       )}
       currency={currency ?? 'EUR'}
     />

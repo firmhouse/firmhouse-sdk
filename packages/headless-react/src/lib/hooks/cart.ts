@@ -24,6 +24,14 @@ i18n.use(initReactI18next).init({
 });
 
 const SUBSCRIPTION_TOKEN_KEY = 'Firmhouse.cartToken';
+const CART_RELATIONS = {
+  appliedPromotions: {
+    includeRelations: {
+      promotion: true,
+      discountCode: true,
+    },
+  },
+} as const;
 
 export type TranslationFunction = ReturnType<typeof useTranslation>[0] | null;
 
@@ -78,7 +86,7 @@ export const useFirmhouseCart = () => {
       setCart,
       setErrors,
       setActionInProgress,
-      locale
+      locale,
     ),
     t,
   };
@@ -91,7 +99,7 @@ function actions(
   setCart?: (cart: FirmhouseCart) => void,
   setErrors?: (errors: Record<string, string> | null) => void,
   setActionInProgress?: (actionInProgress: boolean) => void,
-  locale?: string
+  locale?: string,
 ) {
   if (!cart || !firmhouseClient || !setCart) {
     return {};
@@ -101,7 +109,10 @@ function actions(
     loadCart: async (cartToken: string) => {
       try {
         setActionInProgress?.(true);
-        const response = await firmhouseClient.carts.getOrCreate(cartToken);
+        const response = await firmhouseClient.carts.getOrCreate(
+          cartToken,
+          CART_RELATIONS,
+        );
         setCart({
           ...response,
         });
@@ -114,7 +125,7 @@ function actions(
     },
     updateAddressDetails: async (
       addressDetails: (typeof CartsResource.prototype.updateAddressDetails.arguments)[1],
-      doNotUpdateErrors = true
+      doNotUpdateErrors = true,
     ) => {
       let success = true;
       try {
@@ -125,7 +136,7 @@ function actions(
         setActionInProgress?.(true);
         const response = await firmhouseClient.carts.updateAddressDetails(
           cart.token,
-          addressDetails
+          addressDetails,
         );
         setCart({
           ...response,
@@ -152,7 +163,7 @@ function actions(
         const response = await firmhouseClient.carts.createSubscription(
           cart.token,
           config?.paymentPageUrl ?? '',
-          config?.returnUrl ?? ''
+          config?.returnUrl ?? '',
         );
         setCart({
           ...response.subscription,
@@ -169,6 +180,50 @@ function actions(
       }
       setActionInProgress?.(false);
     },
+    applyDiscountCode: async (discountCode: string) => {
+      try {
+        setErrors?.(null);
+        setActionInProgress?.(true);
+        await firmhouseClient.carts.applyDiscountCode(cart.token, discountCode);
+        const response = await firmhouseClient.carts.get(
+          cart.token,
+          CART_RELATIONS,
+        );
+        setCart(response);
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          setErrors?.(error.details);
+        } else {
+          setErrors?.({
+            error: error instanceof Error ? error.message : 'An error occurred',
+          });
+        }
+      } finally {
+        setActionInProgress?.(false);
+      }
+    },
+    removeDiscountCode: async () => {
+      try {
+        setErrors?.(null);
+        setActionInProgress?.(true);
+        await firmhouseClient.carts.removeDiscountCode(cart.token);
+        const response = await firmhouseClient.carts.get(
+          cart.token,
+          CART_RELATIONS,
+        );
+        setCart(response);
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          setErrors?.(error.details);
+        } else {
+          setErrors?.({
+            error: error instanceof Error ? error.message : 'An error occurred',
+          });
+        }
+      } finally {
+        setActionInProgress?.(false);
+      }
+    },
   };
 }
 
@@ -180,18 +235,18 @@ export function useCart(
   initialCart?: FirmhouseCart | null,
   translations?: Partial<CheckoutTranslations>,
   availableCountries?: string[],
-  locale?: string
+  locale?: string,
 ) {
   const firmhouseClient = useMemo(
     () =>
       new FirmhouseClient({
         apiToken: firmhouseAccessToken,
       }),
-    [firmhouseAccessToken]
+    [firmhouseAccessToken],
   );
   const { t, i18n } = useTranslation();
   const [cart, setCart] = useState(
-    (initialCart ?? null) as FirmhouseCart | null
+    (initialCart ?? null) as FirmhouseCart | null,
   );
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -204,7 +259,10 @@ export function useCart(
       localStorage.getItem(SUBSCRIPTION_TOKEN_KEY) ??
       undefined;
     const initialize = async (token?: string) => {
-      const response = await firmhouseClient.carts.getOrCreate(token);
+      const response = await firmhouseClient.carts.getOrCreate(
+        token,
+        CART_RELATIONS,
+      );
       setCart(response);
       localStorage.setItem(SUBSCRIPTION_TOKEN_KEY, response.token);
     };
@@ -237,7 +295,7 @@ export function useCart(
         'translation',
         translations?.[key as SupportedLanguages] ?? {},
         true,
-        true
+        true,
       );
     });
   }, [translations, i18n]);
