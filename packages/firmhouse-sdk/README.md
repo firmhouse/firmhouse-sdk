@@ -160,6 +160,8 @@ so reloading the checkout page keeps the customer on the same payment, and a ref
 payment can be retried in place.
 
 All `client.payments` methods need a storefront access token and the subscription token
-of the checkout. `buildAdyenDropinOptions` mirrors the card and Google Pay settings of the
-project, so settings such as requiring the cardholder name apply to your checkout without
-hardcoding them. Merge your own presentational options into the result to style Drop-in.
+of the checkout. `buildAdyenDropinOptions` mirrors the card, PayPal, and Google Pay settings
+of the project, so settings such as requiring the cardholder name apply to your checkout
+without hardcoding them, and PayPal saves the customer's details for renewals whenever the
+session stores the payment method. Merge your own presentational options into the result to
+style Drop-in.

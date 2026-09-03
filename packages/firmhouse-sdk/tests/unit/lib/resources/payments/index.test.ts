@@ -26,6 +26,7 @@ const session = {
   successUrl: 'https://example.com/thanks',
   cardConfiguration: { hasHolderName: true, holderNameRequired: false },
   googlePayConfiguration: null,
+  paypalConfiguration: { vault: true },
 };
 
 describe('lib/resources/payments/index.ts', () => {

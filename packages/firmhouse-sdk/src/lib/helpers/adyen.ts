@@ -109,6 +109,11 @@ export interface AdyenDropinOptions {
      */
     card: { hasHolderName: boolean; holderNameRequired: boolean };
     /**
+     * PayPal settings of the payment. `vault` follows whether the session stores the
+     * payment method, so PayPal saves the customer's details for renewals.
+     */
+    paypal: { vault: boolean };
+    /**
      * Google Pay merchant details, when the payment provider account has them.
      */
     googlepay?: { configuration: AdyenGooglePayConfiguration };
@@ -242,9 +247,11 @@ function googlePayConfiguration(
  * @public
  * Builds the Drop-in options that mirror the checkout settings of the project.
  * @remarks
- * Merge your own presentational options into the result to style Drop-in. The Google Pay
- * configuration is only present when the payment provider account has Google Pay merchant
- * details, which Adyen needs to render the Google Pay button with your own merchant.
+ * Merge your own presentational options into the result to style Drop-in. PayPal's `vault`
+ * follows whether the session stores the payment method, so PayPal saves the customer's
+ * details for renewals. The Google Pay configuration is only present when the payment
+ * provider account has Google Pay merchant details, which Adyen needs to render the
+ * Google Pay button with your own merchant.
  * @param session - Session returned by `client.payments.createAdyenSession`
  * @returns Options for the `Dropin` component
  */
@@ -259,6 +266,7 @@ export function buildAdyenDropinOptions(
         hasHolderName: session.cardConfiguration.hasHolderName,
         holderNameRequired: session.cardConfiguration.holderNameRequired,
       },
+      paypal: { vault: session.paypalConfiguration.vault },
       ...(googlepay ? { googlepay: { configuration: googlepay } } : {}),
     },
   };

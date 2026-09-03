@@ -18,6 +18,7 @@ const session: FirmhouseAdyenPaymentSession = {
   successUrl: 'https://example.com/thanks',
   cardConfiguration: { hasHolderName: true, holderNameRequired: true },
   googlePayConfiguration: null,
+  paypalConfiguration: { vault: true },
 };
 
 describe('helpers/adyen.ts', () => {
@@ -98,11 +99,23 @@ describe('helpers/adyen.ts', () => {
   });
 
   describe('buildAdyenDropinOptions', () => {
-    it('should mirror the card configuration', () => {
+    it('should mirror the card and PayPal configuration', () => {
       expect(buildAdyenDropinOptions(session)).toEqual({
         paymentMethodsConfiguration: {
           card: { hasHolderName: true, holderNameRequired: true },
+          paypal: { vault: true },
         },
+      });
+    });
+
+    it('should pass a disabled PayPal vault through to Drop-in', () => {
+      const options = buildAdyenDropinOptions({
+        ...session,
+        paypalConfiguration: { vault: false },
+      });
+
+      expect(options.paymentMethodsConfiguration.paypal).toEqual({
+        vault: false,
       });
     });
 

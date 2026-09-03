@@ -22,6 +22,9 @@ mutation createAdyenPaymentSession($paymentToken: ID!) {
         merchantName
         merchantOrigin
       }
+      paypalConfiguration {
+        vault
+      }
     }
     errors {
       ...ModelValidationErrorFields

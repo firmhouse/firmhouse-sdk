@@ -888,6 +888,16 @@ export interface FirmhouseAdyenGooglePayConfiguration {
 }
 /**
  * @public
+ * PayPal settings of the payment.
+ */
+export interface FirmhouseAdyenPaypalConfiguration {
+  /**
+   * Whether PayPal saves the customer's details for renewals.
+   */
+  vault: boolean;
+}
+/**
+ * @public
  * Browser-safe configuration for initialising Adyen Web Drop-in with a payment session.
  */
 export interface FirmhouseAdyenPaymentSession {
@@ -939,6 +949,10 @@ export interface FirmhouseAdyenPaymentSession {
    * Google Pay merchant details, when the payment provider account has them.
    */
   googlePayConfiguration: FirmhouseAdyenGooglePayConfiguration | null;
+  /**
+   * PayPal settings of the payment.
+   */
+  paypalConfiguration: FirmhouseAdyenPaypalConfiguration;
 }
 /**
  * @public
