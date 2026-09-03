@@ -1,0 +1,45 @@
+packages/firmhouse-sdk/tests/unit/lib/resources/payments/index.test.ts
+  s_c6cbbd46d9fec5::t_2e8f4a54dc61b8 179-218
+packages/firmhouse-sdk/tests/unit/lib/resources/carts/index.test.ts
+  s_c6cbbd46d9fec5::t_4ab6540b08e287 885,889-918
+packages/firmhouse-sdk/src/lib/FirmhouseClient.ts
+  s_c6cbbd46d9fec5::t_faca5996f85966 180,186-194
+packages/firmhouse-sdk/src/lib/helpers/adyen.ts
+  s_c6cbbd46d9fec5::t_b74cae3e5a82a5 207
+  s_c6cbbd46d9fec5::t_7d038f7aa19bc4 44-46,48-50,52-55,57-59,61-63,65-67,76-78,80-82,84-86,88-90,92-94,103-105,107-109,111-113
+  s_c6cbbd46d9fec5::t_8ac771e9f13336 147-149,151,159-163
+  s_c6cbbd46d9fec5::t_3073f5b5b6373b 1
+packages/firmhouse-sdk/tests/unit/helpers/adyen.test.ts
+  s_c6cbbd46d9fec5::t_19dde4e0f3ed38 6
+packages/firmhouse-sdk/src/lib/resources/payments/index.ts
+  s_c6cbbd46d9fec5::t_b597ae8ac4cb46 1,3-6,26-44,47-59,107,146,149,161,164-167,173
+packages/firmhouse-sdk/tests/unit/lib/FirmhouseClient.test.ts
+  s_c6cbbd46d9fec5::t_e15925da345373 25,28,31,52,83,87
+  s_c6cbbd46d9fec5::t_85e7b0cc612ba1 51,53
+  s_c6cbbd46d9fec5::t_ae467add438cc3 23
+packages/firmhouse-sdk/src/lib/helpers/types.ts
+  s_c6cbbd46d9fec5::t_30e64b54815a89 851-964
+  s_c6cbbd46d9fec5::t_4fb0b0f82c451d 13
+packages/firmhouse-sdk/src/lib/resources/carts/index.ts
+  s_c6cbbd46d9fec5::t_f2d6760b98eaa3 31
+  s_c6cbbd46d9fec5::t_7e3b0be5d3e9fc 685-686,688-690
+packages/firmhouse-sdk/README.md
+  s_c6cbbd46d9fec5::t_0143af143228aa 113,116-117,122-130,133,145-148
+  s_c6cbbd46d9fec5::t_e2f0741e2ecb50 162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "3d73281f3679fae5d9a510220967ad11936768ec",
+  "prompts": {},
+  "sessions": {
+    "s_c6cbbd46d9fec5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe313b56-485f-4790-a421-c667d5c13de4",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Veronika Tolpeeva <osty1n@gmail.com>"
+    }
+  }
+}
