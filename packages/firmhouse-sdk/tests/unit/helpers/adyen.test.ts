@@ -3,7 +3,7 @@ import {
   buildAdyenDropinOptions,
   resolveAdyenCheckoutEntry,
 } from '@firmhouse/firmhouse-sdk/lib/helpers/adyen';
-import type { FirmhouseAdyenPaymentSession } from '@firmhouse/firmhouse-sdk/lib/resources/payments';
+import type { FirmhouseAdyenPaymentSession } from '@firmhouse/firmhouse-sdk/lib/helpers/types';
 
 const session: FirmhouseAdyenPaymentSession = {
   sessionId: 'CS123',

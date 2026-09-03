@@ -28,6 +28,7 @@ import {
   FirmhouseAppliedPromotion,
   FirmhouseCart,
   FirmhouseOrderedProduct,
+  FirmhousePayment,
 } from '../../helpers/types';
 
 /**
@@ -681,8 +682,12 @@ export class CartsResource extends BaseResource {
       throw new ServerError('Could not create subscription');
     }
 
+    const { payment } = createSubscriptionFromCart;
+
     return {
-      payment: createSubscriptionFromCart.payment,
+      payment: payment
+        ? ({ ...payment, refunds: payment.refunds ?? [] } as FirmhousePayment)
+        : null,
       paymentUrl,
       returnUrl: createSubscriptionFromCart.returnUrl,
       subscription: _formatCart(subscription),

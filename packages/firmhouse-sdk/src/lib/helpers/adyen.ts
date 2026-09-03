@@ -1,4 +1,4 @@
-import type { FirmhouseAdyenPaymentSession } from '../resources/payments';
+import type { FirmhouseAdyenPaymentSession } from './types';
 
 /**
  * @public
@@ -41,11 +41,30 @@ export type AdyenEnvironment = 'test' | 'live';
  * Options for `AdyenCheckout` from `@adyen/adyen-web`.
  */
 export interface AdyenCheckoutOptions {
+  /**
+   * The Adyen client key of the payment provider account.
+   */
   clientKey: string;
+  /**
+   * The Adyen client environment of the payment provider account.
+   */
   environment: AdyenEnvironment;
+  /**
+   * The session to initialise Drop-in with. `sessionData` is left out when a redirect
+   * result is handed back to Adyen.
+   */
   session: { id: string; sessionData?: string };
+  /**
+   * The amount to pay, in minor units of the currency.
+   */
   amount: { value: number; currency: string };
+  /**
+   * The locale to render Drop-in in, when the session has one.
+   */
   locale?: string;
+  /**
+   * The country code (ISO 3166) of the shopper, when the session has one.
+   */
   countryCode?: string;
 }
 
@@ -54,10 +73,25 @@ export interface AdyenCheckoutOptions {
  * Google Pay merchant details, as `@adyen/adyen-web` expects them.
  */
 export interface AdyenGooglePayConfiguration {
+  /**
+   * The Adyen merchant account that receives the Google Pay payment.
+   */
   gatewayMerchantId: string;
+  /**
+   * The Google Pay merchant identifier.
+   */
   merchantId?: string;
+  /**
+   * The merchant name shown in the Google Pay payment sheet.
+   */
   merchantName?: string;
+  /**
+   * The origin of the storefront that renders the Google Pay button.
+   */
   merchantOrigin?: string;
+  /**
+   * Signed JWT that authorises Google Pay on the storefront domain.
+   */
   authJwt?: string;
 }
 
@@ -66,8 +100,17 @@ export interface AdyenGooglePayConfiguration {
  * Options for the `Dropin` component from `@adyen/adyen-web`.
  */
 export interface AdyenDropinOptions {
+  /**
+   * Per payment method settings that mirror the checkout settings of the project.
+   */
   paymentMethodsConfiguration: {
+    /**
+     * Card settings of the project.
+     */
     card: { hasHolderName: boolean; holderNameRequired: boolean };
+    /**
+     * Google Pay merchant details, when the payment provider account has them.
+     */
     googlepay?: { configuration: AdyenGooglePayConfiguration };
   };
 }
@@ -101,13 +144,23 @@ function readParam(
  * @example
  * ```typescript
  * const entry = resolveAdyenCheckoutEntry(new URLSearchParams(window.location.search));
+ * // The token of the payment returned by `client.carts.createSubscription`, stored
+ * // before Drop-in was mounted so that it survives the redirect.
+ * let paymentToken = sessionStorage.getItem('paymentToken');
  *
- * if (entry.mode === 'redirect') {
+ * if (entry.mode === 'redirect' && paymentToken) {
  *   const status = await client.payments.waitForCheckoutStatus(subscriptionToken, paymentToken);
  *   if (status.paymentStatus === 'PAID' && status.successUrl) {
  *     window.location.assign(status.successUrl);
  *     return;
  *   }
+ * }
+ *
+ * if (!paymentToken) {
+ *   const { payment } = await client.carts.createSubscription(subscriptionToken, checkoutUrl, returnUrl);
+ *   if (!payment) return;
+ *   paymentToken = payment.token;
+ *   sessionStorage.setItem('paymentToken', paymentToken);
  * }
  *
  * // A fresh checkout, or a retry after the customer came back from a refused payment.
@@ -151,7 +204,7 @@ export function buildAdyenCheckoutOptions(
 ): AdyenCheckoutOptions {
   return {
     clientKey: session.clientKey,
-    environment: session.environment as AdyenEnvironment,
+    environment: session.environment,
     session:
       entry.mode === 'redirect'
         ? { id: entry.sessionId }

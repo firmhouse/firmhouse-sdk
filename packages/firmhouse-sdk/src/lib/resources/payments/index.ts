@@ -1,25 +1,14 @@
+import { PaymentStatusEnum } from '../../graphql/generated';
 import { ServerError, ValidationError } from '../../helpers/errors';
+import type {
+  FirmhouseAdyenPaymentSession,
+  FirmhouseCheckoutPaymentStatus,
+} from '../../helpers/types';
 import { BaseResource } from '../BaseResource';
 import {
   CreateAdyenPaymentSessionDocument,
   GetCheckoutPaymentStatusDocument,
-  type CreateAdyenPaymentSessionMutation_createAdyenPaymentSession_CreateAdyenPaymentSessionPayload_session_AdyenPaymentSession,
-  type GetCheckoutPaymentStatusQuery_getCheckoutPaymentStatus_CheckoutPaymentStatus,
 } from './payments.generated';
-
-/**
- * @public
- * Browser-safe configuration for initialising Adyen Web Drop-in with a payment session.
- */
-export type FirmhouseAdyenPaymentSession =
-  CreateAdyenPaymentSessionMutation_createAdyenPaymentSession_CreateAdyenPaymentSessionPayload_session_AdyenPaymentSession;
-
-/**
- * @public
- * The authoritative outcome of a checkout payment.
- */
-export type FirmhouseCheckoutPaymentStatus =
-  GetCheckoutPaymentStatusQuery_getCheckoutPaymentStatus_CheckoutPaymentStatus;
 
 /**
  * @public
@@ -34,9 +23,40 @@ export interface WaitForCheckoutPaymentStatusOptions {
    * Milliseconds to keep polling before giving up. Defaults to `120000`.
    */
   timeoutMs?: number;
+  /**
+   * Stops polling when aborted, for example when the checkout page is left.
+   * The returned promise then rejects with the abort reason.
+   */
+  signal?: AbortSignal;
 }
 
-const PENDING_PAYMENT_STATUSES = ['OPEN', 'PENDING'];
+const PENDING_PAYMENT_STATUSES: PaymentStatusEnum[] = [
+  PaymentStatusEnum.Open,
+  PaymentStatusEnum.Pending,
+];
+
+function abortReason(signal: AbortSignal): unknown {
+  if (signal.reason !== undefined) {
+    return signal.reason;
+  }
+  const error = new Error('Polling the checkout payment status was aborted');
+  error.name = 'AbortError';
+  return error;
+}
+
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(abortReason(signal as AbortSignal));
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
 
 /**
  * @public
@@ -84,7 +104,7 @@ export class PaymentsResource extends BaseResource {
       throw new ServerError('Could not create an Adyen payment session');
     }
 
-    return session;
+    return session as FirmhouseAdyenPaymentSession;
   }
 
   /**
@@ -123,9 +143,10 @@ export class PaymentsResource extends BaseResource {
    * Call this after Drop-in reports that it is done, or after the customer returns from
    * a redirect, and send them to `successUrl` once the payment is paid. Returns the last
    * status that was read when the timeout is reached, so always check `paymentStatus`.
+   * Pass an `AbortSignal` to stop polling when the customer leaves the page.
    * @param subscriptionToken - Token of the subscription the payment belongs to
    * @param paymentToken - Token of the payment to return the status for
-   * @param options - Polling interval and timeout
+   * @param options - Polling interval, timeout and abort signal
    * @returns The last checkout payment status that was read
    * @throws {@link ServerError} - Thrown if the status could not be read
    * @throws {@link NotFoundError} - Thrown if the payment is not found
@@ -137,14 +158,19 @@ export class PaymentsResource extends BaseResource {
   ): Promise<FirmhouseCheckoutPaymentStatus> {
     const intervalMs = options?.intervalMs ?? 2000;
     const timeoutMs = options?.timeoutMs ?? 120000;
+    const signal = options?.signal;
     const deadline = Date.now() + timeoutMs;
+
+    if (signal?.aborted) {
+      throw abortReason(signal);
+    }
 
     let status = await this.getCheckoutStatus(subscriptionToken, paymentToken);
     while (
       PENDING_PAYMENT_STATUSES.includes(status.paymentStatus) &&
       Date.now() + intervalMs < deadline
     ) {
-      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+      await sleep(intervalMs, signal);
       status = await this.getCheckoutStatus(subscriptionToken, paymentToken);
     }
 

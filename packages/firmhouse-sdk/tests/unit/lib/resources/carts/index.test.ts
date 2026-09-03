@@ -882,7 +882,40 @@ describe('lib/resources/carts/index.ts', () => {
         subscription: response.subscription,
         paymentUrl,
         returnUrl,
+        payment: null,
       });
+    });
+
+    it('should return the initial payment with its refunds', async () => {
+      const payment = {
+        amountCents: 1000,
+        amountWithSymbol: '€10,00',
+        createdAt: '2026-09-03T10:00:00Z',
+        id: '1',
+        paymentId: null,
+        paymentStatus: 'OPEN',
+        paymentType: 'INITIAL',
+        retryPaymentUrl: null,
+        token: 'payment-token',
+        updatedAt: '2026-09-03T10:00:00Z',
+        refunds: null,
+      };
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        createSubscriptionFromCart: {
+          subscription: { ...subscription, id: 'test', token: 'test' },
+          paymentUrl: 'test',
+          returnUrl: 'test',
+          errors: [],
+          payment,
+        },
+      });
+      const testResource = new CartsResource(mockGraphQLClient);
+      const result = await testResource.createSubscription(
+        'testToken',
+        'test',
+        'test',
+      );
+      expect(result.payment).toEqual({ ...payment, refunds: [] });
     });
 
     it('should handle empty response correctly', async () => {

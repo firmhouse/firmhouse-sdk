@@ -177,14 +177,21 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
    * @public
    * Checkout payment methods
    * @group Resources
-   * @category Available with Storefront Access
+   * @category Only Available with Storefront Access
    * @example
    * ```typescript
    * const session = await client.payments.createAdyenSession(subscriptionToken, paymentToken);
    * ```
    */
-  public get payments(): PaymentsResource {
-    return this._payments;
+  public get payments(): TAccess extends Access.storefront
+    ? PaymentsResource
+    : never {
+    if (this.ACCESS_TYPE === Access.write) {
+      throw new Error('Cannot access payments resource with Write access');
+    }
+    return this._payments as TAccess extends Access.storefront
+      ? PaymentsResource
+      : never;
   }
 
   /**

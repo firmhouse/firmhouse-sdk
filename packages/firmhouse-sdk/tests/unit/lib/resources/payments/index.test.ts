@@ -176,5 +176,45 @@ describe('lib/resources/payments/index.ts', () => {
 
       expect(result.paymentStatus).toBe('OPEN');
     });
+
+    it('should stop polling when the signal is aborted', async () => {
+      const graphQLClient = new GraphQLClient('test', 'http://test.com');
+      graphQLClient.request = jest.fn().mockResolvedValue({
+        getCheckoutPaymentStatus: {
+          paymentStatus: 'OPEN',
+          failureReason: null,
+          subscriptionStatus: 'DRAFT',
+          successUrl: null,
+        },
+      });
+      const testResource = new PaymentsResource(graphQLClient);
+      const controller = new AbortController();
+
+      const pending = testResource.waitForCheckoutStatus(
+        subscriptionToken,
+        paymentToken,
+        { intervalMs: 1000, timeoutMs: 10000, signal: controller.signal },
+      );
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      controller.abort();
+
+      await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+      expect(graphQLClient.request).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not poll when the signal is already aborted', async () => {
+      const graphQLClient = new GraphQLClient('test', 'http://test.com');
+      graphQLClient.request = jest.fn();
+      const testResource = new PaymentsResource(graphQLClient);
+      const controller = new AbortController();
+      controller.abort();
+
+      await expect(
+        testResource.waitForCheckoutStatus(subscriptionToken, paymentToken, {
+          signal: controller.signal,
+        }),
+      ).rejects.toMatchObject({ name: 'AbortError' });
+      expect(graphQLClient.request).not.toHaveBeenCalled();
+    });
   });
 });

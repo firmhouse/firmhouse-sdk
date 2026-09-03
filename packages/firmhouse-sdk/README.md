@@ -109,23 +109,28 @@ Install `@adyen/adyen-web` yourself; the SDK does not depend on it.
 import { AdyenCheckout, Dropin } from '@adyen/adyen-web';
 import { buildAdyenCheckoutOptions, buildAdyenDropinOptions, resolveAdyenCheckoutEntry } from '@firmhouse/firmhouse-sdk/utils';
 
-// `payment` is null when the checkout has nothing to pay for.
-const { payment } = await client.carts.createSubscription(cartToken, 'https://myshop.com/checkout', 'https://myshop.com/thanks');
-if (!payment) return;
-
 const entry = resolveAdyenCheckoutEntry(new URLSearchParams(window.location.search));
+let paymentToken = sessionStorage.getItem(`paymentToken:${cartToken}`);
 
 // The customer is back from a redirect, so the payment is already with Adyen.
-if (entry.mode === 'redirect') {
-  const status = await client.payments.waitForCheckoutStatus(cartToken, payment.token);
+if (entry.mode === 'redirect' && paymentToken) {
+  const status = await client.payments.waitForCheckoutStatus(cartToken, paymentToken);
   if (status.paymentStatus === 'PAID' && status.successUrl) {
     window.location.assign(status.successUrl);
     return;
   }
+  // The payment was refused or expired. It is reopened, so Drop-in can be mounted again.
 }
 
-// A fresh checkout, or a retry after the customer came back from a refused payment.
-const session = await client.payments.createAdyenSession(cartToken, payment.token);
+if (!paymentToken) {
+  // `payment` is null when the checkout has nothing to pay for.
+  const { payment } = await client.carts.createSubscription(cartToken, 'https://myshop.com/checkout', 'https://myshop.com/thanks');
+  if (!payment) return;
+  paymentToken = payment.token;
+  sessionStorage.setItem(`paymentToken:${cartToken}`, paymentToken);
+}
+
+const session = await client.payments.createAdyenSession(cartToken, paymentToken);
 const checkout = await AdyenCheckout(buildAdyenCheckoutOptions(session));
 new Dropin(checkout, buildAdyenDropinOptions(session)).mount('#dropin-container');
 ```
@@ -136,6 +141,11 @@ another page, and Adyen returns them to your checkout with `sessionId` and
 outcome before anything else on a redirect return: Firmhouse confirms the payment through
 a webhook that often lands before the customer is back, and a session cannot be created
 for a payment that has already been paid.
+
+Keep the payment token from `createSubscription` somewhere that survives the redirect,
+such as `sessionStorage`. Do not finalise the cart again on the redirect return: once the
+payment is paid, `createSubscription` no longer returns it, so there would be no token to
+read the outcome with.
 
 To report the outcome to the browser sooner than the webhook does, you can hand the
 result back to Adyen while the payment is still open:
@@ -149,7 +159,7 @@ Requesting a session for the same payment again returns the session that is stil
 so reloading the checkout page keeps the customer on the same payment, and a refused
 payment can be retried in place.
 
-Both `client.payments` methods need a storefront access token and the subscription token
+All `client.payments` methods need a storefront access token and the subscription token
 of the checkout. `buildAdyenDropinOptions` mirrors the card and Google Pay settings of the
 project, so settings such as requiring the cardholder name apply to your checkout without
 hardcoding them. Merge your own presentational options into the result to style Drop-in.
