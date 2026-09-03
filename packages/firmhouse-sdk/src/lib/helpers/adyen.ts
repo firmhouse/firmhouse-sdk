@@ -181,7 +181,7 @@ function googlePayConfiguration(
     ...(configuration.merchantOrigin
       ? { merchantOrigin: configuration.merchantOrigin }
       : {}),
-    ...(configuration.authJWT ? { authJwt: configuration.authJWT } : {}),
+    ...(configuration.authJwt ? { authJwt: configuration.authJwt } : {}),
   };
 }
 

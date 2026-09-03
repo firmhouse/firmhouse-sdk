@@ -110,7 +110,7 @@ describe('helpers/adyen.ts', () => {
       const options = buildAdyenDropinOptions({
         ...session,
         googlePayConfiguration: {
-          authJWT: null,
+          authJwt: null,
           merchantOrigin: null,
           merchantName: 'Firmhouse',
           merchantId: 'merchant-id',
@@ -127,11 +127,11 @@ describe('helpers/adyen.ts', () => {
       });
     });
 
-    it('should map the multi domain JWT to the key Drop-in reads', () => {
+    it('should pass the multi domain JWT through to Drop-in', () => {
       const options = buildAdyenDropinOptions({
         ...session,
         googlePayConfiguration: {
-          authJWT: 'signed-jwt',
+          authJwt: 'signed-jwt',
           merchantOrigin: 'https://myshop.com',
           merchantName: 'Firmhouse',
           merchantId: 'merchant-id',
@@ -154,7 +154,7 @@ describe('helpers/adyen.ts', () => {
       const options = buildAdyenDropinOptions({
         ...session,
         googlePayConfiguration: {
-          authJWT: 'signed-jwt',
+          authJwt: 'signed-jwt',
           merchantOrigin: 'https://myshop.com',
           merchantName: null,
           merchantId: null,
