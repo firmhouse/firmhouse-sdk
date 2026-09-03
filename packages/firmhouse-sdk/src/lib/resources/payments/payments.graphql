@@ -1,0 +1,39 @@
+mutation createAdyenPaymentSession($paymentToken: ID!) {
+  createAdyenPaymentSession(input: { paymentToken: $paymentToken }) {
+    session {
+      sessionId
+      sessionData
+      expiresAt
+      clientKey
+      environment
+      locale
+      countryCode
+      amountCents
+      currency
+      successUrl
+      cardConfiguration {
+        hasHolderName
+        holderNameRequired
+      }
+      googlePayConfiguration {
+        authJWT
+        gatewayMerchantId
+        merchantId
+        merchantName
+        merchantOrigin
+      }
+    }
+    errors {
+      ...ModelValidationErrorFields
+    }
+  }
+}
+
+query getCheckoutPaymentStatus($paymentToken: ID!) {
+  getCheckoutPaymentStatus(paymentToken: $paymentToken) {
+    paymentStatus
+    failureReason
+    subscriptionStatus
+    successUrl
+  }
+}

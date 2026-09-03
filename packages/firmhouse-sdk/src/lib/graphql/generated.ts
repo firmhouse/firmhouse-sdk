@@ -1850,6 +1850,35 @@ export type PauseSubscriptionInput = {
   pauseUntil?: InputMaybe<Scalars['ISO8601DateTime']['input']>;
 };
 
+export enum PaymentFailureReasonEnum {
+  /** The account is blocked for debits. */
+  BlockedAccountForDebit = 'BLOCKED_ACCOUNT_FOR_DEBIT',
+  /** The account is closed. */
+  ClosedAccount = 'CLOSED_ACCOUNT',
+  /** The account holder is deceased. */
+  CustomerDied = 'CUSTOMER_DIED',
+  /** The direct payment could not be completed. */
+  DirectPaymentFailure = 'DIRECT_PAYMENT_FAILURE',
+  /** A dispute over the payment was lost. */
+  DisputeLost = 'DISPUTE_LOST',
+  /** The account details are incorrect. */
+  IncorrectAccount = 'INCORRECT_ACCOUNT',
+  /** The account did not have enough balance. */
+  InsufficientFunds = 'INSUFFICIENT_FUNDS',
+  /** The mandate is no longer valid. */
+  InvalidMandate = 'INVALID_MANDATE',
+  /** The payment provider did not specify a reason. */
+  NotSpecified = 'NOT_SPECIFIED',
+  /** The customer failed to authenticate the payment. */
+  PaymentIntentAuthenticationFailure = 'PAYMENT_INTENT_AUTHENTICATION_FAILURE',
+  /** The customer refused the payment. */
+  RefusedByCustomer = 'REFUSED_BY_CUSTOMER',
+  /** The bank rejected the payment. */
+  RejectedByBank = 'REJECTED_BY_BANK',
+  /** The customer reverted the payment. */
+  RevertedByCustomer = 'REVERTED_BY_CUSTOMER'
+}
+
 export enum PaymentStatusEnum {
   /** The payment was cancelled. */
   Cancelled = 'CANCELLED',
