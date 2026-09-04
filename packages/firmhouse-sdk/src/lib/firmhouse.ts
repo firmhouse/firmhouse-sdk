@@ -14,6 +14,7 @@ import {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
   OrderedProductTypes,
+  PaymentFailureReasonEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
   RefundStatus,
@@ -25,6 +26,7 @@ export type * from './resources/products';
 export type * from './resources/plans';
 export type * from './resources/subscriptions';
 export type * from './resources/carts';
+export type * from './resources/payments';
 export type * from './resources/selfServiceCenterToken';
 export type * from './resources/invoices';
 export type * from './resources/projects';
@@ -52,6 +54,7 @@ const Types = {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
   OrderedProductTypes,
+  PaymentFailureReasonEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
   RefundStatus,
@@ -76,6 +79,7 @@ export {
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
   OrderedProductTypes,
+  PaymentFailureReasonEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
   RefundStatus,

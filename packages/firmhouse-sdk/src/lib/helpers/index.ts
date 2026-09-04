@@ -5,3 +5,16 @@ export {
   assignSubscriptionUtils,
   assignOrderedProductUtils,
 } from './subscription';
+export {
+  resolveAdyenCheckoutEntry,
+  buildAdyenCheckoutOptions,
+  buildAdyenDropinOptions,
+} from './adyen';
+export type {
+  AdyenCheckoutEntry,
+  AdyenCheckoutOptions,
+  AdyenCheckoutQueryParams,
+  AdyenEnvironment,
+  AdyenDropinOptions,
+  AdyenGooglePayConfiguration,
+} from './adyen';

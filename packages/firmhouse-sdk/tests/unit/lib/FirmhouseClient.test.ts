@@ -20,14 +20,15 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
         expect(client.carts).toBeDefined();
+        expect(client.payments).toBeDefined();
         expect(() => client.invoices).toThrow(
-          'Cannot access invoices resource with Storefront acess'
+          'Cannot access invoices resource with Storefront acess',
         );
         expect(() => client.projects).toThrow(
-          'Cannot access projects resource with Storefront acess'
+          'Cannot access projects resource with Storefront acess',
         );
         expect(() => client.subscriptions).toThrow(
-          'Cannot access subscriptions resource with Storefront acess'
+          'Cannot access subscriptions resource with Storefront acess',
         );
       });
     });
@@ -47,6 +48,9 @@ describe('lib/FirmhouseClient.ts', () => {
         expect(client.plans).toBeDefined();
         expect(client.selfServiceCenterToken).toBeDefined();
         expect(client.carts).toBeDefined();
+        expect(() => client.payments).toThrow(
+          'Cannot access payments resource with Write access',
+        );
         expect(client.subscriptions).toBeDefined();
         expect(client.invoices).toBeDefined();
         expect(client.projects).toBeDefined();
@@ -76,11 +80,11 @@ describe('lib/FirmhouseClient.ts', () => {
         firmhouseClient['client'] = mockGraphQLClient;
         const response = await firmhouseClient.rawRequest(
           'query($first: Int) { products { id } }',
-          { first: 10 }
+          { first: 10 },
         );
         expect(mockGraphQLClient.request).toHaveBeenCalledWith(
           'query($first: Int) { products { id } }',
-          { first: 10 }
+          { first: 10 },
         );
         expect(response).toEqual({ products: {} });
       });

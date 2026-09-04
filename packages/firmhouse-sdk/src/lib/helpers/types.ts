@@ -10,6 +10,7 @@ import {
   OrderStatus,
   OrderedProductIntervalUnitOfMeasure,
   OrderedProductStatus,
+  PaymentFailureReasonEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
   PromotionDiscountTypeEnum,
@@ -844,6 +845,136 @@ export interface FirmhousePayment {
    * The refunds for this payment.
    */
   refunds: FirmhouseRefund[];
+}
+/**
+ * @public
+ * Card settings of the project, as Adyen Web Drop-in expects them.
+ */
+export interface FirmhouseAdyenCardConfiguration {
+  /**
+   * Whether the card form shows a cardholder name field.
+   */
+  hasHolderName: boolean;
+  /**
+   * Whether the cardholder name is required to submit the card form.
+   */
+  holderNameRequired: boolean;
+}
+/**
+ * @public
+ * Google Pay merchant details of the payment provider account.
+ */
+export interface FirmhouseAdyenGooglePayConfiguration {
+  /**
+   * Signed JWT that authorises Google Pay on the storefront domain.
+   */
+  authJwt: string | null;
+  /**
+   * The Adyen merchant account that receives the Google Pay payment.
+   */
+  gatewayMerchantId: string | null;
+  /**
+   * The Google Pay merchant identifier.
+   */
+  merchantId: string | null;
+  /**
+   * The merchant name shown in the Google Pay payment sheet.
+   */
+  merchantName: string | null;
+  /**
+   * The origin of the storefront that renders the Google Pay button.
+   */
+  merchantOrigin: string | null;
+}
+/**
+ * @public
+ * PayPal settings of the payment.
+ */
+export interface FirmhouseAdyenPaypalConfiguration {
+  /**
+   * Whether PayPal saves the customer's details for renewals.
+   */
+  vault: boolean;
+}
+/**
+ * @public
+ * Browser-safe configuration for initialising Adyen Web Drop-in with a payment session.
+ */
+export interface FirmhouseAdyenPaymentSession {
+  /**
+   * The identifier of the Adyen session.
+   */
+  sessionId: string;
+  /**
+   * The opaque session data to initialise Drop-in with.
+   */
+  sessionData: string;
+  /**
+   * When the session expires.
+   */
+  expiresAt: string;
+  /**
+   * The Adyen client key of the payment provider account.
+   */
+  clientKey: string;
+  /**
+   * The Adyen client environment of the payment provider account.
+   */
+  environment: 'test' | 'live';
+  /**
+   * The locale to render Drop-in in.
+   */
+  locale: string | null;
+  /**
+   * The country code (ISO 3166) of the shopper.
+   */
+  countryCode: string | null;
+  /**
+   * The amount to pay in cents.
+   */
+  amountCents: number;
+  /**
+   * The currency of the amount to pay.
+   */
+  currency: string;
+  /**
+   * The URL to send the customer to once the payment is paid.
+   */
+  successUrl: string | null;
+  /**
+   * Card settings of the project.
+   */
+  cardConfiguration: FirmhouseAdyenCardConfiguration;
+  /**
+   * Google Pay merchant details, when the payment provider account has them.
+   */
+  googlePayConfiguration: FirmhouseAdyenGooglePayConfiguration | null;
+  /**
+   * PayPal settings of the payment.
+   */
+  paypalConfiguration: FirmhouseAdyenPaypalConfiguration;
+}
+/**
+ * @public
+ * The authoritative outcome of a checkout payment.
+ */
+export interface FirmhouseCheckoutPaymentStatus {
+  /**
+   * Status of the payment.
+   */
+  paymentStatus: PaymentStatusEnum;
+  /**
+   * Why the payment failed, when it did.
+   */
+  failureReason: PaymentFailureReasonEnum | null;
+  /**
+   * Status of the subscription the payment belongs to.
+   */
+  subscriptionStatus: SubscriptionStatus;
+  /**
+   * The URL to send the customer to once the payment is paid.
+   */
+  successUrl: string | null;
 }
 /**
  * @public

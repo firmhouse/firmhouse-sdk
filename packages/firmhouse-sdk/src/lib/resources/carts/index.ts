@@ -28,6 +28,7 @@ import {
   FirmhouseAppliedPromotion,
   FirmhouseCart,
   FirmhouseOrderedProduct,
+  FirmhousePayment,
 } from '../../helpers/types';
 
 /**
@@ -644,6 +645,10 @@ export class CartsResource extends BaseResource {
 
   /**
    * Finalises a subscription and returns payment details based on a cart/draft subscription
+   * @remarks
+   * `payment` is the initial payment to collect. It is null when the checkout has nothing
+   * to pay for. Pass its `token` to `client.payments` to render the payment step in your
+   * own storefront instead of sending the customer to `paymentUrl`.
    * @param paymentPageUrl - The URL where the user can sign up for a new subscription
    * @param returnUrl - The URL the user gets redirected to after completing payment
    * @param cartToken - Cart token
@@ -677,7 +682,12 @@ export class CartsResource extends BaseResource {
       throw new ServerError('Could not create subscription');
     }
 
+    const { payment } = createSubscriptionFromCart;
+
     return {
+      payment: payment
+        ? ({ ...payment, refunds: payment.refunds ?? [] } as FirmhousePayment)
+        : null,
       paymentUrl,
       returnUrl: createSubscriptionFromCart.returnUrl,
       subscription: _formatCart(subscription),

@@ -6,6 +6,7 @@ import { SelfServiceCenterTokenResource } from './resources/selfServiceCenterTok
 import { InvoicesResource } from './resources/invoices';
 import { ProjectsResource } from './resources/projects';
 import { CartsResource } from './resources/carts';
+import { PaymentsResource } from './resources/payments';
 
 /**
  * Access type for the Firmhouse access token
@@ -79,6 +80,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   private _selfServiceCenterToken: SelfServiceCenterTokenResource;
   private _invoices: InvoicesResource;
   private _projects: ProjectsResource;
+  private _payments: PaymentsResource;
 
   constructor(readonly config: FirmhouseConfig<TAccess>) {
     this.API_TOKEN = config.apiToken;
@@ -91,8 +93,9 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
     this._projects = new ProjectsResource(this.client);
     this._products = new ProductsResource(this.client);
     this._plans = new PlansResource(this.client);
+    this._payments = new PaymentsResource(this.client);
     this._selfServiceCenterToken = new SelfServiceCenterTokenResource(
-      this.client
+      this.client,
     );
   }
 
@@ -108,7 +111,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
    */
   public async rawRequest(
     graphQLQuery: string,
-    variables?: Record<string, unknown>
+    variables?: Record<string, unknown>,
   ): Promise<unknown> {
     return this.client.request(graphQLQuery, variables);
   }
@@ -152,7 +155,7 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
     : never {
     if (this.ACCESS_TYPE === Access.storefront) {
       throw new Error(
-        'Cannot access subscriptions resource with Storefront acess'
+        'Cannot access subscriptions resource with Storefront acess',
       );
     }
     return this._subscriptions as Access extends Access.write
@@ -168,6 +171,27 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
    */
   public get carts(): CartsResource {
     return this._carts;
+  }
+
+  /**
+   * @public
+   * Checkout payment methods
+   * @group Resources
+   * @category Only Available with Storefront Access
+   * @example
+   * ```typescript
+   * const session = await client.payments.createAdyenSession(subscriptionToken, paymentToken);
+   * ```
+   */
+  public get payments(): TAccess extends Access.storefront
+    ? PaymentsResource
+    : never {
+    if (this.ACCESS_TYPE === Access.write) {
+      throw new Error('Cannot access payments resource with Write access');
+    }
+    return this._payments as TAccess extends Access.storefront
+      ? PaymentsResource
+      : never;
   }
 
   /**

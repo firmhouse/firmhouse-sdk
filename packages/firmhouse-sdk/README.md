@@ -13,6 +13,7 @@ The Firmhouse SDK is designed to make it easier for developers to interact with 
 - Gives you the option to include/exclude related resources in the response, without writing messy GraphQL queries.
 - Supports applying discount codes and calculating discounted cart totals.
 - Provides helpers for subscriptions, ordered products, and extra fields.
+- Provides an embedded Adyen checkout, so you can render the payment step in your own storefront instead of redirecting to a hosted payment page.
 
 ## Install
 
@@ -94,3 +95,73 @@ const extraFieldAnswer = extraFieldsById['EXTRA_FIELD_ID'];
 `calculateCartTotals` uses the largest active promotion when multiple
 promotions are present; promotions do not stack. Discounts are capped at the
 subtotal, and shipping is not included.
+
+## Embedded Adyen checkout
+
+Adyen projects can render the payment step inside your storefront with [Adyen Web
+Drop-in](https://docs.adyen.com/online-payments/build-your-integration/) instead of
+sending the customer to a hosted payment page. `client.payments` returns the browser-safe
+session configuration, and the helpers turn it into the options that Drop-in expects.
+
+Install `@adyen/adyen-web` yourself; the SDK does not depend on it.
+
+```typescript
+import { AdyenCheckout, Dropin } from '@adyen/adyen-web';
+import { buildAdyenCheckoutOptions, buildAdyenDropinOptions, resolveAdyenCheckoutEntry } from '@firmhouse/firmhouse-sdk/utils';
+
+const entry = resolveAdyenCheckoutEntry(new URLSearchParams(window.location.search));
+let paymentToken = sessionStorage.getItem(`paymentToken:${cartToken}`);
+
+// The customer is back from a redirect, so the payment is already with Adyen.
+if (entry.mode === 'redirect' && paymentToken) {
+  const status = await client.payments.waitForCheckoutStatus(cartToken, paymentToken);
+  if (status.paymentStatus === 'PAID' && status.successUrl) {
+    window.location.assign(status.successUrl);
+    return;
+  }
+  // The payment was refused or expired. It is reopened, so Drop-in can be mounted again.
+}
+
+if (!paymentToken) {
+  // `payment` is null when the checkout has nothing to pay for.
+  const { payment } = await client.carts.createSubscription(cartToken, 'https://myshop.com/checkout', 'https://myshop.com/thanks');
+  if (!payment) return;
+  paymentToken = payment.token;
+  sessionStorage.setItem(`paymentToken:${cartToken}`, paymentToken);
+}
+
+const session = await client.payments.createAdyenSession(cartToken, paymentToken);
+const checkout = await AdyenCheckout(buildAdyenCheckoutOptions(session));
+new Dropin(checkout, buildAdyenDropinOptions(session)).mount('#dropin-container');
+```
+
+Payment methods such as iDEAL, Bancontact and a 3D Secure challenge take the customer to
+another page, and Adyen returns them to your checkout with `sessionId` and
+`redirectResult` query parameters. `resolveAdyenCheckoutEntry` detects that. Read the
+outcome before anything else on a redirect return: Firmhouse confirms the payment through
+a webhook that often lands before the customer is back, and a session cannot be created
+for a payment that has already been paid.
+
+Keep the payment token from `createSubscription` somewhere that survives the redirect,
+such as `sessionStorage`. Do not finalise the cart again on the redirect return: once the
+payment is paid, `createSubscription` no longer returns it, so there would be no token to
+read the outcome with.
+
+To report the outcome to the browser sooner than the webhook does, you can hand the
+result back to Adyen while the payment is still open:
+
+```typescript
+const checkout = await AdyenCheckout(buildAdyenCheckoutOptions(session, entry));
+checkout.submitDetails({ details: { redirectResult: entry.redirectResult } });
+```
+
+Requesting a session for the same payment again returns the session that is still active,
+so reloading the checkout page keeps the customer on the same payment, and a refused
+payment can be retried in place.
+
+All `client.payments` methods need a storefront access token and the subscription token
+of the checkout. `buildAdyenDropinOptions` mirrors the card, PayPal, and Google Pay settings
+of the project, so settings such as requiring the cardholder name apply to your checkout
+without hardcoding them, and PayPal saves the customer's details for renewals whenever the
+session stores the payment method. Merge your own presentational options into the result to
+style Drop-in.

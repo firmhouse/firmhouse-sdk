@@ -249,6 +249,9 @@ mutation createSubscriptionFromCart($input: CreateSubscriptionFromCartInput!) {
     errors {
       ...ModelValidationErrorFields
     }
+    payment {
+      ...PaymentFields
+    }
     paymentUrl
     returnUrl
   }
