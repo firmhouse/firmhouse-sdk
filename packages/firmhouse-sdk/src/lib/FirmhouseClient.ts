@@ -47,6 +47,14 @@ export interface FirmhouseConfig<T extends Access> {
    * Default value is `Access.storefront`
    */
   readonly accessType?: T;
+
+  /**
+   * Request initialization parameters for fetch
+   * @remarks
+   * This can be used to pass additional headers or other parameters to the fetch request.
+   * This can be particularly useful when you want to pass next.js cache tags to the request.
+   */
+  readonly fetchParameters?: RequestInit;
 }
 
 /**
@@ -85,7 +93,11 @@ export class FirmhouseClient<TAccess extends Access = Access.storefront> {
   constructor(readonly config: FirmhouseConfig<TAccess>) {
     this.API_TOKEN = config.apiToken;
     this.BASE_URL = config?.baseUrl ?? 'https://portal.firmhouse.com/graphql';
-    this.client = new _GraphQLClient(this.API_TOKEN, this.BASE_URL);
+    this.client = new _GraphQLClient(
+      this.API_TOKEN,
+      this.BASE_URL,
+      config.fetchParameters,
+    );
     this.ACCESS_TYPE = config?.accessType ?? Access.storefront;
     this._subscriptions = new SubscriptionsResource(this.client);
     this._carts = new CartsResource(this.client);

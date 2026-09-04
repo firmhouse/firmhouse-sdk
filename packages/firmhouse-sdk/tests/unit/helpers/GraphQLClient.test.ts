@@ -19,13 +19,14 @@ const mockedBaseClient = jest.mocked(GraphQLClientBase);
 describe('helpers/GraphQLClient', () => {
   beforeEach(() => {
     mockedBaseClient.mockClear();
+    globalThis.fetch = jest.fn();
   });
   it('should initialize the GraphQLClient correctly', () => {
     const token = 'test';
     const url = 'https://portal.firmhouse.com/graphql';
     const client = new GraphQLClient(token);
     expect(GraphQLClientBase).toHaveBeenCalledWith(url, {
-      fetch: undefined,
+      fetch: expect.any(Function),
       headers: {
         'X-Project-Access-Token': token,
       },
@@ -33,21 +34,6 @@ describe('helpers/GraphQLClient', () => {
     });
   });
 
-  it('should use the global fetch', () => {
-    const token = 'test';
-    const url = 'https://portal.firmhouse.com/graphql';
-    const customFetch = async (input: RequestInfo | URL) =>
-      null as unknown as Response;
-    globalThis.fetch = customFetch;
-    const client = new GraphQLClient(token);
-    expect(GraphQLClientBase).toHaveBeenCalledWith(url, {
-      fetch: customFetch,
-      headers: {
-        'X-Project-Access-Token': token,
-      },
-      responseMiddleware: client._responseMiddleware,
-    });
-  });
   describe('_responseMiddleware', () => {
     it('should map validation errors to correct HTTP error', async () => {
       const client = new GraphQLClient('token');

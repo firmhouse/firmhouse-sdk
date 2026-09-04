@@ -47,7 +47,9 @@
       "application": {
         "babel": true
       },
-      "library": {}
+      "library": {
+        "unitTestRunner": "jest"
+      }
     },
     "@nx/next": {
       "application": {
@@ -60,7 +62,7 @@
     }
   },
   "release": {
-    "projects": ["firmhouse-sdk"],
+    "projects": ["firmhouse-sdk", "headless-react"],
     "projectsRelationship": "independent",
     "releaseTag": {
       "pattern": "{projectName}-v{version}",

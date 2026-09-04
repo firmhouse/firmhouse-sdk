@@ -1995,3 +1995,23 @@ export interface FirmhouseBillingCyclePromotion extends FirmhouseAppliedPromotio
    */
   invoices?: FirmhouseInvoice[];
 }
+
+/**
+ * @public
+ */
+export interface FirmhouseExtraFieldInput {
+  /**
+   * The ID of the extra field answer in case of an update
+   */
+  id?: string;
+
+  /**
+   * ID of the extra field the value is for.
+   */
+  extraFieldId: string;
+
+  /**
+   * The value of the extra field.
+   */
+  value: string;
+}
