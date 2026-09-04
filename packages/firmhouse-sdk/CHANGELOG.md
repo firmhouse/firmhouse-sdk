@@ -1,3 +1,19 @@
+## 1.2.0 (2026-09-04)
+
+### Features
+
+- **firmhouse-sdk:** mirror the PayPal vault setting from the session ([b8b70b4](https://github.com/firmhouse/firmhouse-sdk/commit/b8b70b4))
+- **firmhouse-sdk:** add embedded Adyen checkout helpers ([ecd2969](https://github.com/firmhouse/firmhouse-sdk/commit/ecd2969))
+
+### Bug Fixes
+
+- **firmhouse-sdk:** address review findings for embedded Adyen checkout ([3d73281](https://github.com/firmhouse/firmhouse-sdk/commit/3d73281))
+
+### ❤️ Thank You
+
+- Claude Opus 5
+- Veronika Tolpeeva
+
 ## 1.1.2 (2026-08-21)
 
 This was a version bump only for firmhouse-sdk to align it with other projects, there were no code changes.
