@@ -98,6 +98,30 @@ subtotal, and shipping is not included.
 
 ## Embedded Adyen checkout
 
+When `client.carts.createSubscription` rejects changed or unverifiable checkout details
+after an embedded Adyen payment has started, it throws a `ValidationError` whose
+`codes` includes `CHECKOUT_DETAILS_CHANGED`. Use this code to distinguish the conflict
+from an incomplete cart; the cart's `DRAFT` status does not make that distinction.
+
+```typescript
+import { ValidationError } from '@firmhouse/firmhouse-sdk';
+
+try {
+  await client.carts.createSubscription(cartToken, checkoutUrl, successUrl);
+} catch (error) {
+  if (error instanceof ValidationError && error.codes.includes('CHECKOUT_DETAILS_CHANGED')) {
+    // Stop this checkout and surface error.details?.base.
+    // Resolve the original payment before starting a replacement checkout.
+  } else {
+    throw error;
+  }
+}
+```
+
+Existing error handling remains compatible: `message` is still `Validation error`,
+`details` still contains the field messages, and uncoded errors have an empty `codes`
+array. This code does not cancel the original payment or make a replacement safe.
+
 Adyen projects can render the payment step inside your storefront with [Adyen Web
 Drop-in](https://docs.adyen.com/online-payments/build-your-integration/) instead of
 sending the customer to a hosted payment page. `client.payments` returns the browser-safe

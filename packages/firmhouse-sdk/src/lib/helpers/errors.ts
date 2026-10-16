@@ -7,7 +7,7 @@ import { ClientError } from 'graphql-request';
  */
 export function _snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace('-', '').replace('_', '')
+    group.toUpperCase().replace('-', '').replace('_', ''),
   );
 }
 
@@ -23,7 +23,7 @@ export function _formatValidationErrors<
     message?: string;
     explanation?: string;
     path?: string[] | null;
-  }
+  },
 >(errors: ErrorT[]): Record<string, string> | null {
   if (errors.length === 0) return null;
   return errors.reduce((res, error) => {
@@ -77,14 +77,26 @@ export class ValidationError extends Error {
    * All validation errors in \{[path]: error\} format
    */
   public readonly details: Record<string, string> | null;
+  /**
+   * Stable codes returned by the API. Empty when no coded errors are available.
+   */
+  public readonly codes: string[];
   constructor(
-    errors: { attribute: string; message: string; path?: string[] | null }[]
+    errors: {
+      attribute: string;
+      message: string;
+      path?: string[] | null;
+      code?: string | null;
+    }[],
   ) {
     const message = `Validation error`;
     super(message);
     Object.setPrototypeOf(this, ValidationError.prototype);
     this.name = 'ValidationError';
     this.details = _formatValidationErrors(errors);
+    this.codes = [
+      ...new Set(errors.flatMap((error) => (error.code ? [error.code] : []))),
+    ];
   }
 }
 
@@ -94,7 +106,7 @@ export class ValidationError extends Error {
  * @returns The error with type as NotFoundError, ServerError or ValidationError
  */
 export function _mapToLibraryErrorTypes(
-  error: ClientError
+  error: ClientError,
 ): ValidationError | NotFoundError | ServerError {
   if (error.response.errors?.[0]?.extensions?.code === 'RECORD_NOT_FOUND') {
     return new NotFoundError(error);

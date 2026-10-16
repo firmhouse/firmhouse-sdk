@@ -838,6 +838,36 @@ describe('lib/resources/carts/index.ts', () => {
   });
 
   describe('finaliseSubscription', () => {
+    it('preserves a changed-checkout code without changing validation error messages', async () => {
+      mockGraphQLClient.request = jest.fn().mockResolvedValue({
+        createSubscriptionFromCart: {
+          subscription,
+          payment: null,
+          errors: [
+            {
+              attribute: 'base',
+              message: 'Checkout details changed',
+              code: 'CHECKOUT_DETAILS_CHANGED',
+            },
+          ],
+        },
+      });
+      const resource = new CartsResource(mockGraphQLClient);
+
+      await expect(
+        resource.createSubscription(
+          'cart',
+          'https://shop.example/checkout',
+          'https://shop.example/thanks',
+        ),
+      ).rejects.toMatchObject({
+        name: 'ValidationError',
+        message: 'Validation error',
+        details: { base: 'Checkout details changed' },
+        codes: ['CHECKOUT_DETAILS_CHANGED'],
+      });
+    });
+
     it('should call the correct mutation', async () => {
       mockGraphQLClient.request = jest.fn().mockResolvedValue({
         createSubscriptionFromCart: {

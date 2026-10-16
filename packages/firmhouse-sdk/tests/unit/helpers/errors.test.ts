@@ -90,6 +90,30 @@ describe('helpers/errors', () => {
       expect(validationError.name).toBe('ValidationError');
       expect(validationError.message).toBe('Validation error');
       expect(validationError.details).toEqual({ test: message });
+      expect(validationError.codes).toEqual([]);
+    });
+
+    it('preserves distinct API codes alongside the existing error details', () => {
+      const error = new ValidationError([
+        {
+          attribute: 'base',
+          message: 'Checkout changed',
+          code: 'CHECKOUT_DETAILS_CHANGED',
+        },
+        {
+          attribute: 'base',
+          message: 'Checkout cannot be verified',
+          code: 'CHECKOUT_DETAILS_CHANGED',
+        },
+        { attribute: 'email', message: 'Required', code: null },
+      ]);
+
+      expect(error.message).toBe('Validation error');
+      expect(error.codes).toEqual(['CHECKOUT_DETAILS_CHANGED']);
+      expect(error.details).toEqual({
+        base: 'Checkout cannot be verified',
+        email: 'Required',
+      });
     });
   });
 
