@@ -1,0 +1,23 @@
+packages/firmhouse-sdk/tests/unit/helpers/errors.test.ts
+  s_cad28b0f3734e3::t_6cc0a417b78c48 93-100,102-105,107-114,116
+packages/firmhouse-sdk/src/lib/helpers/errors.ts
+  s_cad28b0f3734e3::t_6cc0a417b78c48 80-83,85-88,97,99
+packages/firmhouse-sdk/src/lib/resources/carts/carts.graphql
+  s_cad28b0f3734e3::t_6cc0a417b78c48 251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "18c83c4a23569a4c21b87b68bbf8cc24692f16e4",
+  "prompts": {},
+  "sessions": {
+    "s_cad28b0f3734e3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a134c3-4014-7182-9ce5-66b3bd65e30d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Veronika Tolpeeva <osty1n@gmail.com>"
+    }
+  }
+}
